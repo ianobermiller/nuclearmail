@@ -1,0 +1,39 @@
+.MessageList {
+
+}
+
+.MessageList_item {
+}
+
+.MessageList_item-header {
+  font-weight: bold;
+}
+
+.MessageList_item-expanded .MessageList_item_target {
+  font-weight: bold;
+}
+
+.MessageList_item_target {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.MessageList_item:nth-child(odd) .MessageList_item_target {
+  background: #f5f5f5;
+}
+
+.MessageList_item_sender {
+  float: left;
+  width: 12em;
+}
+
+.MessageList_item_sender, .MessageList_item_subject {
+  overflow: hidden;
+  padding: 8px;
+  text-overflow: ellipsis;
+}
+
+.MessageList_item_content {
+  padding: 8px;
+}
