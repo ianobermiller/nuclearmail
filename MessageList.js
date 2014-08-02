@@ -94,7 +94,7 @@ var MessageListItem = React.createClass({
           className="MessageList_item_target"
           onClick={this._onClick}>
           <div className="MessageList_item_sender">
-            {msg.from.name}
+            {msg.from.name || msg.from.email}
           </div>
           <div className="MessageList_item_subject">
             {msg.subject}
