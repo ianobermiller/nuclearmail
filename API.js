@@ -50,7 +50,8 @@ function transformMessage(rawMessage) {
 function parseFrom(from) {
   var i = from.indexOf('<');
   return {
-    name: from.substring(0, i).trim(),
+    // remove surrounding quotes from name
+    name: from.substring(0, i).trim().replace(/(^")|("$)/g, ''),
     email: from.substring(i + 1, from.length - 1)
   };
 }
