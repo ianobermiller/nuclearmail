@@ -1,11 +1,13 @@
 var autoprefix = require('gulp-autoprefixer');
-var browserify = require('gulp-browserify');
+var browserify = require('browserify');
 var concat = require('gulp-concat');
 var del = require('del');
 var gulp = require('gulp');
 var less = require('gulp-less');
-var sourcemaps = require('gulp-sourcemaps');
+var reactify = require('reactify');
 var size = require('gulp-size');
+var source = require('vinyl-source-stream');
+var sourcemaps = require('gulp-sourcemaps');
 var webserver = require('gulp-webserver');
 
 gulp.task('clean', function(cb) {
@@ -14,7 +16,6 @@ gulp.task('clean', function(cb) {
 
 gulp.task('css', [], function() {
   return gulp.src('./style/*.less')
-    // .pipe(watch())
     .pipe(sourcemaps.init())
     .pipe(less())
     .on('error', swallowError)
@@ -26,15 +27,16 @@ gulp.task('css', [], function() {
 });
 
 gulp.task('js', [], function() {
-  return gulp.src('./App.js')
-    // .pipe(watch())
-    .pipe(browserify({
-      insertGlobals: true,
-      transform: [['reactify', {'es6': true}]]
-    }))
-    .pipe(concat('app.js'))
-    .pipe(size())
-    .pipe(gulp.dest('build'));
+  browserify({
+    debug: true,
+    insertGlobals: true,
+    entries: ['./App.js']
+  })
+  .transform(function(file) { return reactify(file, {es6: true}); })
+  .bundle()
+  .on('error', swallowError)
+  .pipe(source('app.js'))
+  .pipe(gulp.dest('build'));
 });
 
 gulp.task('watch', ['build'], function () {

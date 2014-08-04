@@ -42,15 +42,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Pete Hunt",
-  "license": "Apache 2",
-  "browserify": {
-    "transform": [
-      [
-        "reactify",
-        {
-          "es6": true
-        }
-      ]
-    ]
-  }
+  "license": "Apache 2"
 }
