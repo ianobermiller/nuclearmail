@@ -8,13 +8,14 @@ var reactify = require('reactify');
 var size = require('gulp-size');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
+var watchify = require('watchify');
 var webserver = require('gulp-webserver');
 
 gulp.task('clean', function(cb) {
   del(['build'], cb);
 });
 
-gulp.task('css', [], function() {
+gulp.task('styles', [], function() {
   return gulp.src('./style/*.less')
     .pipe(sourcemaps.init())
     .pipe(less())
@@ -26,22 +27,45 @@ gulp.task('css', [], function() {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('js', [], function() {
-  browserify({
+function scripts(isWatchingEnabled) {
+  var bundler, rebundle;
+  bundler = browserify({
+    entries: ['./App.js'],
     debug: true,
     insertGlobals: true,
-    entries: ['./App.js']
-  })
-  .transform(function(file) { return reactify(file, {es6: true}); })
-  .bundle({debug: true})
-  .on('error', swallowError)
-  .pipe(source('app.js'))
-  .pipe(gulp.dest('build'));
+    cache: {}, // required for watchify
+    packageCache: {}, // required for watchify
+    fullPaths: isWatchingEnabled // required to be true only for watchify
+  });
+
+  if (isWatchingEnabled) {
+    bundler = watchify(bundler);
+  }
+
+  bundler.transform(function(file) { return reactify(file, {es6: true}); });
+
+  rebundle = function() {
+    return bundler.bundle({debug: true})
+      .on('error', swallowError)
+      .pipe(source('app.js'))
+      .pipe(gulp.dest('build'));
+  };
+
+  bundler.on('update', rebundle);
+  bundler.on('log', console.log);
+  return rebundle();
+}
+
+gulp.task('scripts', [], function() {
+  return scripts(false);
 });
 
-gulp.task('watch', ['build'], function () {
-  gulp.watch('./*.js', ['js']);
-  gulp.watch('./style/*.less', ['css']);
+gulp.task('scriptsWatch', [], function() {
+  return scripts(true);
+});
+
+gulp.task('watch', ['build', 'scriptsWatch'], function () {
+  gulp.watch('./style/*.less', ['styles']);
 });
 
 gulp.task('webserver', function() {
@@ -51,7 +75,7 @@ gulp.task('webserver', function() {
     }));
 });
 
-gulp.task('build', ['css', 'js']);
+gulp.task('build', ['styles', 'scripts']);
 
 gulp.task('default', ['watch', 'webserver']);
 
