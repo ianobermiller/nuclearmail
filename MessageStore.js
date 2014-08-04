@@ -13,6 +13,11 @@ class MessageStore {
     this._cache = {};
 
     Dispatcher.subscribe(this._handleDispatch.bind(this));
+    for (var prop in this) {
+      if (typeof this[prop] === 'function' && /^[A-Za-z]/.test(prop)) {
+        this[prop] = this[prop].bind(this);
+      }
+    }
   }
 
   _handleDispatch(actionType, data) {

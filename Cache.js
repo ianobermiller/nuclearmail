@@ -11,7 +11,11 @@ class Cache {
   }
 
   set(key, value) {
-    localStorage[this.namespace + '/' + key] = JSON.stringify(value);
+    try {
+      localStorage[this.namespace + '/' + key] = JSON.stringify(value);
+    } catch(e) {
+      return false;
+    }
   }
 }
 

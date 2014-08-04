@@ -87,7 +87,8 @@ module.exports.getMessages = function(options, callback) {
   whenGoogleApiAvailable(() => {
     var request = gapi.client.gmail.users.messages.list({
       userID: 'me',
-      maxResults: 100
+      maxResults: 100,
+      q: options.query || null
     });
 
     request.execute(response => {
