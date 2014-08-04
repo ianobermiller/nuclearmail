@@ -33,7 +33,7 @@ gulp.task('js', [], function() {
     entries: ['./App.js']
   })
   .transform(function(file) { return reactify(file, {es6: true}); })
-  .bundle()
+  .bundle({debug: true})
   .on('error', swallowError)
   .pipe(source('app.js'))
   .pipe(gulp.dest('build'));
