@@ -2,6 +2,7 @@
 /* global gapi */
 
 var Cache = require('./Cache.js');
+var _ = require('lodash');
 
 var messageCache = new Cache('messages');
 var isAvailable = false;
@@ -39,11 +40,12 @@ function whenGoogleApiAvailable(fn) {
 function transformMessage(rawMessage) {
   var msg = rawMessage.payload;
   return {
-    id: rawMessage.id,
-    subject: pluckHeader(msg.headers, 'Subject'),
-    from: parseFrom(pluckHeader(msg.headers, 'From')),
     body: decodeBody(rawMessage),
-    raw: rawMessage
+    from: parseFrom(pluckHeader(msg.headers, 'From')),
+    id: rawMessage.id,
+    raw: rawMessage,
+    snippet: rawMessage.snippet,
+    subject: pluckHeader(msg.headers, 'Subject'),
   };
 }
 
@@ -93,35 +95,35 @@ module.exports.getMessages = function(options, callback) {
 
     request.execute(response => {
       var messageIDs = response.messages.map(m => m.id);
-      var cachedMessages = [];
+      var cachedMessagesByID = {};
       var batch;
 
       messageIDs.forEach(id => {
         var cachedMessage = messageCache.get(id);
         if (cachedMessage) {
-          cachedMessages.push(cachedMessage);
+          cachedMessagesByID[id] = cachedMessage;
           return;
         }
 
         batch = batch || gapi.client.newHttpBatch();
         batch.add(
           gapi.client.request({
-            'path': 'gmail/v1/users/me/messages/' + id
-          })
+            path: 'gmail/v1/users/me/messages/' + id
+          }),
+          {id: id}
           // TODO: file a task, this is broken :(
           // dump(gapi.client.gmail.users.messages.get({id: message.id}))
         );
       });
 
       if (!batch) {
-        callback(cachedMessages.map(transformMessage));
+        callback(_.map(cachedMessagesByID, transformMessage));
         return;
       }
 
       batch.execute(response => {
-        var ids = Object.keys(response);
-        callback(ids.map(id => {
-          var msg = response[id].result;
+        callback(messageIDs.map(id => {
+          var msg = response[id] ? response[id].result : messageCache.get(id);
           messageCache.set(msg.id, msg);
           return transformMessage(msg);
         }));

@@ -28,10 +28,18 @@
   width: 12em;
 }
 
-.MessageList_item_sender, .MessageList_item_subject {
+.MessageList_item_sender, .MessageList_item_subject, .MessageList_item_snippet {
   overflow: hidden;
   padding: 8px;
   text-overflow: ellipsis;
+}
+
+.MessageList_item_subject {
+  float: left;
+}
+
+.MessageList_item_snippet {
+  color: #999;
 }
 
 .MessageList_item_content {

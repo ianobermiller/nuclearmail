@@ -55,6 +55,9 @@ var MessageList = React.createClass({
             <div className="MessageList_item_subject">
               Subject
             </div>
+            <div className="MessageList_item_snippet">
+              &nbsp;
+            </div>
           </div>
         </li>
         {items}
@@ -98,6 +101,9 @@ var MessageListItem = React.createClass({
           </div>
           <div className="MessageList_item_subject">
             {msg.subject}
+          </div>
+          <div className="MessageList_item_snippet">
+            {_.unescape(msg.snippet)}
           </div>
         </div>
         {
