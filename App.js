@@ -30,21 +30,31 @@ var App = React.createClass({
     this.setState({queryProgress: e.target.value});
   },
 
-  render() {
-    if (!this.state.messages.value) {
-      return <div>Loading</div>;
-    }
+  _onSearchClick() {
+    this.setState({query: this.state.queryProgress});
+  },
 
+  render() {
     return (
       <div className="App">
-        <div>
+        <div className="App_search">
           <input
+            className="App_search_input"
             value={this.state.queryProgress}
             onChange={this._onQueryChange}
             onKeyDown={this._onQueryKeyDown}
+            type="text"
           />
+          <button
+              className="App_search_button"
+              onClick={this._onSearchClick}
+              type="button">
+            Search
+          </button>
         </div>
-        <MessageList messages={this.state.messages.value} />
+        {this.state.messages.value ?
+          <MessageList messages={this.state.messages.value} /> :
+          <div>Loading</div>}
       </div>
     );
   }
