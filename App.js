@@ -9,10 +9,10 @@ var StoreToStateMixin = require('./StoreToStateMixin');
 
 var App = React.createClass({
   mixins: [StoreToStateMixin({
-    messages: (props, state) => ({
+    messages: {
       method: MessageStore.getMessages,
-      options: {query: state.query},
-    }),
+      getOptions: (props, state) => ({query: state.query}),
+    },
   })],
 
   getInitialState() {

@@ -22,10 +22,9 @@ function StoreToStateMixin(config) {
 
   var createsubscriptions = function(component, props, state) {
     subscriptionsByStateFieldName =
-      _.mapValues(config, (getStateConfig, stateFieldName) => {
-        var stateConfig = getStateConfig(props, state);
+      _.mapValues(config, (stateConfig, stateFieldName) => {
         var options = optionsByStateFieldName[stateFieldName] =
-          stateConfig.options;
+          stateConfig.getOptions(props, state);
 
         return stateConfig.method(options).subscribe(
           subscriber.bind(null, component, stateFieldName)
@@ -45,9 +44,8 @@ function StoreToStateMixin(config) {
     },
 
     componentWillUpdate(nextProps, nextState) {
-      _.forEach(config, (getStateConfig, stateFieldName) => {
-        var stateConfig = getStateConfig(nextProps, nextState);
-        var newOptions = stateConfig.options;
+      _.forEach(config, (stateConfig, stateFieldName) => {
+        var newOptions = stateConfig.getOptions(nextProps, nextState);
         var oldOptions = optionsByStateFieldName[stateFieldName];
 
         if (!_.isEqual(newOptions, oldOptions)) {
@@ -66,7 +64,7 @@ function StoreToStateMixin(config) {
     },
 
     getInitialState() {
-      return _.mapValues(config, (getStateConfig, stateFieldName) => ({
+      return _.mapValues(config, (stateConfig, stateFieldName) => ({
         isLoading: true,
         value: null,
       }));
