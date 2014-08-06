@@ -46,6 +46,7 @@ function transformMessage(rawMessage) {
     raw: rawMessage,
     snippet: rawMessage.snippet,
     subject: pluckHeader(msg.headers, 'Subject'),
+    hasAttachment: !!msg.body.data,
   };
 }
 
@@ -81,7 +82,7 @@ function decodeUrlSafeBase64(s) {
 }
 
 function pluckHeader(headers, name) {
-  var header = headers.filter(h => h.name === name)[0];
+  var header = headers && headers.filter(h => h.name === name)[0];
   return header ? header.value : null;
 }
 
