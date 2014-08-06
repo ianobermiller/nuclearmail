@@ -3,9 +3,8 @@
 var API = require('./API.js');
 var Dispatcher = require('./Dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
-var asap = require('asap');
 
-var CHANGE = 'change';
+var CHANGE_EVENT = 'change';
 
 class MessageStore {
   constructor() {
@@ -24,41 +23,22 @@ class MessageStore {
   }
 
   getMessages(options) {
-    return this._wrapAPICall('API.getMessages', API.getMessages, options);
+    return API.getMessages(options);
+    // return this._cacheApiCall('API.getMessages', API.getMessages, options);
   }
 
-  _wrapAPICall(apiName, apiFunction, options) {
+  _cacheApiCall(apiName, apiFunction, options) {
     var emitter = this._emitter;
     var cacheKey = apiName + (options ? '-' + JSON.stringify(options) : '');
 
-    var listener = {
-      subscribe(fn) {
-        emitter.addListener(CHANGE, fn);
-        return {
-          remove() {
-            emitter.removeListener(CHANGE, fn);
-          }
-        };
-      },
-    };
-
-    // In case the API call was synchronous, postpone until after the caller
-    // has subscribed.
-    var resolve = result => {
-      asap(() => emitter.emit(CHANGE, {isLoading: false, value: result}));
-    };
-
     if (this._cache.hasOwnProperty(cacheKey)) {
-      resolve(this._cache[cacheKey]);
-    } else {
-      emitter.emit(CHANGE, {isLoading: true});
-      apiFunction(options).then(result => {
-        this._cache[cacheKey] = result;
-        resolve(result);
-      });
+      return Promise.resolve(this._cache[cacheKey]);
     }
 
-    return listener;
+    return apiFunction(options).then(result => {
+      emitter.emit(CHANGE_EVENT);
+      this._cache[cacheKey] = result;
+    });
   }
 }
 

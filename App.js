@@ -54,8 +54,8 @@ var App = React.createClass({
             Search
           </button>
         </div>
-        {this.state.messages.value ?
-          <MessageList messages={this.state.messages.value} /> :
+        {this.state.messages.result ?
+          <MessageList messages={this.state.messages.result} /> :
           <div>Loading</div>}
       </div>
     );
