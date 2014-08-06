@@ -52,11 +52,10 @@ var MessageList = React.createClass({
             <div className="MessageList_item_sender">
               From
             </div>
-            <div className="MessageList_item_subject">
-              Subject
-            </div>
-            <div className="MessageList_item_snippet">
-              &nbsp;
+            <div className="MessageList_item_content">
+              <span className="MessageList_item_subject">
+                Subject
+              </span>
             </div>
           </div>
         </li>
@@ -99,11 +98,13 @@ var MessageListItem = React.createClass({
           <div className="MessageList_item_sender">
             {msg.from.name || msg.from.email}
           </div>
-          <div className="MessageList_item_subject">
-            {msg.subject}
-          </div>
-          <div className="MessageList_item_snippet">
-            {_.unescape(msg.snippet)}
+          <div className="MessageList_item_content">
+            <span className="MessageList_item_subject">
+              {msg.subject}{' '}
+            </span>
+            <span className="MessageList_item_snippet">
+              {_.unescape(msg.snippet)}
+            </span>
           </div>
         </div>
         {
