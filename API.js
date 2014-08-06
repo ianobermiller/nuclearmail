@@ -86,102 +86,51 @@ function pluckHeader(headers, name) {
   return header ? header.value : null;
 }
 
-module.exports.getMessages = function(options, callback) {
-  whenGoogleApiAvailable(() => {
-    var request = gapi.client.gmail.users.messages.list({
-      userID: 'me',
-      maxResults: 100,
-      q: options.query || null
-    });
+module.exports.getMessages = function(options) {
+  return new Promise((resolve, reject) => {
+    whenGoogleApiAvailable(() => {
+      var request = gapi.client.gmail.users.messages.list({
+        userID: 'me',
+        maxResults: 100,
+        q: options.query || null
+      });
 
-    request.execute(response => {
-      var messageIDs = response.messages.map(m => m.id);
-      var cachedMessagesByID = {};
-      var batch;
+      request.execute(response => {
+        var messageIDs = response.messages.map(m => m.id);
+        var cachedMessagesByID = {};
+        var batch;
 
-      messageIDs.forEach(id => {
-        var cachedMessage = messageCache.get(id);
-        if (cachedMessage) {
-          cachedMessagesByID[id] = cachedMessage;
+        messageIDs.forEach(id => {
+          var cachedMessage = messageCache.get(id);
+          if (cachedMessage) {
+            cachedMessagesByID[id] = cachedMessage;
+            return;
+          }
+
+          batch = batch || gapi.client.newHttpBatch();
+          batch.add(
+            gapi.client.request({
+              path: 'gmail/v1/users/me/messages/' + id
+            }),
+            {id: id}
+            // TODO: file a task, this is broken :(
+            // dump(gapi.client.gmail.users.messages.get({id: message.id}))
+          );
+        });
+
+        if (!batch) {
+          resolve(_.map(cachedMessagesByID, transformMessage));
           return;
         }
 
-        batch = batch || gapi.client.newHttpBatch();
-        batch.add(
-          gapi.client.request({
-            path: 'gmail/v1/users/me/messages/' + id
-          }),
-          {id: id}
-          // TODO: file a task, this is broken :(
-          // dump(gapi.client.gmail.users.messages.get({id: message.id}))
-        );
-      });
-
-      if (!batch) {
-        callback(_.map(cachedMessagesByID, transformMessage));
-        return;
-      }
-
-      batch.execute(response => {
-        callback(messageIDs.map(id => {
-          var msg = response[id] ? response[id].result : messageCache.get(id);
-          messageCache.set(msg.id, msg);
-          return transformMessage(msg);
-        }));
+        batch.execute(response => {
+          resolve(messageIDs.map(id => {
+            var msg = response[id] ? response[id].result : messageCache.get(id);
+            messageCache.set(msg.id, msg);
+            return transformMessage(msg);
+          }));
+        });
       });
     });
   });
 };
-
-var res = {
-   "messages": [
-    {
-     "id": "1475c9fc8f5118ff",
-     "threadId": "1475c9fc8f5118ff"
-    },
-    {
-     "id": "1475c4dc64815632",
-     "threadId": "147269594ceb3b52"
-    },
-    {
-     "id": "1475c4da2d05b012",
-     "threadId": "147269594ceb3b52"
-    },
-    {
-     "id": "1475c3dea862440e",
-     "threadId": "147269594ceb3b52"
-    },
-    {
-     "id": "1475c3dce39816bb",
-     "threadId": "147269594ceb3b52"
-    },
-    {
-     "id": "1475be027d542df7",
-     "threadId": "1475be027d542df7"
-    },
-    {
-     "id": "1475b7954aea0b7b",
-     "threadId": "1475b7954aea0b7b"
-    },
-    {
-     "id": "1475b7932edff317",
-     "threadId": "1475b7932edff317"
-    },
-    {
-     "id": "1475b401417bd6ea",
-     "threadId": "1475b401417bd6ea"
-    },
-    {
-     "id": "1475b1a11e04bf25",
-     "threadId": "1475b1a11e04bf25"
-    }
-   ],
-   "nextPageToken": "07146117431334128463",
-   "resultSizeEstimate": 131
-  }
-;
-
-function dump(arg) {
-  console.log(arg);
-  return arg;
-}

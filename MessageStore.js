@@ -52,7 +52,7 @@ class MessageStore {
       resolve(this._cache[cacheKey]);
     } else {
       emitter.emit(CHANGE, {isLoading: true});
-      apiFunction(options, result => {
+      apiFunction(options).then(result => {
         this._cache[cacheKey] = result;
         resolve(result);
       });
