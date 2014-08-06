@@ -5,6 +5,7 @@
   "main": "App.js",
   "dependencies": {
     "asap": "^1.0.0",
+    "es6-shim": "^0.15.1",
     "immutable": "^2.0.3",
     "react": "~0.11"
   },

@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 
+require('es6-shim');
+
 var MessageList = require('./MessageList');
 var MessageStore = require('./MessageStore');
 var React = require('react');
