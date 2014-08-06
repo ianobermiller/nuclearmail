@@ -1,0 +1,3 @@
+TODO
+- convert callbacks to promises
+- LabelStore, show labels
