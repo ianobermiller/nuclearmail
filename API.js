@@ -87,12 +87,18 @@ function pluckHeader(headers, name) {
 }
 
 module.exports.getMessages = function(options) {
+
+    if (!options.maxResults) {
+      debugger;
+    }
+
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.messages.list({
         userID: 'me',
-        maxResults: 100,
-        q: options.query || null
+        maxResults: options.maxResults,
+        q: options.query || null,
+        pageToken: options.pageToken || null,
       });
 
       request.execute(response => {
@@ -119,16 +125,26 @@ module.exports.getMessages = function(options) {
         });
 
         if (!batch) {
-          resolve(_.map(cachedMessagesByID, transformMessage));
+          resolve({
+            nextPageToken: response.nextPageToken,
+            resultSizeEstimate: response.resultSizeEstimate,
+            items: _.map(cachedMessagesByID, transformMessage),
+          });
           return;
         }
 
-        batch.execute(response => {
-          resolve(messageIDs.map(id => {
-            var msg = response[id] ? response[id].result : messageCache.get(id);
-            messageCache.set(msg.id, msg);
-            return transformMessage(msg);
-          }));
+        batch.execute(itemsResponse => {
+          resolve({
+            nextPageToken: response.nextPageToken,
+            resultSizeEstimate: response.resultSizeEstimate,
+            items: messageIDs.map(id => {
+              var msg = itemsResponse[id] ?
+                itemsResponse[id].result :
+                messageCache.get(id);
+              messageCache.set(msg.id, msg);
+              return transformMessage(msg);
+            }),
+          });
         });
       });
     });

@@ -6,13 +6,12 @@
 var _ = require('lodash');
 
 function StoreToStateMixin(config) {
-  var subscriptionsByStateFieldName = null;
   var optionsByStateFieldName = {};
 
   var onResult = function(component, stateFieldName, result) {
     var state = {};
     var fieldState = state[stateFieldName] =
-      component.state[stateFieldName] || {};
+      _.clone(component.state[stateFieldName]) || {};
     fieldState.isLoading = false;
     fieldState.result = result;
     component.setState(state);
@@ -20,13 +19,17 @@ function StoreToStateMixin(config) {
 
   var createsubscriptions = function(component, props, state) {
     _.forEach(config, (stateConfig, stateFieldName) => {
-      var options = optionsByStateFieldName[stateFieldName] =
-        stateConfig.getOptions(props, state);
-
-      stateConfig.method(options).then(
-        onResult.bind(null, component, stateFieldName)
-      );
+      var options = stateConfig.getOptions(props, state);
+      callMethod(component, stateConfig, stateFieldName, options);
     });
+  };
+
+  var callMethod = function(component, stateConfig, stateFieldName, options) {
+    optionsByStateFieldName[stateFieldName] = options;
+
+    stateConfig.method(options)
+      .then(onResult.bind(null, component, stateFieldName))
+      ['catch'](error => console.error(error));
   };
 
   return {
@@ -40,10 +43,7 @@ function StoreToStateMixin(config) {
         var oldOptions = optionsByStateFieldName[stateFieldName];
 
         if (!_.isEqual(newOptions, oldOptions)) {
-          optionsByStateFieldName[stateFieldName] = newOptions;
-          stateConfig.method(newOptions).then(
-            onResult.bind(null, this, stateFieldName)
-          );
+          callMethod(this, stateConfig, stateFieldName, newOptions);
         }
       });
     },

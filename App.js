@@ -2,23 +2,33 @@
 
 require('es6-shim');
 
+var InfiniteScroll = require('./InfiniteScroll');
 var MessageList = require('./MessageList');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
 
+var PureRenderMixin = React.addons.PureRenderMixin;
+
 var App = React.createClass({
-  mixins: [StoreToStateMixin({
-    messages: {
-      method: MessageStore.getMessages,
-      getOptions: (props, state) => ({query: state.query}),
-    },
-  })],
+  mixins: [
+    PureRenderMixin,
+    StoreToStateMixin({
+      messages: {
+        method: MessageStore.getMessages,
+        getOptions: (props, state) => ({
+          query: state.query,
+          maxResultCount: state.maxResultCount,
+        }),
+      },
+    })
+  ],
 
   getInitialState() {
     return {
       query: '',
       queryProgress: '',
+      maxResultCount: 10,
     };
   },
 
@@ -34,6 +44,12 @@ var App = React.createClass({
 
   _onSearchClick() {
     this.setState({query: this.state.queryProgress});
+  },
+
+  _onRequestMoreItems() {
+    // TODO: debouce this
+    console.log('upping max')
+    this.setState({maxResultCount: this.state.maxResultCount + 10});
   },
 
   render() {
@@ -54,9 +70,13 @@ var App = React.createClass({
             Search
           </button>
         </div>
-        {this.state.messages.result ?
-          <MessageList messages={this.state.messages.result} /> :
-          <div>Loading</div>}
+        {this.state.messages.result ? (
+          <InfiniteScroll
+              hasMore={this.state.messages.result.hasMore}
+              onRequestMoreItems={this._onRequestMoreItems}>
+            <MessageList messages={this.state.messages.result.items} />
+          </InfiniteScroll>
+        ) : <div>Loading</div>}
       </div>
     );
   }

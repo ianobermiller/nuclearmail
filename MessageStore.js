@@ -10,6 +10,7 @@ class MessageStore {
   constructor() {
     this._emitter = new EventEmitter();
     this._cache = {};
+    this._pagingInfoByQuery = {};
 
     Dispatcher.subscribe(this._handleDispatch.bind(this));
     for (var prop in this) {
@@ -23,7 +24,32 @@ class MessageStore {
   }
 
   getMessages(options) {
-    return API.getMessages(options);
+    console.log('getMessages', options)
+    var query = options.q || '';
+    var requestedResultCount = options.maxResultCount || 10;
+    var pagingInfo = this._pagingInfoByQuery[query];
+    var fetchedResultCount = pagingInfo ? pagingInfo.fetchedResults.length : 0;
+    var pageToken = fetchedResultCount < requestedResultCount && pagingInfo ?
+      pagingInfo.nextPageToken :
+      null;
+
+    var apiOptions = {
+      q: query,
+      maxResults: requestedResultCount - fetchedResultCount,
+      pageToken: pageToken,
+    };
+
+    return API.getMessages(apiOptions).then(result => {
+      var previousResults = pageToken ? pagingInfo.fetchedResults : [];
+      var newPagingInfo = this._pagingInfoByQuery[query] = {};
+      newPagingInfo.fetchedResults = previousResults.concat(result.items);
+      newPagingInfo.nextPageToken = result.nextPageToken;
+      return {
+        hasMore: !!result.nextPageToken,
+        resultSizeEstimate: result.resultSizeEstimate,
+        items: newPagingInfo.fetchedResults,
+      };
+    });
     // return this._cacheApiCall('API.getMessages', API.getMessages, options);
   }
 
