@@ -1,4 +1,3 @@
 TODO
 - Switch to fetching threads, storing messages in MessageStore
 - LabelStore, show labels
-- Pagination/infinite scrolling

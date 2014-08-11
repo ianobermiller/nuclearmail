@@ -87,11 +87,6 @@ function pluckHeader(headers, name) {
 }
 
 module.exports.getMessages = function(options) {
-
-    if (!options.maxResults) {
-      debugger;
-    }
-
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.messages.list({

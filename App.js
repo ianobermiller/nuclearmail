@@ -28,7 +28,7 @@ var App = React.createClass({
     return {
       query: '',
       queryProgress: '',
-      maxResultCount: 10,
+      maxResultCount: 20,
     };
   },
 
@@ -47,9 +47,7 @@ var App = React.createClass({
   },
 
   _onRequestMoreItems() {
-    // TODO: debouce this
-    console.log('upping max')
-    this.setState({maxResultCount: this.state.maxResultCount + 10});
+    this.setState({maxResultCount: this.state.maxResultCount + 20});
   },
 
   render() {
