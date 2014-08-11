@@ -40,7 +40,7 @@ class MessageStore {
       pageToken: pageToken,
     };
 
-    return API.getMessages(apiOptions).then(result => {
+    return API.listThreads(apiOptions).then(result => {
       var previousResults = pageToken ? pagingInfo.fetchedResults : [];
       var newPagingInfo = this._pagingInfoByQuery[query] = {};
       newPagingInfo.fetchedResults = previousResults.concat(result.items);

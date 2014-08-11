@@ -87,6 +87,66 @@ function pluckHeader(headers, name) {
   return header ? header.value : null;
 }
 
+module.exports.listThreads = function(options) {
+  return new Promise((resolve, reject) => {
+    whenGoogleApiAvailable(() => {
+      var request = gapi.client.gmail.users.threads.list({
+        userID: 'me',
+        maxResults: options.maxResults,
+        q: options.query || null,
+        pageToken: options.pageToken || null,
+      });
+
+      request.execute(response => {
+        var threadIDs = response.threads.map(m => m.id);
+        var cachedMessagesByID = {};
+        var batch;
+
+        threadIDs.forEach(id => {
+          var cachedMessage = messageCache.get(id);
+          if (cachedMessage) {
+            cachedMessagesByID[id] = cachedMessage;
+            return;
+          }
+
+          batch = batch || gapi.client.newHttpBatch();
+          batch.add(
+            gapi.client.request({
+              path: 'gmail/v1/users/me/threads/' + id
+            }),
+            {id: id}
+            // TODO: file a task, this is broken :(
+            // dump(gapi.client.gmail.users.messages.get({id: message.id}))
+          );
+        });
+
+        if (!batch) {
+          resolve({
+            nextPageToken: response.nextPageToken,
+            resultSizeEstimate: response.resultSizeEstimate,
+            items: _.map(cachedMessagesByID, transformMessage),
+          });
+          return;
+        }
+
+        batch.execute(itemsResponse => {
+          resolve({
+            nextPageToken: response.nextPageToken,
+            resultSizeEstimate: response.resultSizeEstimate,
+            items: threadIDs.map(id => {
+              var msg = itemsResponse[id] ?
+                itemsResponse[id].result.messages[0] :
+                messageCache.get(id);
+              messageCache.set(msg.id, msg);
+              return transformMessage(msg);
+            }),
+          });
+        });
+      });
+    });
+  });
+};
+
 module.exports.getMessages = function(options) {
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
