@@ -24,7 +24,7 @@ class MessageStore {
   }
 
   getMessages(options) {
-    var query = options.q || '';
+    var query = options.query || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pagingInfo = this._pagingInfoByQuery[query];
     var fetchedResultCount = pagingInfo ? pagingInfo.fetchedResults.length : 0;
@@ -34,7 +34,9 @@ class MessageStore {
 
     var apiOptions = {
       q: query,
-      maxResults: requestedResultCount - fetchedResultCount,
+      maxResults: pageToken ?
+        requestedResultCount - fetchedResultCount :
+        requestedResultCount,
       pageToken: pageToken,
     };
 

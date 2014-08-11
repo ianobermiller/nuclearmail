@@ -10,6 +10,8 @@ var StoreToStateMixin = require('./StoreToStateMixin');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 
+var PAGE_SIZE = 20;
+
 var App = React.createClass({
   mixins: [
     PureRenderMixin,
@@ -28,13 +30,13 @@ var App = React.createClass({
     return {
       query: '',
       queryProgress: '',
-      maxResultCount: 20,
+      maxResultCount: PAGE_SIZE,
     };
   },
 
   _onQueryKeyDown(e) {
     if (e.key === 'Enter') {
-      this.setState({query: e.target.value});
+      this._setQuery(e.target.value);
     }
   },
 
@@ -43,11 +45,18 @@ var App = React.createClass({
   },
 
   _onSearchClick() {
-    this.setState({query: this.state.queryProgress});
+    this._setQuery(this.state.queryProgress);
   },
 
   _onRequestMoreItems() {
-    this.setState({maxResultCount: this.state.maxResultCount + 20});
+    this.setState({maxResultCount: this.state.maxResultCount + PAGE_SIZE});
+  },
+
+  _setQuery(query) {
+    this.setState({
+      query: this.state.queryProgress,
+      maxResultCount: PAGE_SIZE,
+    });
   },
 
   render() {
