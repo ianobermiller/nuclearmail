@@ -3,10 +3,22 @@
 var HTMLSandbox = require('./HTMLSandbox');
 var React = require('react/addons');
 var _ = require('lodash');
+var moment = require('moment');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 var PropTypes = React.PropTypes;
 var cx = React.addons.classSet;
+
+moment.locale('en', {
+  calendar : {
+    lastDay : 'MMM D',
+    sameDay : 'LT',
+    nextDay : 'MMM D',
+    lastWeek : 'MMM D',
+    nextWeek : 'MMM D',
+    sameElse : 'L'
+  }
+});
 
 var MessageList = React.createClass({
   mixins: [PureRenderMixin],
@@ -97,6 +109,9 @@ var MessageListItem = React.createClass({
           onClick={this._onClick}>
           <div className="MessageList_item_sender">
             {msg.from.name || msg.from.email}
+          </div>
+          <div className="MessageList_item_date">
+            {msg.date.fromNow()}
           </div>
           <div className="MessageList_item_content">
             <span className="MessageList_item_subject">

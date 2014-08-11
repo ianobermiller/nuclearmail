@@ -24,7 +24,6 @@ class MessageStore {
   }
 
   getMessages(options) {
-    console.log('getMessages', options)
     var query = options.q || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pagingInfo = this._pagingInfoByQuery[query];

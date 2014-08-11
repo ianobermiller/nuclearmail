@@ -3,6 +3,7 @@
 
 var Cache = require('./Cache.js');
 var _ = require('lodash');
+var moment = require('moment');
 
 var messageCache = new Cache('messages');
 var isAvailable = false;
@@ -47,6 +48,7 @@ function transformMessage(rawMessage) {
     snippet: rawMessage.snippet,
     subject: pluckHeader(msg.headers, 'Subject'),
     hasAttachment: !!msg.body.data,
+    date: moment(pluckHeader(msg.headers, 'Date')),
   };
 }
 
