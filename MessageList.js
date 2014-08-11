@@ -111,7 +111,7 @@ var MessageListItem = React.createClass({
             {msg.from.name || msg.from.email}
           </div>
           <div className="MessageList_item_date">
-            {msg.date.fromNow()}
+            {moment(msg.date).fromNow()}
           </div>
           <div className="MessageList_item_content">
             <span className="MessageList_item_subject">

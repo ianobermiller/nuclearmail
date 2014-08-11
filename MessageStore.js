@@ -33,7 +33,7 @@ class MessageStore {
       null;
 
     var apiOptions = {
-      q: query,
+      query: query,
       maxResults: pageToken ?
         requestedResultCount - fetchedResultCount :
         requestedResultCount,

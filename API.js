@@ -3,7 +3,6 @@
 
 var Cache = require('./Cache.js');
 var _ = require('lodash');
-var moment = require('moment');
 
 var messageCache = new Cache('messages');
 var isAvailable = false;
@@ -48,7 +47,7 @@ function transformMessage(rawMessage) {
     snippet: rawMessage.snippet,
     subject: pluckHeader(msg.headers, 'Subject'),
     hasAttachment: !!msg.body.data,
-    date: moment(pluckHeader(msg.headers, 'Date')),
+    date: new Date(pluckHeader(msg.headers, 'Date')),
   };
 }
 
@@ -89,7 +88,6 @@ function pluckHeader(headers, name) {
 }
 
 module.exports.getMessages = function(options) {
-  console.log(options)
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.messages.list({
