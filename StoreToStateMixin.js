@@ -1,60 +1,65 @@
 /**
- * @providesModule StoreToStateMixin
  * @jsx React.DOM
  */
 
 var _ = require('lodash');
+var classToMixinFunction = require('./classToMixinFunction');
 
-function StoreToStateMixin(config) {
-  var optionsByStateFieldName = {};
+class StoreToStateMixin {
+  constructor(component, config) {
+    this._component = component;
+    this._config = config;
+    this._optionsByStateFieldName = {};
+  }
 
-  var onResult = function(component, stateFieldName, result) {
+  _onResult(stateFieldName, result) {
     var state = {};
     var fieldState = state[stateFieldName] =
-      _.clone(component.state[stateFieldName]) || {};
+      _.clone(this._component.state[stateFieldName]) || {};
     fieldState.isLoading = false;
     fieldState.result = result;
-    component.setState(state);
-  };
+    this._component.setState(state);
+  }
 
-  var createsubscriptions = function(component, props, state) {
-    _.forEach(config, (stateConfig, stateFieldName) => {
+  _createsubscriptions(props, state) {
+    _.forEach(this._config, (stateConfig, stateFieldName) => {
       var options = stateConfig.getOptions(props, state);
-      callMethod(component, stateConfig, stateFieldName, options);
+      this._callMethod(stateConfig, stateFieldName, options);
     });
-  };
+  }
 
-  var callMethod = function(component, stateConfig, stateFieldName, options) {
-    optionsByStateFieldName[stateFieldName] = options;
+  _callMethod(stateConfig, stateFieldName, options) {
+    this._optionsByStateFieldName[stateFieldName] = options;
 
     stateConfig.method(options)
-      .then(onResult.bind(null, component, stateFieldName))
+      .then(this._onResult.bind(this, stateFieldName))
       ['catch'](error => console.error(error));
-  };
+  }
 
-  return {
-    componentWillMount() {
-      createsubscriptions(this, this.props, this.state);
-    },
+  componentWillMount() {
+    this._createsubscriptions(
+      this._component.props,
+      this._component.state
+    );
+  }
 
-    componentWillUpdate(nextProps, nextState) {
-      _.forEach(config, (stateConfig, stateFieldName) => {
-        var newOptions = stateConfig.getOptions(nextProps, nextState);
-        var oldOptions = optionsByStateFieldName[stateFieldName];
+  componentWillUpdate(nextProps, nextState) {
+    _.forEach(this._config, (stateConfig, stateFieldName) => {
+      var newOptions = stateConfig.getOptions(nextProps, nextState);
+      var oldOptions = this._optionsByStateFieldName[stateFieldName];
 
-        if (!_.isEqual(newOptions, oldOptions)) {
-          callMethod(this, stateConfig, stateFieldName, newOptions);
-        }
-      });
-    },
+      if (!_.isEqual(newOptions, oldOptions)) {
+        this._callMethod(this, stateConfig, stateFieldName, newOptions);
+      }
+    });
+  }
 
-    getInitialState() {
-      return _.mapValues(config, (stateConfig, stateFieldName) => ({
-        isLoading: true,
-        result: null,
-      }));
-    }
-  };
+  getInitialState() {
+    return _.mapValues(this._config, (stateConfig, stateFieldName) => ({
+      isLoading: true,
+      result: null,
+    }));
+  }
 }
 
-module.exports = StoreToStateMixin;
+module.exports = classToMixinFunction(StoreToStateMixin);
