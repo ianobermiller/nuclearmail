@@ -3,6 +3,7 @@
 require('es6-shim');
 
 var BlockMessageList = require('./BlockMessageList');
+var LabelStore = require('./LabelStore');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
@@ -27,6 +28,12 @@ var App = React.createClass({
   mixins: [
     PureRenderMixin,
     StoreToStateMixin({
+      labels: {
+        method: LabelStore.getLabels,
+        getOptions: (props, state) => ({
+          // TODO: shouldn't need this
+        }),
+      },
       messages: {
         method: MessageStore.getMessages,
         getOptions: (props, state) => ({
@@ -95,6 +102,7 @@ var App = React.createClass({
         {this.state.messages.result ? (
             <BlockMessageList
               className="App_messages"
+              labels={this.state.labels.result}
               messages={this.state.messages.result.items}
               onMessageSelected={this._onMessageSelected}
             />

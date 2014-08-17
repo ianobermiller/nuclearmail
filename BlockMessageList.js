@@ -12,7 +12,9 @@ var BlockMessageList = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
-    messages: PropTypes.array.isRequired
+    messages: PropTypes.array.isRequired,
+
+    labels: PropTypes.array,
   },
 
   _onMessageClick(index, message) {
@@ -27,6 +29,7 @@ var BlockMessageList = React.createClass({
             message={msg}
             index={index}
             onClick={this._onMessageClick}
+            labels={this.props.labels && _.indexBy(this.props.labels, 'id')}
           />
         ))}
       </ul>
@@ -35,10 +38,14 @@ var BlockMessageList = React.createClass({
 });
 
 var BlockMessageListItem = React.createClass({
+  mixins: [PureRenderMixin],
+
   propTypes: {
-    index: React.PropTypes.number.isRequired,
-    message: React.PropTypes.object.isRequired,
-    onClick: React.PropTypes.func.isRequired,
+    index: PropTypes.number.isRequired,
+    message: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired,
+
+    labels: PropTypes.object,
   },
 
   _onClick() {
@@ -61,8 +68,10 @@ var BlockMessageListItem = React.createClass({
             </div>
           </div>
           <div className="BlockMessageList_item_text">
-            {msg.labels.map(label =>
-              <span className="BlockMessageList_item_label">{label}</span>
+            {msg.labels.map(labelID =>
+              <span className="BlockMessageList_item_label">
+                {this.props.labels ? this.props.labels[labelID].name : labelID}
+              </span>
             )}
             <span className="BlockMessageList_item_subject">
               {msg.subject}{' '}

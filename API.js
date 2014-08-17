@@ -222,3 +222,17 @@ module.exports.getMessages = function(options) {
     });
   });
 };
+
+module.exports.listLabels = function() {
+  return new Promise((resolve, reject) => {
+    whenGoogleApiAvailable(() => {
+      var request = gapi.client.gmail.users.labels.list({
+        userID: 'me',
+      });
+
+      request.execute(response => {
+        resolve(response.labels);
+      });
+    });
+  });
+};
