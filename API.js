@@ -48,7 +48,7 @@ function transformMessage(rawMessage) {
     id: rawMessage.id,
     isInInbox: hasLabel(rawMessage, 'INBOX'),
     isUnread: hasLabel(rawMessage, 'UNREAD'),
-    labels: parseLabels(rawMessage),
+    labelIDs: rawMessage.labelIds,
     raw: rawMessage,
     snippet: _.unescape(rawMessage.snippet),
     subject: pluckHeader(msg.headers, 'Subject'),
@@ -57,14 +57,6 @@ function transformMessage(rawMessage) {
 
 function hasLabel(rawMessage, label) {
   return rawMessage.labelIds.indexOf(label) >= 0;
-}
-
-function parseLabels(rawMessage) {
-  return rawMessage.labelIds.filter(label =>
-    ['CATEGORY', 'INBOX', 'UNREAD'].every(unwanted =>
-      label.indexOf(unwanted) === -1
-    )
-  );
 }
 
 function parseFrom(from) {

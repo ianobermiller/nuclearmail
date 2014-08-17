@@ -68,7 +68,9 @@ var BlockMessageListItem = React.createClass({
             </div>
           </div>
           <div className="BlockMessageList_item_text">
-            {msg.labels.map(labelID =>
+            {this.props.labels && msg.labelIDs.filter(labelID =>
+                this.props.labels[labelID].type === 'user'
+            ).map(labelID =>
               <span className="BlockMessageList_item_label">
                 {this.props.labels ? this.props.labels[labelID].name : labelID}
               </span>
