@@ -3,6 +3,7 @@
 
 var Cache = require('./Cache.js');
 var _ = require('lodash');
+var utf8 = require('utf8');
 
 var messageCache = new Cache('messages');
 var isAvailable = false;
@@ -71,7 +72,7 @@ function decodeBody(rawMessage) {
         contentTypeHeader.split(';')[0] :
         'text/html';
       result[contentType] =
-        decodeUrlSafeBase64(part.body.data);
+        utf8.decode(decodeUrlSafeBase64(part.body.data));
     }
   });
 
