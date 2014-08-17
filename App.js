@@ -2,15 +2,26 @@
 
 require('es6-shim');
 
-var InfiniteScroll = require('./InfiniteScroll');
-var InlineMessageList = require('./InlineMessageList');
+var BlockMessageList = require('./BlockMessageList');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
+var moment = require('moment');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 var PAGE_SIZE = 20;
+
+moment.locale('en', {
+  calendar : {
+    lastDay : 'MMM D',
+    sameDay : 'LT',
+    nextDay : 'MMM D',
+    lastWeek : 'MMM D',
+    nextWeek : 'MMM D',
+    sameElse : 'L'
+  }
+});
 
 var App = React.createClass({
   mixins: [
@@ -52,6 +63,10 @@ var App = React.createClass({
     this.setState({maxResultCount: this.state.maxResultCount + PAGE_SIZE});
   },
 
+  _onMessageSelected(message) {
+
+  },
+
   _setQuery(query) {
     this.setState({
       query: this.state.queryProgress,
@@ -78,11 +93,11 @@ var App = React.createClass({
           </button>
         </div>
         {this.state.messages.result ? (
-          <InfiniteScroll
-              hasMore={this.state.messages.result.hasMore}
-              onRequestMoreItems={this._onRequestMoreItems}>
-            <InlineMessageList messages={this.state.messages.result.items} />
-          </InfiniteScroll>
+            <BlockMessageList
+              className="App_messages"
+              messages={this.state.messages.result.items}
+              onMessageSelected={this._onMessageSelected}
+            />
         ) : <div>Loading</div>}
       </div>
     );

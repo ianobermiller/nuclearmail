@@ -9,17 +9,6 @@ var PureRenderMixin = React.addons.PureRenderMixin;
 var PropTypes = React.PropTypes;
 var cx = React.addons.classSet;
 
-moment.locale('en', {
-  calendar : {
-    lastDay : 'MMM D',
-    sameDay : 'LT',
-    nextDay : 'MMM D',
-    lastWeek : 'MMM D',
-    nextWeek : 'MMM D',
-    sameElse : 'L'
-  }
-});
-
 var InlineMessageList = React.createClass({
   mixins: [PureRenderMixin],
 

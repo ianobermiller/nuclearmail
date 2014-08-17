@@ -45,7 +45,7 @@ function transformMessage(rawMessage) {
     from: parseFrom(pluckHeader(msg.headers, 'From')),
     id: rawMessage.id,
     raw: rawMessage,
-    snippet: rawMessage.snippet,
+    snippet: _.unescape(rawMessage.snippet),
     subject: pluckHeader(msg.headers, 'Subject'),
     hasAttachment: !!msg.body.data,
     date: new Date(pluckHeader(msg.headers, 'Date')),

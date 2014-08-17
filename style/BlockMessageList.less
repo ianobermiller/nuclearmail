@@ -1,0 +1,38 @@
+@import "util";
+
+.BlockMessageList {
+  cursor: pointer;
+  user-select: none;
+}
+
+.BlockMessageList_item {
+  border-top: solid 1px #eee;
+  line-height: 1.6;
+  padding: 12px 12px 12px 0;
+}
+
+.BlockMessageList_item_top {
+  .clearfix;
+}
+
+.BlockMessageList_item_sender {
+  float: left;
+}
+
+.BlockMessageList_item_date {
+  color: #999;
+  float: right;
+}
+
+.BlockMessageList_item_text {
+  .line-clamp(3);
+}
+
+.BlockMessageList_item_snippet {
+  color: #999;
+}
+
+.BlockMessageList_item_date,
+.BlockMessageList_item_text {
+  font-size: 14px;
+}

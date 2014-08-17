@@ -60,11 +60,15 @@ input[type=text] {
 
 button {
   background: #eee;
-  border: 1px solid #ccc;
+  border: none;
   line-height: 30px;
   margin: 0 8px;
-  padding: 0 8px;
+  padding: 1px 16px;
   vertical-align: top;
+
+  &:active {
+    padding: 2px 15px 0 17px;
+  }
 }
 
 .App {
@@ -73,4 +77,13 @@ button {
 
 .App_search {
   margin-bottom: 20px;
+  text-align: right;
+}
+
+.App_search_input {
+  width: 400px;
+}
+
+.App_messages {
+  width: 400px;
 }
