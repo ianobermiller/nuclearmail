@@ -135,7 +135,7 @@ module.exports.listThreads = function(options) {
             resultSizeEstimate: response.resultSizeEstimate,
             items: threadIDs.map(id => {
               var msg = itemsResponse[id] ?
-                itemsResponse[id].result.messages[0] :
+                _.last(itemsResponse[id].result.messages) :
                 messageCache.get(id);
               messageCache.set(msg.id, msg);
               return transformMessage(msg);

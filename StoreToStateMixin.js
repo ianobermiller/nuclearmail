@@ -33,7 +33,7 @@ class StoreToStateMixin {
 
     stateConfig.method(options)
       .then(this._onResult.bind(this, stateFieldName))
-      ['catch'](error => console.error(error));
+      ['catch'](error => console.error(error, error.getStack()));
   }
 
   componentWillMount() {
@@ -49,7 +49,7 @@ class StoreToStateMixin {
       var oldOptions = this._optionsByStateFieldName[stateFieldName];
 
       if (!_.isEqual(newOptions, oldOptions)) {
-        this._callMethod(this, stateConfig, stateFieldName, newOptions);
+        this._callMethod(stateConfig, stateFieldName, newOptions);
       }
     });
   }
