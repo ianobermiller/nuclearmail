@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "autoprefixer": "~2",
+    "browser-sync": "^1.3.5",
     "browserify": "~2",
     "catw": "~0.2.0",
     "del": "^0.1.1",

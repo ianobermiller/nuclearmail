@@ -2,3 +2,4 @@ TODO
 O Switch to fetching threads, storing messages in MessageStore
 - LabelStore, show labels
 - gmail auth token expires
+- https://github.com/greypants/gulp-starter/tree/master/gulp/tasks

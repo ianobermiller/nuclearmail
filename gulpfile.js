@@ -1,4 +1,5 @@
 var autoprefix = require('gulp-autoprefixer');
+var browserSync = require('browser-sync');
 var browserify = require('browserify');
 var concat = require('gulp-concat');
 var del = require('del');
@@ -10,7 +11,6 @@ var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var watch = require('gulp-watch');
 var watchify = require('watchify');
-var webserver = require('gulp-webserver');
 
 gulp.task('clean', function(cb) {
   del(['build'], cb);
@@ -71,10 +71,13 @@ gulp.task('watch', ['build', 'scriptsWatch'], function () {
 });
 
 gulp.task('webserver', function() {
-  gulp.src('.')
-    .pipe(webserver({
-      fallback: 'index.html'
-    }));
+  browserSync.init(['build/**'], {
+    port:  8000,
+    server: {
+      baseDir: ['build', '.'],
+      index: 'index.html'
+    }
+  });
 });
 
 gulp.task('build', ['styles', 'scripts']);
