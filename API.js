@@ -106,6 +106,7 @@ module.exports.listThreads = function(options) {
       });
 
       request.execute(response => {
+        handleError(response, reject);
         var threadIDs = response.threads.map(m => m.id);
         var cachedMessagesByID = {};
         var batch;
@@ -138,6 +139,7 @@ module.exports.listThreads = function(options) {
         }
 
         batch.execute(itemsResponse => {
+          handleError(itemsResponse, reject);
           resolve({
             nextPageToken: response.nextPageToken,
             resultSizeEstimate: response.resultSizeEstimate,
@@ -166,6 +168,7 @@ module.exports.getMessages = function(options) {
       });
 
       request.execute(response => {
+        handleError(response, reject);
         var messageIDs = response.messages.map(m => m.id);
         var cachedMessagesByID = {};
         var batch;
@@ -198,6 +201,7 @@ module.exports.getMessages = function(options) {
         }
 
         batch.execute(itemsResponse => {
+          handleError(itemsResponse, reject);
           resolve({
             nextPageToken: response.nextPageToken,
             resultSizeEstimate: response.resultSizeEstimate,
@@ -223,8 +227,15 @@ module.exports.listLabels = function() {
       });
 
       request.execute(response => {
+        handleError(response, reject);
         resolve(response.labels);
       });
     });
   });
 };
+
+function handleError(response, reject) {
+  if (response.error) {
+    reject();
+  }
+}
