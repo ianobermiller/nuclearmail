@@ -3,7 +3,7 @@
 require('es6-shim');
 
 var InfiniteScroll = require('./InfiniteScroll');
-var MessageList = require('./MessageList');
+var InlineMessageList = require('./InlineMessageList');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
@@ -81,7 +81,7 @@ var App = React.createClass({
           <InfiniteScroll
               hasMore={this.state.messages.result.hasMore}
               onRequestMoreItems={this._onRequestMoreItems}>
-            <MessageList messages={this.state.messages.result.items} />
+            <InlineMessageList messages={this.state.messages.result.items} />
           </InfiniteScroll>
         ) : <div>Loading</div>}
       </div>

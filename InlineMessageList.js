@@ -20,7 +20,7 @@ moment.locale('en', {
   }
 });
 
-var MessageList = React.createClass({
+var InlineMessageList = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
@@ -45,7 +45,7 @@ var MessageList = React.createClass({
 
   render() {
     var items = this.props.messages.map((msg, index) => (
-      <MessageListItem
+      <InlineMessageListItem
         message={msg}
         index={index}
         isExpanded={this.state.expandedIndex === index}
@@ -53,19 +53,19 @@ var MessageList = React.createClass({
       />
     ));
     return (
-      <ul className="MessageList">
+      <ul className="InlineMessageList">
         <li
           className={cx(
-            'MessageList_item',
-            'MessageList_item-header'
+            'InlineMessageList_item',
+            'InlineMessageList_item-header'
           )}
           key="header">
-          <div className="MessageList_item_target">
-            <div className="MessageList_item_sender">
+          <div className="InlineMessageList_item_target">
+            <div className="InlineMessageList_item_sender">
               From
             </div>
-            <div className="MessageList_item_content">
-              <span className="MessageList_item_subject">
+            <div className="InlineMessageList_item_content">
+              <span className="InlineMessageList_item_subject">
                 Subject
               </span>
             </div>
@@ -77,7 +77,7 @@ var MessageList = React.createClass({
   }
 });
 
-var MessageListItem = React.createClass({
+var InlineMessageListItem = React.createClass({
   propTypes: {
     index: React.PropTypes.number.isRequired,
     isExpanded: React.PropTypes.bool.isRequired,
@@ -100,31 +100,31 @@ var MessageListItem = React.createClass({
     return (
       <li
         className={cx({
-          'MessageList_item': true,
-          'MessageList_item-expanded': isExpanded
+          'InlineMessageList_item': true,
+          'InlineMessageList_item-expanded': isExpanded
         })}
         key={msg.id}>
         <div
-          className="MessageList_item_target"
+          className="InlineMessageList_item_target"
           onClick={this._onClick}>
-          <div className="MessageList_item_sender">
+          <div className="InlineMessageList_item_sender">
             {msg.from.name || msg.from.email}
           </div>
-          <div className="MessageList_item_date">
+          <div className="InlineMessageList_item_date">
             {moment(msg.date).fromNow()}
           </div>
-          <div className="MessageList_item_content">
-            <span className="MessageList_item_subject">
+          <div className="InlineMessageList_item_content">
+            <span className="InlineMessageList_item_subject">
               {msg.subject}{' '}
             </span>
-            <span className="MessageList_item_snippet">
+            <span className="InlineMessageList_item_snippet">
               {_.unescape(msg.snippet)}
             </span>
           </div>
         </div>
         {
           isExpanded ? (
-            <div className="MessageList_item_content">
+            <div className="InlineMessageList_item_content">
               <HTMLSandbox
                 html={body}
                 iframeBodyStyle={{
@@ -139,4 +139,4 @@ var MessageListItem = React.createClass({
   }
 });
 
-module.exports = MessageList;
+module.exports = InlineMessageList;

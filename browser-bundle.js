@@ -222,7 +222,7 @@ module.exports = Actions;
 var _ = require('lodash');
 var Actions = require('./Actions');
 var HTMLSandbox = require('./HTMLSandbox');
-var MessageList = require('./MessageList');
+var InlineMessageList = require('./InlineMessageList');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
@@ -240,8 +240,8 @@ var App = React.createClass({displayName: 'App',
     }
 
     return (
-      React.DOM.div({className: "App"}, 
-        MessageList({messages: this.state.messages.value})
+      React.DOM.div({className: "App"},
+        InlineMessageList({messages: this.state.messages.value})
       )
     );
   }
@@ -250,7 +250,7 @@ var App = React.createClass({displayName: 'App',
 React.renderComponent(App(null), document.body);
 
 
-},{"./Actions":3,"./HTMLSandbox":7,"./MessageList":8,"./MessageStore":9,"./StoreToStateMixin":10,"lodash":13,"react":132}],5:[function(require,module,exports){
+},{"./Actions":3,"./HTMLSandbox":7,"./InlineMessageList":8,"./MessageStore":9,"./StoreToStateMixin":10,"lodash":13,"react":132}],5:[function(require,module,exports){
 /** @jsx React.DOM */
 
 
@@ -367,7 +367,7 @@ var cx = require('./cx');
 
 var PropTypes = React.PropTypes;
 
-var MessageList = React.createClass({displayName: 'MessageList',
+var InlineMessageList = React.createClass({displayName: 'InlineMessageList',
   propTypes: {
     messages: PropTypes.array.isRequired
   },
@@ -398,56 +398,56 @@ var MessageList = React.createClass({displayName: 'MessageList',
       var isExpanded = this.state.expandedIndex === index;
       return (
         React.DOM.li({className: cx({
-          'MessageList_item': true,
-          'MessageList_item-expanded': isExpanded
-        })}, 
+          'InlineMessageList_item': true,
+          'InlineMessageList_item-expanded': isExpanded
+        })},
           React.DOM.div({
-            className: "MessageList_item_target", 
-            onClick: this._onMessageClick.bind(null, index)}, 
-            React.DOM.div({className: "MessageList_item_sender"}, 
+            className: "InlineMessageList_item_target",
+            onClick: this._onMessageClick.bind(null, index)},
+            React.DOM.div({className: "InlineMessageList_item_sender"},
               msg.from.name
-            ), 
-            React.DOM.div({className: "MessageList_item_subject"}, 
+            ),
+            React.DOM.div({className: "InlineMessageList_item_subject"},
               msg.subject
             )
-          ), 
-          
+          ),
+
             isExpanded ? (
-              React.DOM.div({className: "MessageList_item_content"}, 
+              React.DOM.div({className: "InlineMessageList_item_content"},
                 HTMLSandbox({
-                  html: body, 
+                  html: body,
                   iframeBodyStyle: {
                     'font-family': window.getComputedStyle(document.body).fontFamily
                   }}
                 )
               )
             ) : null
-          
+
         )
       );
     }.bind(this));
     return (
-      React.DOM.ul({className: "MessageList"}, 
+      React.DOM.ul({className: "InlineMessageList"},
         React.DOM.li({className: cx(
-          'MessageList_item',
-          'MessageList_item-header'
-        )}, 
-          React.DOM.div({className: "MessageList_item_target"}, 
-            React.DOM.div({className: "MessageList_item_sender"}, 
+          'InlineMessageList_item',
+          'InlineMessageList_item-header'
+        )},
+          React.DOM.div({className: "InlineMessageList_item_target"},
+            React.DOM.div({className: "InlineMessageList_item_sender"},
               "From"
-            ), 
-            React.DOM.div({className: "MessageList_item_subject"}, 
+            ),
+            React.DOM.div({className: "InlineMessageList_item_subject"},
               "Subject"
             )
           )
-        ), 
+        ),
         items
       )
     );
   }
 });
 
-module.exports = MessageList;
+module.exports = InlineMessageList;
 
 },{"./HTMLSandbox":7,"./cx":11,"lodash":13,"react":132}],9:[function(require,module,exports){
 /** @jsx React.DOM */
