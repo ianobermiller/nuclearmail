@@ -8,6 +8,7 @@ var reactify = require('reactify');
 var size = require('gulp-size');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
+var watch = require('gulp-watch');
 var watchify = require('watchify');
 var webserver = require('gulp-webserver');
 
@@ -46,7 +47,6 @@ function scripts(isWatchingEnabled) {
 
   rebundle = function() {
     return bundler.bundle({debug: true})
-      .on('error', swallowError)
       .pipe(source('app.js'))
       .pipe(gulp.dest('build'));
   };
@@ -65,7 +65,9 @@ gulp.task('scriptsWatch', [], function() {
 });
 
 gulp.task('watch', ['build', 'scriptsWatch'], function () {
-  gulp.watch('./style/*.less', ['styles']);
+  watch({glob: 'style/*.less'}, function() {
+    gulp.start('styles');
+  });
 });
 
 gulp.task('webserver', function() {
