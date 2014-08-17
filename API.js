@@ -42,14 +42,29 @@ function transformMessage(rawMessage) {
   var msg = rawMessage.payload;
   return {
     body: decodeBody(rawMessage),
+    date: new Date(pluckHeader(msg.headers, 'Date')),
     from: parseFrom(pluckHeader(msg.headers, 'From')),
+    hasAttachment: !!msg.body.data,
     id: rawMessage.id,
+    isInInbox: hasLabel(rawMessage, 'INBOX'),
+    isUnread: hasLabel(rawMessage, 'UNREAD'),
+    labels: parseLabels(rawMessage),
     raw: rawMessage,
     snippet: _.unescape(rawMessage.snippet),
     subject: pluckHeader(msg.headers, 'Subject'),
-    hasAttachment: !!msg.body.data,
-    date: new Date(pluckHeader(msg.headers, 'Date')),
   };
+}
+
+function hasLabel(rawMessage, label) {
+  return rawMessage.labelIds.indexOf(label) >= 0;
+}
+
+function parseLabels(rawMessage) {
+  return rawMessage.labelIds.filter(label =>
+    ['CATEGORY', 'INBOX', 'UNREAD'].every(unwanted =>
+      label.indexOf(unwanted) === -1
+    )
+  );
 }
 
 function parseFrom(from) {

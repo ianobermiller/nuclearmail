@@ -61,6 +61,9 @@ var BlockMessageListItem = React.createClass({
             </div>
           </div>
           <div className="BlockMessageList_item_text">
+            {msg.labels.map(label =>
+              <span className="BlockMessageList_item_label">{label}</span>
+            )}
             <span className="BlockMessageList_item_subject">
               {msg.subject}{' '}
             </span>
