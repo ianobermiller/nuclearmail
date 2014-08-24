@@ -56,7 +56,7 @@ function transformMessage(rawMessage) {
 }
 
 function hasLabel(rawMessage, label) {
-  return rawMessage.labelIds.indexOf(label) >= 0;
+  return rawMessage.labelIds && rawMessage.labelIds.indexOf(label) >= 0;
 }
 
 function parseFrom(from) {

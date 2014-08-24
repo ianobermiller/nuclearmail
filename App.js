@@ -49,6 +49,7 @@ var App = React.createClass({
       query: '',
       queryProgress: '',
       maxResultCount: PAGE_SIZE,
+      selectedMessage: null,
     };
   },
 
@@ -71,12 +72,14 @@ var App = React.createClass({
   },
 
   _onMessageSelected(message) {
-
+    this.setState({
+      selectedMessage: message
+    });
   },
 
   _setQuery(query) {
     this.setState({
-      query: this.state.queryProgress,
+      query: query,
       maxResultCount: PAGE_SIZE,
     });
   },
@@ -100,12 +103,12 @@ var App = React.createClass({
           </button>
         </div>
         {this.state.messages.result ? (
-            <BlockMessageList
-              className="App_messages"
-              labels={this.state.labels.result}
-              messages={this.state.messages.result.items}
-              onMessageSelected={this._onMessageSelected}
-            />
+          <BlockMessageList
+            className="App_messages"
+            labels={this.state.labels.result}
+            messages={this.state.messages.result.items}
+            onMessageSelected={this._onMessageSelected}
+          />
         ) : <div>Loading</div>}
       </div>
     );
