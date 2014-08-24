@@ -6,6 +6,7 @@ var BlockMessageList = require('./BlockMessageList');
 var LabelStore = require('./LabelStore');
 var MessageStore = require('./MessageStore');
 var React = require('react');
+var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var moment = require('moment');
 
@@ -47,24 +48,9 @@ var App = React.createClass({
   getInitialState() {
     return {
       query: '',
-      queryProgress: '',
       maxResultCount: PAGE_SIZE,
       selectedMessage: null,
     };
-  },
-
-  _onQueryKeyDown(e) {
-    if (e.key === 'Enter') {
-      this._setQuery(e.target.value);
-    }
-  },
-
-  _onQueryChange(e) {
-    this.setState({queryProgress: e.target.value});
-  },
-
-  _onSearchClick() {
-    this._setQuery(this.state.queryProgress);
   },
 
   _onRequestMoreItems() {
@@ -77,7 +63,7 @@ var App = React.createClass({
     });
   },
 
-  _setQuery(query) {
+  _onQueryChange(query) {
     this.setState({
       query: query,
       maxResultCount: PAGE_SIZE,
@@ -87,21 +73,7 @@ var App = React.createClass({
   render() {
     return (
       <div className="App">
-        <div className="App_search">
-          <input
-            className="App_search_input"
-            value={this.state.queryProgress}
-            onChange={this._onQueryChange}
-            onKeyDown={this._onQueryKeyDown}
-            type="text"
-          />
-          <button
-              className="App_search_button"
-              onClick={this._onSearchClick}
-              type="button">
-            Search
-          </button>
-        </div>
+        <SearchBox onQueryChange={this._onQueryChange} />
         {this.state.messages.result ? (
           <BlockMessageList
             className="App_messages"
