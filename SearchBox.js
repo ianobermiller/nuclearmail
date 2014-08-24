@@ -33,18 +33,17 @@ var SearchBox = React.createClass({
 
   render() /*object*/ {
     return (
-      <div className={cx(this.props.className, 'App_search')}>
+      <div className={cx(this.props.className, 'SearchBox')}>
         <input
-          className="App_search_input"
+          className="SearchBox_input"
           value={this.state.queryProgress}
           onChange={this._onQueryChange}
           onKeyDown={this._onQueryKeyDown}
           type="text"
         />
         <button
-            className="App_search_button"
-            onClick={this._onSearchClick}
-            type="button">
+          onClick={this._onSearchClick}
+          type="button">
           Search
         </button>
       </div>

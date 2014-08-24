@@ -55,14 +55,13 @@ body, input, button, textarea {
 input[type=text] {
   border: solid 1px #ccc;
   height: 32px;
-  margin: 0;
 }
 
 button {
   background: #eee;
   border: none;
   line-height: 30px;
-  margin: 0 8px;
+  margin: 0;
   padding: 1px 16px;
   vertical-align: top;
 
@@ -80,10 +79,16 @@ button {
   text-align: right;
 }
 
-.App_search_input {
-  width: 400px;
+.App_messages {
+  display: flex;
 }
 
-.App_messages {
-  width: 400px;
+.App_messages_list {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.App_messages_selected {
+  flex: 2;
 }

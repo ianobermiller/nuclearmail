@@ -4,6 +4,7 @@ require('es6-shim');
 
 var BlockMessageList = require('./BlockMessageList');
 var LabelStore = require('./LabelStore');
+var MessageView = require('./MessageView');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var SearchBox = require('./SearchBox');
@@ -73,15 +74,22 @@ var App = React.createClass({
   render() {
     return (
       <div className="App">
-        <SearchBox onQueryChange={this._onQueryChange} />
-        {this.state.messages.result ? (
-          <BlockMessageList
-            className="App_messages"
-            labels={this.state.labels.result}
-            messages={this.state.messages.result.items}
-            onMessageSelected={this._onMessageSelected}
+        <SearchBox className="App_search" onQueryChange={this._onQueryChange} />
+        <div className="App_messages">
+          <div className="App_messages_list">
+            {this.state.messages.result ? (
+              <BlockMessageList
+                labels={this.state.labels.result}
+                messages={this.state.messages.result.items}
+                onMessageSelected={this._onMessageSelected}
+              />
+            ) : null}
+          </div>
+          <MessageView
+            className="App_messages_selected"
+            message={this.state.selectedMessage}
           />
-        ) : <div>Loading</div>}
+        </div>
       </div>
     );
   }
