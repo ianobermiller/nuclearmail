@@ -33,10 +33,15 @@ var HTMLSandbox = React.createClass({
 
     var script = document.createElement('script');
     script.innerHTML = `
+      var lastWidth = null;
       function notifyHeightChanged() {
-        window.parent.postMessage({
-          height: document.documentElement.offsetHeight
-        }, window.parent.location.href);
+        var newWidth = document.documentElement.offsetWidth;
+        if (newWidth !== lastWidth) {
+          lastWidth = newWidth;
+          window.parent.postMessage({
+            height: document.documentElement.offsetHeight
+          }, window.parent.location.href);
+        }
       }
       window.addEventListener('resize', notifyHeightChanged);
       notifyHeightChanged();
