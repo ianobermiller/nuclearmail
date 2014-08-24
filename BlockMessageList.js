@@ -56,15 +56,18 @@ var BlockMessageListItem = React.createClass({
     var msg = this.props.message;
     return (
       <li
-          className="BlockMessageList_item"
+          className={cx({
+            'BlockMessageList_item': true,
+            'BlockMessageList_item-unread': msg.isUnread,
+          })}
           key={msg.id}
           onClick={this._onClick}>
           <div className="BlockMessageList_item_top">
-            <div className="BlockMessageList_item_sender">
-              {msg.from.name || msg.from.email}
-            </div>
             <div className="BlockMessageList_item_date">
               {moment(msg.date).fromNow()}
+            </div>
+            <div className="BlockMessageList_item_sender">
+              {msg.from.name || msg.from.email}
             </div>
           </div>
           <div className="BlockMessageList_item_text">

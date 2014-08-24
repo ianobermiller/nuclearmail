@@ -8,7 +8,11 @@
 .BlockMessageList_item {
   border-top: solid 1px #eee;
   line-height: 1.6;
-  padding: 12px 12px 12px 0;
+  padding: 12px;
+}
+
+.BlockMessageList_item-unread {
+  background: #ffc;
 }
 
 .BlockMessageList_item_top {
@@ -16,7 +20,8 @@
 }
 
 .BlockMessageList_item_sender {
-  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .BlockMessageList_item_date {
@@ -25,7 +30,7 @@
 }
 
 .BlockMessageList_item_text {
-  .line-clamp(3);
+  .line-clamp(2);
 }
 
 .BlockMessageList_item_snippet {

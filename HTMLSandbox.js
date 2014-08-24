@@ -33,9 +33,13 @@ var HTMLSandbox = React.createClass({
 
     var script = document.createElement('script');
     script.innerHTML = `
-      window.parent.postMessage({
-        height: document.documentElement.offsetHeight
-      }, window.parent.location.href);
+      function notifyHeightChanged() {
+        window.parent.postMessage({
+          height: document.documentElement.offsetHeight
+        }, window.parent.location.href);
+      }
+      window.addEventListener('resize', notifyHeightChanged);
+      notifyHeightChanged();
     `;
     iframe.contentDocument.body.appendChild(script);
   },
