@@ -3,6 +3,7 @@
 require('es6-shim');
 
 var BlockMessageList = require('./BlockMessageList');
+var InfiniteScroll = require('./InfiniteScroll');
 var LabelStore = require('./LabelStore');
 var MessageView = require('./MessageView');
 var MessageStore = require('./MessageStore');
@@ -76,15 +77,21 @@ var App = React.createClass({
       <div className="App">
         <SearchBox className="App_search" onQueryChange={this._onQueryChange} />
         <div className="App_messages">
-          <div className="App_messages_list">
-            {this.state.messages.result ? (
+          {this.state.messages.result ? (
+            <InfiniteScroll
+              className="App_messages_list"
+              hasMore={this.state.messages.result.hasMore}
+              isScrollContainer={true}
+              onRequestMoreItems={this._onRequestMoreItems}>
               <BlockMessageList
                 labels={this.state.labels.result}
                 messages={this.state.messages.result.items}
                 onMessageSelected={this._onMessageSelected}
               />
-            ) : null}
-          </div>
+            </InfiniteScroll>
+          ) : (
+            <div className="App_messages_list" />
+          )}
           <MessageView
             className="App_messages_selected"
             message={this.state.selectedMessage}

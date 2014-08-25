@@ -8,24 +8,18 @@ var React = require('react');
 
 var PropTypes = React.PropTypes;
 
-function getAbsoluteOffsetTop(element) {
-  if (!element) {
-    return 0;
-  }
-  return element.offsetTop + getAbsoluteOffsetTop(element.offsetParent);
-}
-
-function getWindowScrollTop() {
-  return (window.pageYOffset !== undefined) ?
-    window.pageYOffset :
-    (document.documentElement ||
-      document.body.parentNode ||
-      document.body).scrollTop;
-}
-
 var InfiniteScroll = React.createClass({
   propTypes: {
+    // Whether or not to listen for scroll and resize events. Set this to `true`
+    // when you have loaded all the data already.
     hasMore: PropTypes.bool.isRequired,
+
+    // If true, treat this element as the scroll container, and style it with
+    // `overflow: auto`.
+    // If false, `window` will be treated as the scroll container.
+    isScrollContainer: PropTypes.bool,
+
+    // Called when page is within `threshold` of the bottom.
     onRequestMoreItems: PropTypes.func.isRequired,
     threshold: PropTypes.number,
   },
@@ -33,6 +27,7 @@ var InfiniteScroll = React.createClass({
   getDefaultProps() {
     return {
       hasMore: false,
+      isScrollContainer: false,
       onRequestMoreItems: null,
       threshold: 250,
     };
@@ -52,32 +47,78 @@ var InfiniteScroll = React.createClass({
     this._detachScrollListener();
   },
 
+  _getScrollNode() {
+    return this.props.isScrollContainer ? this.getDOMNode() : window;
+  },
+
   _attachScrollListener() {
-    window.addEventListener('scroll', this._onScroll);
+    var scrollNode = this._getScrollNode();
+    scrollNode.addEventListener('scroll', this._onScroll);
     window.addEventListener('resize', this._onScroll);
     this._onScroll();
   },
 
   _detachScrollListener() {
-    window.removeEventListener('scroll', this._onScroll);
+    var scrollNode = this._getScrollNode();
+    scrollNode.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onScroll);
   },
 
   render() {
-    return <div>{this.props.children}</div>;
+    var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
+    return (
+      <div
+        className={this.props.className}
+        style={style}>
+        {this.props.children}
+      </div>
+    );
   },
 
   _onScroll() {
     var el = this.getDOMNode();
-    var scrollTop = getWindowScrollTop();
-    if ((!this.lastOffsetHeight || this.lastOffsetHeight < el.offsetHeight) &&
-      getAbsoluteOffsetTop(el) + el.offsetHeight - scrollTop - window.innerHeight < Number(this.props.threshold)) {
+    var isPastThreshold = false;
+    var height = null;
+
+    if (this.props.isScrollContainer) {
+      height = el.scrollHeight;
+      // ScrollTop + offsetHeight is within threshold of scrollHeight
+      isPastThreshold = (el.scrollHeight -
+        el.offsetHeight -
+        el.scrollTop
+      ) < Number(this.props.threshold);
+    } else {
+      height = el.offsetHeight;
+      isPastThreshold = (
+        getAbsoluteOffsetTop(el) +
+        el.offsetHeight -
+        getWindowScrollTop() -
+        window.innerHeight
+      ) < Number(this.props.threshold);
+    }
+
+    if ((!this.lastHeight || this.lastHeight < height) && isPastThreshold) {
       // call loadMore after _detachScrollListener to allow
       // for non-async loadMore functions
       this.props.onRequestMoreItems && this.props.onRequestMoreItems();
-      this.lastOffsetHeight = el.offsetHeight;
+      this.lastHeight = height;
     }
   },
 });
+
+function getAbsoluteOffsetTop(element) {
+  if (!element) {
+    return 0;
+  }
+  return element.offsetTop + getAbsoluteOffsetTop(element.offsetParent);
+}
+
+function getWindowScrollTop() {
+  return (window.pageYOffset !== undefined) ?
+    window.pageYOffset :
+    (document.documentElement ||
+      document.body.parentNode ||
+      document.body).scrollTop;
+}
 
 module.exports = InfiniteScroll;
