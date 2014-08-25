@@ -71,7 +71,7 @@ button {
 }
 
 .App {
-  margin: 20px 0;
+  padding-top: 20px;
 }
 
 .App_search {
@@ -79,16 +79,20 @@ button {
 }
 
 .App_messages {
+  border-top: 1px solid #ccc;
   display: flex;
+  height: ~"calc(100% - 73px)";
 }
 
 .App_messages_list {
+  border-right: 1px solid #ccc;
   flex: 1;
   min-width: 300px;
   max-width: 400px;
+  overflow: auto;
 }
 
 .App_messages_selected {
   flex: 2;
-  margin: 0 12px;
+  overflow: auto;
 }

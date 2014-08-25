@@ -25,12 +25,16 @@ var MessageView = React.createClass({
         _.escape(msg.body['text/plain']) +
       '</div>';
 
+    console.log(body, msg)
+
     return (
       <div className={cx(this.props.className, 'MessageView')}>
         <HTMLSandbox
+          className="MessageView_sandbox"
           html={body}
           iframeBodyStyle={{
-            'font-family': window.getComputedStyle(document.body).fontFamily
+            'font-family': window.getComputedStyle(document.body).fontFamily,
+            padding: '12px',
           }}
         />
       </div>

@@ -8,7 +8,8 @@ var PropTypes = React.PropTypes;
 var HTMLSandbox = React.createClass({
   propTypes: {
     html: PropTypes.string,
-    iframeBodyStyle: PropTypes.object
+    iframeBodyStyle: PropTypes.object,
+    setHeightToContent: PropTypes.bool,
   },
 
   _onWindowMessageReceived(event) {
@@ -31,6 +32,10 @@ var HTMLSandbox = React.createClass({
 
     iframe.contentDocument.body.innerHTML = this.props.html;
 
+    if (!this.props.setHeightToContent) {
+      return;
+    }
+
     var script = document.createElement('script');
     script.innerHTML = `
       var lastWidth = null;
@@ -50,7 +55,9 @@ var HTMLSandbox = React.createClass({
   },
 
   componentDidMount() {
-    window.addEventListener('message', this._onWindowMessageReceived, false);
+    if (this.props.setHeightToContent) {
+      window.addEventListener('message', this._onWindowMessageReceived, false);
+    }
     this._setIframeContents();
   },
 
@@ -64,7 +71,12 @@ var HTMLSandbox = React.createClass({
 
   render: function() {
     return (
-      <iframe border="none" width="100%" height="0" />
+      <iframe
+        border="none"
+        className={this.props.className}
+        height={this.props.setHeightToContent ? 0 : null}
+        width="100%"
+      />
     );
   }
 });
