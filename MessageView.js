@@ -25,8 +25,6 @@ var MessageView = React.createClass({
         _.escape(msg.body['text/plain']) +
       '</div>';
 
-    console.log(body, msg)
-
     return (
       <div className={cx(this.props.className, 'MessageView')}>
         <HTMLSandbox

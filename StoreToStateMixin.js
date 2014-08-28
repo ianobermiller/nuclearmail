@@ -31,6 +31,10 @@ class StoreToStateMixin {
   _callMethod(stateConfig, stateFieldName, options) {
     this._optionsByStateFieldName[stateFieldName] = options;
 
+    if (stateConfig.shouldFetch && !stateConfig.shouldFetch(options)) {
+      return;
+    }
+
     stateConfig.method(options)
       .then(this._onResult.bind(this, stateFieldName))
       ['catch'](error => console.error(error, error.getStack()));

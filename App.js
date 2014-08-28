@@ -11,6 +11,8 @@ var MessageStore = require('./MessageStore');
 var React = require('react');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
+var ThreadStore = require('./ThreadStore');
+var _ = require('lodash');
 var asap = require('asap');
 var moment = require('moment');
 
@@ -39,12 +41,22 @@ var App = React.createClass({
           // TODO: shouldn't need this
         }),
       },
-      messages: {
-        method: MessageStore.getMessages,
+      threads: {
+        method: ThreadStore.list,
         getOptions: (props, state) => ({
           query: state.query,
           maxResultCount: state.maxResultCount,
         }),
+      },
+      messages: {
+        method: MessageStore.getByIDs,
+        getOptions: (props, state) => {
+          var messageIDs = state.threads.result && state.threads.result.items.map(
+            thread => _.last(thread.messageIDs)
+          );
+          return {ids: messageIDs};
+        },
+        shouldFetch: options => !!options.ids,
       },
     })
   ],
@@ -101,12 +113,12 @@ var App = React.createClass({
           {this.state.messages.result ? (
             <InfiniteScroll
               className="App_messages_list"
-              hasMore={this.state.messages.result.hasMore}
+              hasMore={this.state.threads.result.hasMore}
               isScrollContainer={true}
               onRequestMoreItems={this._onRequestMoreItems}>
               <BlockMessageList
                 labels={this.state.labels.result}
-                messages={this.state.messages.result.items}
+                messages={this.state.messages.result}
                 onMessageSelected={this._onMessageSelected}
               />
             </InfiniteScroll>

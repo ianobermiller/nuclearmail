@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
 /* global gapi */
 
+var ActionType = require('./ActionType.js');
 var Cache = require('./Cache.js');
 var ClientID = require('./ClientID.js');
+var Dispatcher = require('./Dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
 var _ = require('lodash');
 var utf8 = require('utf8');
@@ -41,7 +43,7 @@ function whenGoogleApiAvailable(fn) {
   }
 }
 
-function transformMessage(rawMessage) {
+function translateMessage(rawMessage) {
   var msg = rawMessage.payload;
   return {
     body: decodeBody(rawMessage),
@@ -98,7 +100,7 @@ function pluckHeader(headers, name) {
   return header ? header.value : null;
 }
 
-module.exports.listThreads = wrapAPICallWithEmitter(function(options) {
+var listThreads = wrapAPICallWithEmitter(function(options) {
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.threads.list({
@@ -111,48 +113,42 @@ module.exports.listThreads = wrapAPICallWithEmitter(function(options) {
       request.execute(response => {
         handleError(response, reject);
         var threadIDs = response.threads.map(m => m.id);
-        var cachedMessagesByID = {};
         var batch;
 
         threadIDs.forEach(id => {
-          var cachedMessage = messageCache.get(id);
-          if (cachedMessage) {
-            cachedMessagesByID[id] = cachedMessage;
-            return;
-          }
-
           batch = batch || gapi.client.newHttpBatch();
           batch.add(
             gapi.client.request({
               path: 'gmail/v1/users/me/threads/' + id
             }),
-            {id: id}
+            {id}
             // TODO: file a task, this is broken :(
             // dump(gapi.client.gmail.users.messages.get({id: message.id}))
           );
         });
 
-        if (!batch) {
-          resolve({
-            nextPageToken: response.nextPageToken,
-            resultSizeEstimate: response.resultSizeEstimate,
-            items: _.map(cachedMessagesByID, transformMessage),
-          });
-          return;
-        }
-
         batch.execute(itemsResponse => {
           handleError(itemsResponse, reject);
+
+          var allMessages = [];
+          var threads = threadIDs.map(threadID => {
+            var thread = itemsResponse[threadID].result;
+            var messages = thread.messages.map(translateMessage);
+            allMessages.push.apply(allMessages, messages);
+            return {
+              messageIDs: _.pluck(messages, 'id'),
+            }
+          });
+
+          Dispatcher.dispatch({
+            type: ActionType.Message.ADD_MANY,
+            messages: allMessages,
+          });
+
           resolve({
             nextPageToken: response.nextPageToken,
             resultSizeEstimate: response.resultSizeEstimate,
-            items: threadIDs.map(id => {
-              var msg = itemsResponse[id] ?
-                _.last(itemsResponse[id].result.messages) :
-                messageCache.get(id);
-              messageCache.set(msg.id, msg);
-              return transformMessage(msg);
-            }),
+            items: threads,
           });
         });
       });
@@ -160,7 +156,7 @@ module.exports.listThreads = wrapAPICallWithEmitter(function(options) {
   });
 });
 
-var getMessages = wrapAPICallWithEmitter(function(options) {
+var listMessages = wrapAPICallWithEmitter(function(options) {
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.messages.list({
@@ -198,7 +194,7 @@ var getMessages = wrapAPICallWithEmitter(function(options) {
           resolve({
             nextPageToken: response.nextPageToken,
             resultSizeEstimate: response.resultSizeEstimate,
-            items: _.map(cachedMessagesByID, transformMessage),
+            items: _.map(cachedMessagesByID, translateMessage),
           });
           return;
         }
@@ -213,7 +209,7 @@ var getMessages = wrapAPICallWithEmitter(function(options) {
                 itemsResponse[id].result :
                 messageCache.get(id);
               messageCache.set(msg.id, msg);
-              return transformMessage(msg);
+              return translateMessage(msg);
             }),
           });
         });
@@ -275,8 +271,9 @@ function handleError(response, reject) {
 }
 
 Object.assign(module.exports, {
-  getMessages,
+  listMessages,
   isInProgress,
   listLabels,
+  listThreads,
   subscribe,
 });

@@ -1,31 +1,13 @@
 /** @jsx React.DOM */
 
 var API = require('./API.js');
-var ActionType = require('./ActionType.js');
 var BaseStore = require('./BaseStore.js');
 
-class MessageStore extends BaseStore {
+class ThreadStore extends BaseStore {
   constructor() {
     super();
 
-    this._cache = {};
     this._pagingInfoByQuery = {};
-    this._messagesByID = {};
-  }
-
-  handleDispatch(action) {
-    switch (action.type) {
-      case ActionType.Message.ADD_MANY:
-        action.messages.forEach(message => {
-          this._messagesByID[message.id] = message;
-        });
-        break;
-    }
-  }
-
-  getByIDs({ids}) {
-    var messages = ids.map(id => this._messagesByID[id]);
-    return Promise.resolve(messages);
   }
 
   list(options) {
@@ -45,7 +27,7 @@ class MessageStore extends BaseStore {
       pageToken: pageToken,
     };
 
-    return API.listMessages(apiOptions).then(result => {
+    return API.listThreads(apiOptions).then(result => {
       var previousResults = pageToken ? pagingInfo.fetchedResults : [];
       var newPagingInfo = this._pagingInfoByQuery[query] = {};
       newPagingInfo.fetchedResults = previousResults.concat(result.items);
@@ -59,4 +41,4 @@ class MessageStore extends BaseStore {
   }
 }
 
-module.exports = new MessageStore();
+module.exports = new ThreadStore();
