@@ -96,3 +96,27 @@ button {
   flex: 2;
   overflow: auto;
 }
+
+.App_spinner {
+  background: white;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
+
+  &::after {
+    animation: pulse 3s ease 0s infinite;
+    background: orange;
+    content: '';
+    display: block;
+    height: 4px;
+    margin: 0 auto;
+  }
+}
+
+@keyframes pulse {
+    0%   {width: 10%;}
+    50%  {width: 50%;}
+    100% {width: 10%;}
+}

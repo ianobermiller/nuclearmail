@@ -28,7 +28,7 @@ var HTMLSandbox = React.createClass({
     iframeBodyStyle.padding = 0;
     iframeBodyStyle.wordBreak = 'break-word';
 
-    _.assign(iframeBodyStyle, this.props.iframeBodyStyle);
+    Object.assign(iframeBodyStyle, this.props.iframeBodyStyle);
 
     iframe.contentDocument.body.innerHTML = this.props.html;
 

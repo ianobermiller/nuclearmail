@@ -2,9 +2,12 @@
 /* global gapi */
 
 var Cache = require('./Cache.js');
+var ClientID = require('./ClientID.js');
+var EventEmitter = require('events').EventEmitter;
 var _ = require('lodash');
 var utf8 = require('utf8');
 
+var emitter = new EventEmitter();
 var messageCache = new Cache('messages');
 var isAvailable = false;
 var pendingRequests = [];
@@ -95,7 +98,7 @@ function pluckHeader(headers, name) {
   return header ? header.value : null;
 }
 
-module.exports.listThreads = function(options) {
+module.exports.listThreads = wrapAPICallWithEmitter(function(options) {
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.threads.list({
@@ -155,9 +158,9 @@ module.exports.listThreads = function(options) {
       });
     });
   });
-};
+});
 
-module.exports.getMessages = function(options) {
+var getMessages = wrapAPICallWithEmitter(function(options) {
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.messages.list({
@@ -217,9 +220,9 @@ module.exports.getMessages = function(options) {
       });
     });
   });
-};
+});
 
-module.exports.listLabels = function() {
+var listLabels = wrapAPICallWithEmitter(function() {
   return new Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.labels.list({
@@ -232,10 +235,48 @@ module.exports.listLabels = function() {
       });
     });
   });
-};
+});
+
+var inProgressAPICalls = {};
+function wrapAPICallWithEmitter(apiCall) {
+  return function(options) {
+    var id = ClientID.get();
+    inProgressAPICalls[id] = true;
+    emitter.emit('start', id);
+
+    return apiCall(options).then(result => {
+      delete inProgressAPICalls[id];
+      emitter.emit('stop', id);
+      if (!Object.keys(inProgressAPICalls).length) {
+        emitter.emit('allStopped');
+      }
+      return result;
+    });
+  };
+}
+
+function isInProgress() {
+  return !!Object.keys(inProgressAPICalls).length;
+}
+
+function subscribe(eventName, callback) {
+  emitter.on(eventName, callback);
+  return {
+    remove() {
+      emitter.removeListener(eventName, callback);
+    }
+  };
+}
 
 function handleError(response, reject) {
   if (response.error) {
     reject();
   }
 }
+
+Object.assign(module.exports, {
+  getMessages,
+  isInProgress,
+  listLabels,
+  subscribe,
+});

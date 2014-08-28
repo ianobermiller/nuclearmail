@@ -2,6 +2,7 @@
 
 require('es6-shim');
 
+var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var InfiniteScroll = require('./InfiniteScroll');
 var LabelStore = require('./LabelStore');
@@ -10,6 +11,7 @@ var MessageStore = require('./MessageStore');
 var React = require('react');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
+var asap = require('asap');
 var moment = require('moment');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -47,10 +49,28 @@ var App = React.createClass({
     })
   ],
 
+  componentDidMount() {
+    this._subscriptions = [];
+    this._subscriptions.push(API.subscribe('start', () => {
+      if (!this.state.isLoading) {
+        asap(() => this.setState({isLoading: true}));
+      }
+    }));
+    this._subscriptions.push(API.subscribe('allStopped', () => {
+      // run outside of this context in case the api call was synchronous
+      asap(() => this.setState({isLoading: false}));
+    }));
+  },
+
+  componentWillUnmount() {
+    this._subscriptions.forEach(s => s.remove());
+  },
+
   getInitialState() {
     return {
-      query: '',
+      isLoading: true,
       maxResultCount: PAGE_SIZE,
+      query: '',
       selectedMessage: null,
     };
   },
@@ -75,6 +95,7 @@ var App = React.createClass({
   render() {
     return (
       <div className="App">
+        {this.state.isLoading ? <div className="App_spinner" /> : null}
         <SearchBox className="App_search" onQueryChange={this._onQueryChange} />
         <div className="App_messages">
           {this.state.messages.result ? (

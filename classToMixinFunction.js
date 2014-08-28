@@ -40,10 +40,12 @@
  *   });
  */
 
+var ClientID = require('./ClientID');
+
 function classToMixinFunction(constructor) {
   return function() {
     var mixinArgs = arguments;
-    var mixinID = '_mixin_' + (Math.random() * 1000000);
+    var mixinID = '_mixin_' + ClientID.get();
     var mixin = {
       getInitialState() {
         var component = this;
