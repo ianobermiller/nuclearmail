@@ -111,7 +111,10 @@ var listThreads = wrapAPICallWithEmitter(function(options) {
       });
 
       request.execute(response => {
-        handleError(response, reject);
+        if (!handleError(response, reject)) {
+          return;
+        }
+
         var threadIDs = response.threads.map(m => m.id);
         var batch;
 
@@ -128,7 +131,9 @@ var listThreads = wrapAPICallWithEmitter(function(options) {
         });
 
         batch.execute(itemsResponse => {
-          handleError(itemsResponse, reject);
+          if (!handleError(response, reject)) {
+            return;
+          }
 
           var allMessages = [];
           var threads = threadIDs.map(threadID => {
@@ -167,7 +172,10 @@ var listMessages = wrapAPICallWithEmitter(function(options) {
       });
 
       request.execute(response => {
-        handleError(response, reject);
+        if (!handleError(response, reject)) {
+          return;
+        }
+
         var messageIDs = response.messages.map(m => m.id);
         var cachedMessagesByID = {};
         var batch;
@@ -200,7 +208,10 @@ var listMessages = wrapAPICallWithEmitter(function(options) {
         }
 
         batch.execute(itemsResponse => {
-          handleError(itemsResponse, reject);
+          if (!handleError(response, reject)) {
+            return;
+          }
+
           resolve({
             nextPageToken: response.nextPageToken,
             resultSizeEstimate: response.resultSizeEstimate,
@@ -267,7 +278,9 @@ function subscribe(eventName, callback) {
 function handleError(response, reject) {
   if (response.error) {
     reject();
+    return false;
   }
+  return true;
 }
 
 Object.assign(module.exports, {
