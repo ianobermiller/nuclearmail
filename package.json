@@ -6,10 +6,10 @@
   "dependencies": {
     "asap": "^1.0.0",
     "es6-shim": "^0.15.1",
+    "google-caja": "0.0.2",
     "immutable": "^2.0.3",
     "moment": "^2.8.1",
-    "react": "~0.11",
-    "sanitizer": "^0.1.2"
+    "react": "~0.11"
   },
   "devDependencies": {
     "autoprefixer": "~2",

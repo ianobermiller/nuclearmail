@@ -2,6 +2,7 @@
 
 var React = require('react');
 var _ = require('lodash');
+var sanitizer = require('google-caja');
 
 var PropTypes = React.PropTypes;
 
@@ -10,6 +11,7 @@ var HTMLSandbox = React.createClass({
     html: PropTypes.string,
     iframeBodyStyle: PropTypes.object,
     setHeightToContent: PropTypes.bool,
+    showImages: PropTypes.bool,
   },
 
   _onWindowMessageReceived(event) {
@@ -30,7 +32,12 @@ var HTMLSandbox = React.createClass({
 
     Object.assign(iframeBodyStyle, this.props.iframeBodyStyle);
 
-    iframe.contentDocument.body.innerHTML = this.props.html;
+    var sanitizedHtml = sanitizer.sanitizeWithPolicy(
+      this.props.html,
+      this.props.showImages || true ? defaultTagPolicy : tagPolicyNoImages
+    );
+
+    iframe.contentDocument.body.innerHTML = sanitizedHtml;
 
     if (!this.props.setHeightToContent) {
       return;
@@ -80,5 +87,19 @@ var HTMLSandbox = React.createClass({
     );
   }
 });
+
+function acceptAllUriRewriter(uri, prop) {
+  return uri;
+}
+
+function tagPolicyNoImages(tagName, attribs) {
+  if (tagName === 'img') {
+    return;
+  }
+
+  return defaultTagPolicy(tagName, attribs);
+}
+
+var defaultTagPolicy = sanitizer.makeTagPolicy(acceptAllUriRewriter);
 
 module.exports = HTMLSandbox;
