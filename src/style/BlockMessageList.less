@@ -8,11 +8,22 @@
 .BlockMessageList_item {
   border-top: solid 1px #eee;
   line-height: 1.6;
-  padding: 12px;
+  padding: 16px;
 }
 
 .BlockMessageList_item:first-child {
   border-top: none;
+}
+
+.BlockMessageList_item-selected {
+  padding: 4px;
+}
+
+.BlockMessageList_item-selected .BlockMessageList_item_inner {
+  background: #b00;
+  border-radius: 8px;
+  color: white;
+  padding: 12px;
 }
 
 .BlockMessageList_item-unread {

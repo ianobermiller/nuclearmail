@@ -15,6 +15,7 @@ var BlockMessageList = React.createClass({
     messages: PropTypes.array.isRequired,
 
     labels: PropTypes.array,
+    selectedMessage: PropTypes.object,
   },
 
   _onMessageClick(index, message) {
@@ -27,6 +28,7 @@ var BlockMessageList = React.createClass({
         {this.props.messages.map((msg, index) => (
           <BlockMessageListItem
             index={index}
+            isSelected={msg === this.props.selectedMessage}
             key={index}
             labels={this.props.labels && _.indexBy(this.props.labels, 'id')}
             message={msg}
@@ -43,6 +45,7 @@ var BlockMessageListItem = React.createClass({
 
   propTypes: {
     index: PropTypes.number.isRequired,
+    isSelected: PropTypes.bool.isRequired,
     message: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired,
 
@@ -60,31 +63,34 @@ var BlockMessageListItem = React.createClass({
         className={cx({
           'BlockMessageList_item': true,
           'BlockMessageList_item-unread': msg.isUnread,
+          'BlockMessageList_item-selected': this.props.isSelected,
         })}
         key={msg.id}
         onClick={this._onClick}>
-        <div className="BlockMessageList_item_top">
-          <div className="BlockMessageList_item_date">
-            {moment(msg.date).fromNow()}
+        <div className="BlockMessageList_item_inner">
+          <div className="BlockMessageList_item_top">
+            <div className="BlockMessageList_item_date">
+              {moment(msg.date).fromNow()}
+            </div>
+            <div className="BlockMessageList_item_sender">
+              {msg.from.name || msg.from.email}
+            </div>
           </div>
-          <div className="BlockMessageList_item_sender">
-            {msg.from.name || msg.from.email}
-          </div>
-        </div>
-        <div className="BlockMessageList_item_text">
-          {this.props.labels && msg.labelIDs.filter(labelID =>
-            this.props.labels[labelID].type === 'user'
-          ).map(labelID =>
-            <span className="BlockMessageList_item_label" key={labelID}>
-              {this.props.labels ? this.props.labels[labelID].name : labelID}
+          <div className="BlockMessageList_item_text">
+            {this.props.labels && msg.labelIDs.filter(labelID =>
+              this.props.labels[labelID].type === 'user'
+            ).map(labelID =>
+              <span className="BlockMessageList_item_label" key={labelID}>
+                {this.props.labels ? this.props.labels[labelID].name : labelID}
+              </span>
+            )}
+            <span className="BlockMessageList_item_subject">
+              {msg.subject}{' '}
             </span>
-          )}
-          <span className="BlockMessageList_item_subject">
-            {msg.subject}{' '}
-          </span>
-          <span className="BlockMessageList_item_snippet">
-            {_.unescape(msg.snippet)}…
-          </span>
+            <span className="BlockMessageList_item_snippet">
+              {_.unescape(msg.snippet)}…
+            </span>
+          </div>
         </div>
       </li>
     );

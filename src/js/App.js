@@ -120,6 +120,7 @@ var App = React.createClass({
                 labels={this.state.labels.result}
                 messages={this.state.messages.result}
                 onMessageSelected={this._onMessageSelected}
+                selectedMessage={this.state.selectedMessage}
               />
             </InfiniteScroll>
           ) : (
