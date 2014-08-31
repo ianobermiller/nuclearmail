@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 var React = require('react');
-var _ = require('lodash');
 var sanitizer = require('google-caja');
 
 var PropTypes = React.PropTypes;

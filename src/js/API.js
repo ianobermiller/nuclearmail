@@ -51,6 +51,7 @@ function translateMessage(rawMessage) {
     from: parseFrom(pluckHeader(msg.headers, 'From')),
     hasAttachment: !!msg.body.data,
     id: rawMessage.id,
+    isDraft: hasLabel(rawMessage, 'DRAFT'),
     isInInbox: hasLabel(rawMessage, 'INBOX'),
     isUnread: hasLabel(rawMessage, 'UNREAD'),
     labelIDs: rawMessage.labelIds,
@@ -77,6 +78,16 @@ function decodeBody(rawMessage) {
   var parts = (rawMessage.payload.parts || []).concat(rawMessage.payload);
   var result = {};
 
+  collectParts(parts, result);
+
+  return result;
+}
+
+function collectParts(parts, result) {
+  if (!parts) {
+    return;
+  }
+
   parts.forEach(part => {
     if (part.body.data) {
       var contentTypeHeader = pluckHeader(part.headers, 'Content-Type');
@@ -86,9 +97,11 @@ function decodeBody(rawMessage) {
       result[contentType] =
         utf8.decode(decodeUrlSafeBase64(part.body.data));
     }
-  });
 
-  return result;
+    if (part.parts) {
+      collectParts(part.parts, result);
+    }
+  });
 }
 
 function decodeUrlSafeBase64(s) {
