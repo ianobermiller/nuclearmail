@@ -17,7 +17,7 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('styles', [], function() {
-  return gulp.src('./style/*.less')
+  return gulp.src('./src/style/*.less')
     .pipe(sourcemaps.init())
     .pipe(less())
     .on('error', swallowError)
@@ -31,7 +31,7 @@ gulp.task('styles', [], function() {
 function scripts(isWatchingEnabled) {
   var bundler, rebundle;
   bundler = browserify({
-    entries: ['./App.js'],
+    entries: ['./src/js/App.js'],
     debug: true,
     insertGlobals: true,
     cache: {}, // required for watchify
@@ -65,7 +65,7 @@ gulp.task('scriptsWatch', [], function() {
 });
 
 gulp.task('watch', ['build', 'scriptsWatch'], function () {
-  watch({glob: 'style/*.less'}, function() {
+  watch({glob: 'src/style/*.less'}, function() {
     gulp.start('styles');
   });
 });
