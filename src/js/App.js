@@ -37,9 +37,6 @@ var App = React.createClass({
     StoreToStateMixin({
       labels: {
         method: LabelStore.getLabels,
-        getOptions: (props, state) => ({
-          // TODO: shouldn't need this
-        }),
       },
       threads: {
         method: ThreadStore.list,

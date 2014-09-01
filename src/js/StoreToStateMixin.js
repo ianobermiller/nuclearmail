@@ -8,7 +8,9 @@ var classToMixinFunction = require('./classToMixinFunction');
 class StoreToStateMixin {
   constructor(component, config) {
     this._component = component;
-    this._config = config;
+    this._config = _.mapValues(config, stateConfig => {
+      return Object.assign({getOptions: defaultGetOptions}, stateConfig);
+    });
     this._optionsByStateFieldName = {};
   }
 
@@ -64,6 +66,10 @@ class StoreToStateMixin {
       result: null,
     }));
   }
+}
+
+function defaultGetOptions() {
+  return {};
 }
 
 module.exports = classToMixinFunction(StoreToStateMixin);
