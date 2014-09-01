@@ -13,6 +13,12 @@ var HTMLSandbox = React.createClass({
     showImages: PropTypes.bool,
   },
 
+  getDefaultProps() {
+    return {
+      setHeightToContent: true,
+    };
+  },
+
   _onWindowMessageReceived(event) {
     if (!event.data.height) {
       return;

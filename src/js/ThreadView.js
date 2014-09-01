@@ -38,7 +38,7 @@ var ThreadView = React.createClass({
     return (
       <div>
         {messages.map(message => (
-          <MessageView message={message} />
+          <MessageView message={message} key={message.id} />
         ))}
       </div>
     );
