@@ -2,6 +2,7 @@
 
 var HTMLSandbox = require('./HTMLSandbox');
 var React = require('react');
+var moment = require('moment');
 
 var PropTypes = React.PropTypes;
 var _ = require('lodash');
@@ -38,9 +39,14 @@ var MessageView = React.createClass({
     return (
       <div className={cx(this.props.className, 'MessageView')}>
         <div
-          className={cx('MessageView_header')}
+          className={cx('MessageView_header clearfix')}
           onClick={this._onHeaderClick}>
-          {msg.from.name}
+            <div className="MessageView_header_date">
+              {moment(msg.date).fromNow()}
+            </div>
+            <div className="MessageView_header_sender">
+              {msg.from.name || msg.from.email}
+            </div>
         </div>
         {this.state.isExpanded ? (
           <HTMLSandbox
