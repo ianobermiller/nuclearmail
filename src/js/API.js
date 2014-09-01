@@ -59,6 +59,7 @@ function translateMessage(rawMessage) {
     raw: rawMessage,
     snippet: _.unescape(rawMessage.snippet),
     subject: pluckHeader(msg.headers, 'Subject'),
+    threadID: rawMessage.threadId,
   };
 }
 
@@ -155,8 +156,9 @@ var listThreads = wrapAPICallWithEmitter(function(options) {
             var messages = thread.messages.map(translateMessage);
             allMessages.push.apply(allMessages, messages);
             return {
+              id: threadID,
               messageIDs: _.pluck(messages, 'id'),
-            }
+            };
           });
 
           Dispatcher.dispatch({

@@ -6,12 +6,12 @@ var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var InfiniteScroll = require('./InfiniteScroll');
 var LabelStore = require('./LabelStore');
-var MessageView = require('./MessageView');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var ThreadStore = require('./ThreadStore');
+var ThreadView = require('./ThreadView');
 var _ = require('lodash');
 var asap = require('asap');
 var moment = require('moment');
@@ -45,7 +45,7 @@ var App = React.createClass({
           maxResultCount: state.maxResultCount,
         }),
       },
-      messages: {
+      lastMessages: {
         method: MessageStore.getByIDs,
         getOptions: (props, state) => {
           var messageIDs = state.threads.result && state.threads.result.items.map(
@@ -90,7 +90,10 @@ var App = React.createClass({
 
   _onMessageSelected(message) {
     this.setState({
-      selectedMessage: message
+      selectedMessage: message,
+      selectedThread: this.state.threads.result.items.find(
+        thread => thread.id === message.threadID
+      )
     });
   },
 
@@ -107,7 +110,7 @@ var App = React.createClass({
         {this.state.isLoading ? <div className="App_spinner" /> : null}
         <SearchBox className="App_search" onQueryChange={this._onQueryChange} />
         <div className="App_messages">
-          {this.state.messages.result ? (
+          {this.state.lastMessages.result ? (
             <InfiniteScroll
               className="App_messages_list"
               hasMore={this.state.threads.result.hasMore}
@@ -115,7 +118,7 @@ var App = React.createClass({
               onRequestMoreItems={this._onRequestMoreItems}>
               <BlockMessageList
                 labels={this.state.labels.result}
-                messages={this.state.messages.result}
+                messages={this.state.lastMessages.result}
                 onMessageSelected={this._onMessageSelected}
                 selectedMessage={this.state.selectedMessage}
               />
@@ -123,10 +126,13 @@ var App = React.createClass({
           ) : (
             <div className="App_messages_list" />
           )}
-          <MessageView
-            className="App_messages_selected"
-            message={this.state.selectedMessage}
-          />
+          <div className="App_messages_selected">
+            {this.state.selectedThread ? (
+              <ThreadView
+                thread={this.state.selectedThread}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     );
