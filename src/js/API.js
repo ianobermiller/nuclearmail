@@ -6,6 +6,7 @@ var Cache = require('./Cache.js');
 var ClientID = require('./ClientID.js');
 var Dispatcher = require('./Dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
+var RSVP = require('rsvp');
 var _ = require('lodash');
 var utf8 = require('utf8');
 
@@ -114,7 +115,7 @@ function pluckHeader(headers, name) {
 }
 
 var listThreads = wrapAPICallWithEmitter(function(options) {
-  return new Promise((resolve, reject) => {
+  return new RSVP.Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.threads.list({
         userID: 'me',
@@ -175,7 +176,7 @@ var listThreads = wrapAPICallWithEmitter(function(options) {
 });
 
 var listMessages = wrapAPICallWithEmitter(function(options) {
-  return new Promise((resolve, reject) => {
+  return new RSVP.Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.messages.list({
         userID: 'me',
@@ -243,7 +244,7 @@ var listMessages = wrapAPICallWithEmitter(function(options) {
 });
 
 var listLabels = wrapAPICallWithEmitter(function() {
-  return new Promise((resolve, reject) => {
+  return new RSVP.Promise((resolve, reject) => {
     whenGoogleApiAvailable(() => {
       var request = gapi.client.gmail.users.labels.list({
         userID: 'me',
@@ -264,13 +265,12 @@ function wrapAPICallWithEmitter(apiCall) {
     inProgressAPICalls[id] = true;
     emitter.emit('start', id);
 
-    return apiCall(options).then(result => {
+    return apiCall(options).finally(() => {
       delete inProgressAPICalls[id];
       emitter.emit('stop', id);
       if (!Object.keys(inProgressAPICalls).length) {
         emitter.emit('allStopped');
       }
-      return result;
     });
   };
 }

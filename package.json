@@ -9,7 +9,8 @@
     "google-caja": "0.0.2",
     "immutable": "^2.0.3",
     "moment": "^2.8.1",
-    "react": "~0.11"
+    "react": "~0.11",
+    "rsvp": "^3.0.13"
   },
   "devDependencies": {
     "autoprefixer": "~2",
