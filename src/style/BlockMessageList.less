@@ -6,13 +6,22 @@
 }
 
 .BlockMessageList_item {
-  border-top: solid 1px #eee;
+  border-top: solid 1px #f5f5f5;
   line-height: 1.6;
-  padding: 16px;
+  padding: 4px;
 }
 
 .BlockMessageList_item:first-child {
   border-top: none;
+}
+
+.BlockMessageList_item_inner {
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.BlockMessageList_item-unread .BlockMessageList_item_inner {
+  background: #ecc;
 }
 
 .BlockMessageList_item-selected {
@@ -21,13 +30,7 @@
 
 .BlockMessageList_item-selected .BlockMessageList_item_inner {
   background: #b00;
-  border-radius: 8px;
   color: white;
-  padding: 12px;
-}
-
-.BlockMessageList_item-unread {
-  background: #ffc;
 }
 
 .BlockMessageList_item_top {
@@ -35,8 +38,10 @@
 }
 
 .BlockMessageList_item_sender {
+  font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .BlockMessageList_item_date,
@@ -58,7 +63,7 @@
 }
 
 .BlockMessageList_item_label {
-  background: yellow;
+  background: #f5f5f5;
   border-radius: 4px;
   border: 1px solid #999;
   color: #666;

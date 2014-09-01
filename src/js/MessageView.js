@@ -34,6 +34,7 @@ var MessageView = React.createClass({
             'font-family': window.getComputedStyle(document.body).fontFamily,
             padding: '12px',
           }}
+          showImages={true}
         />
       </div>
     );

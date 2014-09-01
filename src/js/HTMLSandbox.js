@@ -33,7 +33,7 @@ var HTMLSandbox = React.createClass({
 
     var sanitizedHtml = sanitizer.sanitizeWithPolicy(
       this.props.html,
-      this.props.showImages || true ? defaultTagPolicy : tagPolicyNoImages
+      this.props.showImages ? defaultTagPolicy : tagPolicyNoImages
     );
 
     iframe.contentDocument.body.innerHTML = sanitizedHtml;
