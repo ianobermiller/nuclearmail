@@ -108,6 +108,9 @@ var App = React.createClass({
     return (
       <div className="App">
         {this.state.isLoading ? <div className="App_spinner" /> : null}
+        <div className="App_logo">
+          ALTMAIL
+        </div>
         <SearchBox className="App_search" onQueryChange={this._onQueryChange} />
         <div className="App_messages">
           {this.state.lastMessages.result ? (
