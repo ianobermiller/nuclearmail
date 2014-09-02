@@ -45,13 +45,20 @@ var MessageView = React.createClass({
     }
 
     var msg = this.props.message;
-    var body = msg.body['text/html'] ||
+    var isExpanded = this._isExpanded();
+    var body = isExpanded && msg.body['text/html'] ||
       '<div style="white-space:pre">' +
         _.escape(msg.body['text/plain']) +
       '</div>';
 
     return (
-      <div className={cx(this.props.className, 'MessageView')}>
+      <div className={cx(
+        this.props.className,
+        cx({
+          'MessageView': true,
+          'MessageView-expanded': isExpanded,
+        })
+      )}>
         <div className="MessageView_inner">
           <div
             className={cx('MessageView_header clearfix')}
@@ -64,7 +71,7 @@ var MessageView = React.createClass({
                 {msg.from.name || msg.from.email}
               </div>
           </div>
-          {this._isExpanded() ? (
+          {isExpanded ? (
             <div>
               <div className="MessageView_subject">
                 {msg.subject}
