@@ -1,7 +1,10 @@
 .MessageView {
+  padding: 12px 12px 0 12px
+}
+
+.MessageView_inner {
   background: white;
   border-radius: 4px;
-  margin: 12px;
 }
 
 .MessageView_header {
@@ -10,6 +13,7 @@
 }
 
 .MessageView_header_sender {
+  font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -17,11 +21,17 @@
 
 .MessageView_header_date {
   color: #666;
+  font-size: 14px;
   float: right;
+}
+
+.MessageView_subject {
+  font-size: 14px;
+  margin: 0 12px;
 }
 
 .MessageView_sandbox {
   border-top: 1px solid #eee;
-  margin: 0 12px 12px 12px;
+  margin: 12px;
   width: calc(~"100% - 24px")
 }

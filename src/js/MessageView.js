@@ -52,28 +52,35 @@ var MessageView = React.createClass({
 
     return (
       <div className={cx(this.props.className, 'MessageView')}>
-        <div
-          className={cx('MessageView_header clearfix')}
-          onClick={this._onHeaderClick}>
-            <RelativeDate
-              className="MessageView_header_date"
-              date={msg.date}
-            />
-            <div className="MessageView_header_sender">
-              {msg.from.name || msg.from.email}
+        <div className="MessageView_inner">
+          <div
+            className={cx('MessageView_header clearfix')}
+            onClick={this._onHeaderClick}>
+              <RelativeDate
+                className="MessageView_header_date"
+                date={msg.date}
+              />
+              <div className="MessageView_header_sender">
+                {msg.from.name || msg.from.email}
+              </div>
+          </div>
+          {this._isExpanded() ? (
+            <div>
+              <div className="MessageView_subject">
+                {msg.subject}
+              </div>
+              <HTMLSandbox
+                className="MessageView_sandbox"
+                html={body}
+                iframeBodyStyle={{
+                  'font-family': window.getComputedStyle(document.body).fontFamily,
+                  padding: '12px',
+                }}
+                showImages={true}
+              />
             </div>
+          ) : null}
         </div>
-        {this._isExpanded() ? (
-          <HTMLSandbox
-            className="MessageView_sandbox"
-            html={body}
-            iframeBodyStyle={{
-              'font-family': window.getComputedStyle(document.body).fontFamily,
-              padding: '12px',
-            }}
-            showImages={true}
-          />
-        ) : null}
       </div>
     );
   }
