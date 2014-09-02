@@ -3,6 +3,7 @@
 var HTMLSandbox = require('./HTMLSandbox');
 var RelativeDate = require('./RelativeDate');
 var React = require('react');
+var asap = require('asap');
 var moment = require('moment');
 
 var PropTypes = React.PropTypes;
@@ -12,16 +13,28 @@ var cx = React.addons.classSet;
 var MessageView = React.createClass({
   propTypes: {
     message: PropTypes.object,
+    isExpandedInitially: PropTypes.bool,
   },
 
   getInitialState() {
     return {
-      isExpanded: false,
+      isExpanded: null,
     };
   },
 
   _onHeaderClick() {
     this.setState({isExpanded: !this.state.isExpanded});
+  },
+
+  componentDidMount() {
+    if (this._isExpanded()) {
+      asap(() => this.getDOMNode().scrollIntoView(true));
+    }
+  },
+
+  _isExpanded() {
+    return this.state.isExpanded ||
+      (this.state.isExpanded === null && this.props.isExpandedInitially);
   },
 
   render() /*object*/ {
@@ -50,7 +63,7 @@ var MessageView = React.createClass({
               {msg.from.name || msg.from.email}
             </div>
         </div>
-        {this.state.isExpanded ? (
+        {this._isExpanded() ? (
           <HTMLSandbox
             className="MessageView_sandbox"
             html={body}

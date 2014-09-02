@@ -14,6 +14,8 @@ var cx = React.addons.classSet;
 var ThreadView = React.createClass({
   propTypes: {
     thread: PropTypes.object.isRequired,
+
+    selectedMessage: PropTypes.object,
   },
 
   mixins: [
@@ -38,7 +40,11 @@ var ThreadView = React.createClass({
     return (
       <div>
         {messages.map(message => (
-          <MessageView message={message} key={message.id} />
+          <MessageView
+            key={message.id}
+            message={message}
+            isExpandedInitially={message === this.props.selectedMessage}
+          />
         ))}
       </div>
     );

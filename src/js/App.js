@@ -130,6 +130,7 @@ var App = React.createClass({
             {this.state.selectedThread ? (
               <ThreadView
                 thread={this.state.selectedThread}
+                selectedMessage={this.state.selectedMessage}
               />
             ) : null}
           </div>
