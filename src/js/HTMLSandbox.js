@@ -23,8 +23,8 @@ var HTMLSandbox = React.createClass({
     if (!event.data.height) {
       return;
     }
-    // Add 20 in case there is a horizontal scroll bar
-    this.getDOMNode().height = event.data.height + 20;
+
+    this.getDOMNode().height = event.data.height;
   },
 
   _setIframeContents() {
@@ -32,6 +32,7 @@ var HTMLSandbox = React.createClass({
 
     var iframeBodyStyle = iframe.contentDocument.body.style;
     iframeBodyStyle.margin = 0;
+    iframeBodyStyle.overflowX = 'hidden';
     iframeBodyStyle.padding = 0;
     iframeBodyStyle.wordBreak = 'break-word';
 
