@@ -42,6 +42,7 @@ var SearchBox = React.createClass({
           type="text"
         />
         <button
+          className="SearchBox_button"
           onClick={this._onSearchClick}
           type="button">
           Search

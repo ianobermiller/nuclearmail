@@ -1,7 +1,6 @@
 TODO
 - Mark as read?
 - Simple compose
-- show header on MessageView (sender, etc)
 - post to github
 - gmail auth token expires
 - https://github.com/greypants/gulp-starter/tree/master/gulp/tasks
