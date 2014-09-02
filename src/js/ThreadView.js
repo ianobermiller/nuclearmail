@@ -38,7 +38,15 @@ var ThreadView = React.createClass({
     }
 
     return (
-      <div>
+      <div className="ThreadView">
+        <ul className="ThreadView_actionbar">
+          <li className="ThreadView_actionbar_item">
+            <button>Archive</button>
+          </li>
+          <li className="ThreadView_actionbar_item">
+            <button>Unread</button>
+          </li>
+        </ul>
         {messages.map(message => (
           <MessageView
             key={message.id}
