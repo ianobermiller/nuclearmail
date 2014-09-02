@@ -1,8 +1,8 @@
 /** @jsx React.DOM */
 
 var React = require('react/addons');
+var RelativeDate = require('./RelativeDate');
 var _ = require('lodash');
-var moment = require('moment');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 var PropTypes = React.PropTypes;
@@ -69,9 +69,10 @@ var BlockMessageListItem = React.createClass({
         onClick={this._onClick}>
         <div className="BlockMessageList_item_inner">
           <div className="BlockMessageList_item_top">
-            <div className="BlockMessageList_item_date">
-              {moment(msg.date).fromNow()}
-            </div>
+            <RelativeDate
+              className="BlockMessageList_item_date"
+              date={msg.date}
+            />
             <div className="BlockMessageList_item_sender">
               {msg.from.name || msg.from.email}
             </div>

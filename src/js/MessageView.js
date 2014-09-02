@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var HTMLSandbox = require('./HTMLSandbox');
+var RelativeDate = require('./RelativeDate');
 var React = require('react');
 var moment = require('moment');
 
@@ -41,9 +42,10 @@ var MessageView = React.createClass({
         <div
           className={cx('MessageView_header clearfix')}
           onClick={this._onHeaderClick}>
-            <div className="MessageView_header_date">
-              {moment(msg.date).fromNow()}
-            </div>
+            <RelativeDate
+              className="MessageView_header_date"
+              date={msg.date}
+            />
             <div className="MessageView_header_sender">
               {msg.from.name || msg.from.email}
             </div>

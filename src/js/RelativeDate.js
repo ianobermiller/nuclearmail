@@ -1,0 +1,24 @@
+/** @jsx React.DOM */
+
+var React = require('react');
+var moment = require('moment');
+
+var PropTypes = React.PropTypes;
+
+var RelativeDate = React.createClass({
+  propTypes: {
+    date: PropTypes.instanceOf(Date).isRequired,
+  },
+
+  render() /*object*/ {
+    return (
+      <div
+        className={this.props.className}
+        title={moment(this.props.date).format('llll')}>
+        {moment(this.props.date).fromNow()}
+      </div>
+    );
+  }
+});
+
+module.exports = RelativeDate;
