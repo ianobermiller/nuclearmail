@@ -15,7 +15,7 @@ var ThreadView = React.createClass({
   propTypes: {
     thread: PropTypes.object.isRequired,
 
-    selectedMessage: PropTypes.object,
+    selectedMessageID: PropTypes.string,
   },
 
   mixins: [
@@ -51,7 +51,7 @@ var ThreadView = React.createClass({
           <MessageView
             key={message.id}
             message={message}
-            isExpandedInitially={message === this.props.selectedMessage}
+            isExpandedInitially={message.id === this.props.selectedMessageID}
           />
         ))}
       </div>

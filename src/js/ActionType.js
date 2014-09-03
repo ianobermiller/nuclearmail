@@ -3,6 +3,12 @@
 var ActionType = {
   Message: {
     ADD_MANY: null,
+  },
+
+  Thread: {
+    MARK_AS_READ_STARTED: null,
+    MARK_AS_READ_COMPLETED: null,
+    MARK_AS_READ_FAILED: null,
   }
 };
 

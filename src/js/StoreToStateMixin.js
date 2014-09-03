@@ -12,6 +12,7 @@ class StoreToStateMixin {
       return Object.assign({getOptions: defaultGetOptions}, stateConfig);
     });
     this._optionsByStateFieldName = {};
+    this._onStoreChange = this._onStoreChange.bind(this);
   }
 
   _onResult(stateFieldName, result) {
@@ -23,9 +24,30 @@ class StoreToStateMixin {
     this._component.setState(state);
   }
 
-  _createsubscriptions(props, state) {
+  _createSubscriptions(props, state) {
+    var stores = _.chain(this._config).map(
+      (stateConfig, stateFieldName) => stateConfig.method.store
+    ).uniq().value();
+
     _.forEach(this._config, (stateConfig, stateFieldName) => {
       var options = stateConfig.getOptions(props, state);
+      this._callMethod(stateConfig, stateFieldName, options);
+    });
+
+    this._subscriptions = _.uniq(stores)
+      .map(store => store.subscribe(this._onStoreChange));
+  }
+
+  _onStoreChange(data) {
+    _.forEach(this._config, (stateConfig, stateFieldName) => {
+      if (stateConfig.method.store !== data.store) {
+        return;
+      }
+
+      var options = stateConfig.getOptions(
+        this._component.props,
+        this._component.state
+      );
       this._callMethod(stateConfig, stateFieldName, options);
     });
   }
@@ -43,10 +65,14 @@ class StoreToStateMixin {
   }
 
   componentWillMount() {
-    this._createsubscriptions(
+    this._createSubscriptions(
       this._component.props,
       this._component.state
     );
+  }
+
+  componentWillUnmount() {
+    this._subscriptions.forEach(subscription => subscription.remove());
   }
 
   componentWillUpdate(nextProps, nextState) {

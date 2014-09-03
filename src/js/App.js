@@ -10,6 +10,7 @@ var MessageStore = require('./MessageStore');
 var React = require('react');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
+var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
 var _ = require('lodash');
@@ -80,7 +81,7 @@ var App = React.createClass({
       isLoading: true,
       maxResultCount: PAGE_SIZE,
       query: '',
-      selectedMessage: null,
+      selectedMessageID: null,
     };
   },
 
@@ -89,11 +90,11 @@ var App = React.createClass({
   },
 
   _onMessageSelected(message) {
+    ThreadActions.markAsRead(message.threadID);
+
     this.setState({
-      selectedMessage: message,
-      selectedThread: this.state.threads.result.items.find(
-        thread => thread.id === message.threadID
-      )
+      selectedMessageID: message.id,
+      selectedThreadID: message.threadID,
     });
   },
 
@@ -105,6 +106,10 @@ var App = React.createClass({
   },
 
   render() {
+    var selectedThread = this.state.selectedThreadID && _.find(
+      this.state.threads.result.items,
+      {id: this.state.selectedThreadID}
+    );
     return (
       <div className="App">
         {this.state.isLoading ? <div className="App_spinner" /> : null}
@@ -123,17 +128,17 @@ var App = React.createClass({
                 labels={this.state.labels.result}
                 messages={this.state.lastMessages.result}
                 onMessageSelected={this._onMessageSelected}
-                selectedMessage={this.state.selectedMessage}
+                selectedMessageID={this.state.selectedMessageID}
               />
             </InfiniteScroll>
           ) : (
             <div className="App_messages_list" />
           )}
           <div className="App_messages_selected">
-            {this.state.selectedThread ? (
+            {selectedThread ? (
               <ThreadView
-                thread={this.state.selectedThread}
-                selectedMessage={this.state.selectedMessage}
+                thread={selectedThread}
+                selectedMessageID={this.state.selectedMessageID}
               />
             ) : null}
           </div>

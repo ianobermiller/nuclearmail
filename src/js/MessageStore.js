@@ -3,6 +3,7 @@
 var API = require('./API.js');
 var ActionType = require('./ActionType.js');
 var BaseStore = require('./BaseStore.js');
+var _ = require('lodash');
 
 class MessageStore extends BaseStore {
   constructor() {
@@ -19,6 +20,23 @@ class MessageStore extends BaseStore {
         action.messages.forEach(message => {
           this._messagesByID[message.id] = message;
         });
+        this.emitChange();
+        break;
+
+      case ActionType.Thread.MARK_AS_READ_STARTED:
+        _.filter(
+          this._messagesByID,
+          msg => msg.threadID === action.threadID
+        ).forEach(msg => {
+          if (msg.isUnread) {
+            this._messagesByID[msg.id] = Object.assign(
+              {},
+              msg,
+              {isUnread: false}
+            );
+          }
+        });
+        this.emitChange();
         break;
     }
   }

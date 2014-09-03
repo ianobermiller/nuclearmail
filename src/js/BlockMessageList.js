@@ -15,7 +15,7 @@ var BlockMessageList = React.createClass({
     messages: PropTypes.array.isRequired,
 
     labels: PropTypes.array,
-    selectedMessage: PropTypes.object,
+    selectedMessageID: PropTypes.string,
   },
 
   _onMessageClick(index, message) {
@@ -28,7 +28,7 @@ var BlockMessageList = React.createClass({
         {this.props.messages.map((msg, index) => (
           <BlockMessageListItem
             index={index}
-            isSelected={msg === this.props.selectedMessage}
+            isSelected={msg.id === this.props.selectedMessageID}
             key={index}
             labels={this.props.labels && _.indexBy(this.props.labels, 'id')}
             message={msg}
