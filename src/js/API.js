@@ -253,7 +253,50 @@ var listLabels = wrapAPICallWithEmitter(function() {
       });
 
       request.execute(response => {
-        handleError(response, reject);
+        if (!handleError(response, reject)) {
+          return;
+        }
+
+        resolve(response.labels);
+      });
+    });
+  });
+});
+
+var markThreadAsRead = wrapAPICallWithEmitter(options => {
+  return new RSVP.Promise((resolve, reject) => {
+    whenGoogleApiAvailable(() => {
+      var request = gapi.client.gmail.users.threads.modify({
+        userID: 'me',
+        id: options.threadID,
+        removeLabelIds: ['UNREAD'],
+      });
+
+      request.execute(response => {
+        if (!handleError(response, reject)) {
+          return;
+        }
+
+        resolve(response.labels);
+      });
+    });
+  });
+});
+
+var markThreadAsUnread = wrapAPICallWithEmitter(options => {
+  return new RSVP.Promise((resolve, reject) => {
+    whenGoogleApiAvailable(() => {
+      var request = gapi.client.gmail.users.threads.modify({
+        userID: 'me',
+        id: options.threadID,
+        addLabelIds: ['UNREAD'],
+      });
+
+      request.execute(response => {
+        if (!handleError(response, reject)) {
+          return;
+        }
+
         resolve(response.labels);
       });
     });
@@ -298,10 +341,12 @@ function handleError(response, reject) {
   return true;
 }
 
-Object.assign(module.exports, {
+window.API = Object.assign(module.exports, {
   listMessages,
   isInProgress,
   listLabels,
   listThreads,
+  markThreadAsRead,
+  markThreadAsUnread,
   subscribe,
 });
