@@ -82,7 +82,7 @@ var App = React.createClass({
   getInitialState() {
     return {
       isAuthororized: false,
-      isLoading: false,
+      isLoading: true,
       maxResultCount: PAGE_SIZE,
       query: 'is:unread',
       queryProgress: 'is:unread',
