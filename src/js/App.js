@@ -80,7 +80,8 @@ var App = React.createClass({
     return {
       isLoading: true,
       maxResultCount: PAGE_SIZE,
-      query: '',
+      query: 'is:unread',
+      queryProgress: 'is:unread',
       selectedMessageID: null,
     };
   },
@@ -100,7 +101,15 @@ var App = React.createClass({
 
   _onQueryChange(query) {
     this.setState({
+      queryProgress: query,
+      maxResultCount: PAGE_SIZE,
+    });
+  },
+
+  _onQuerySubmit(query) {
+    this.setState({
       query: query,
+      queryProgress: query,
       maxResultCount: PAGE_SIZE,
     });
   },
@@ -116,7 +125,12 @@ var App = React.createClass({
         <div className="App_logo">
           ALTMAIL
         </div>
-        <SearchBox className="App_search" onQueryChange={this._onQueryChange} />
+        <SearchBox
+          className="App_search"
+          query={this.state.queryProgress}
+          onQueryChange={this._onQueryChange}
+          onQuerySubmit={this._onQuerySubmit}
+        />
         <div className="App_messages">
           {this.state.lastMessages.result ? (
             <InfiniteScroll

@@ -8,27 +8,22 @@ var cx = React.addons.classSet;
 var SearchBox = React.createClass({
   propTypes: {
     onQueryChange: PropTypes.func.isRequired,
-  },
-
-  getInitialState() {
-    return {
-      query: '',
-      queryProgress: '',
-    };
+    onQuerySubmit: PropTypes.func.isRequired,
+    query: PropTypes.string.isRequired,
   },
 
   _onQueryKeyDown(e) {
     if (e.key === 'Enter') {
-      this.props.onQueryChange(this.state.queryProgress);
+      this.props.onQuerySubmit(this.props.query);
     }
   },
 
   _onQueryChange(e) {
-    this.setState({queryProgress: e.target.value});
+    this.props.onQueryChange(e.target.value);
   },
 
   _onSearchClick() {
-    this.props.onQueryChange(this.state.queryProgress);
+    this.props.onQuerySubmit(this.props.query);
   },
 
   render() /*object*/ {
@@ -36,10 +31,10 @@ var SearchBox = React.createClass({
       <div className={cx(this.props.className, 'SearchBox')}>
         <input
           className="SearchBox_input"
-          value={this.state.queryProgress}
+          value={this.props.query}
           onChange={this._onQueryChange}
           onKeyDown={this._onQueryKeyDown}
-          type="text"
+          type="search"
         />
         <button
           className="SearchBox_button"
