@@ -47,13 +47,15 @@ var ThreadView = React.createClass({
             <button>Unread</button>
           </li>
         </ul>
-        {messages.map(message => (
-          <MessageView
-            key={message.id}
-            message={message}
-            isExpandedInitially={message.id === this.props.selectedMessageID}
-          />
-        ))}
+        <div className="ThreadView_messages">
+          {messages.map(message => (
+            <MessageView
+              key={message.id}
+              message={message}
+              isExpandedInitially={message.id === this.props.selectedMessageID}
+            />
+          ))}
+        </div>
       </div>
     );
   }

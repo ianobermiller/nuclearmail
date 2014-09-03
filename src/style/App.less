@@ -92,8 +92,12 @@ button {
 
 .App_messages {
   border-top: 1px solid #ccc;
+  bottom: 0;
   display: flex;
-  height: ~"calc(100% - 73px)";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 73px;
 }
 
 .App_messages_list {
@@ -107,8 +111,6 @@ button {
 .App_messages_selected {
   background: #eee;
   flex: 2;
-  overflow: auto;
-  padding-bottom: 12px;
 }
 
 .App_spinner {
