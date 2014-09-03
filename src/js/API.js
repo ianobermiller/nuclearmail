@@ -263,43 +263,37 @@ var listLabels = wrapAPICallWithEmitter(function() {
   });
 });
 
-var markThreadAsRead = wrapAPICallWithEmitter(options => {
-  return new RSVP.Promise((resolve, reject) => {
-    whenGoogleApiAvailable(() => {
-      var request = gapi.client.gmail.users.threads.modify({
-        userID: 'me',
-        id: options.threadID,
-        removeLabelIds: ['UNREAD'],
-      });
+function simpleAPICall(getRequest) {
+  return wrapAPICallWithEmitter(options => {
+    return new RSVP.Promise((resolve, reject) => {
+      whenGoogleApiAvailable(() => {
+        var request = getRequest(options);
 
-      request.execute(response => {
-        if (!handleError(response, reject)) {
-          return;
-        }
+        request.execute(response => {
+          if (!handleError(response, reject)) {
+            return;
+          }
 
-        resolve(response.labels);
+          resolve(response);
+        });
       });
     });
   });
+}
+
+var markThreadAsRead = simpleAPICall(options => {
+  return gapi.client.gmail.users.threads.modify({
+    userID: 'me',
+    id: options.threadID,
+    removeLabelIds: ['UNREAD'],
+  });
 });
 
-var markThreadAsUnread = wrapAPICallWithEmitter(options => {
-  return new RSVP.Promise((resolve, reject) => {
-    whenGoogleApiAvailable(() => {
-      var request = gapi.client.gmail.users.threads.modify({
-        userID: 'me',
-        id: options.threadID,
-        addLabelIds: ['UNREAD'],
-      });
-
-      request.execute(response => {
-        if (!handleError(response, reject)) {
-          return;
-        }
-
-        resolve(response.labels);
-      });
-    });
+var markThreadAsUnread = simpleAPICall(options => {
+  return gapi.client.gmail.users.threads.modify({
+    userID: 'me',
+    id: options.threadID,
+    addLabelIds: ['UNREAD'],
   });
 });
 
