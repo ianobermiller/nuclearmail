@@ -130,11 +130,19 @@ var listThreads = wrapAPICallWithEmitter(function(options) {
           return;
         }
 
-        var threadIDs = response.threads.map(m => m.id);
-        var batch;
+        var threadIDs = (response.threads || []).map(m => m.id);
 
+        if (!threadIDs.length) {
+          resolve({
+            nextPageToken: null,
+            resultSizeEstimate: 0,
+            items: [],
+          });
+          return;
+        }
+
+        var batch = gapi.client.newHttpBatch();
         threadIDs.forEach(id => {
-          batch = batch || gapi.client.newHttpBatch();
           batch.add(
             gapi.client.request({
               path: 'gmail/v1/users/me/threads/' + id
@@ -289,6 +297,14 @@ var markThreadAsRead = simpleAPICall(options => {
   });
 });
 
+var archiveThread = simpleAPICall(options => {
+  return gapi.client.gmail.users.threads.modify({
+    userID: 'me',
+    id: options.threadID,
+    removeLabelIds: ['INBOX'],
+  });
+});
+
 var markThreadAsUnread = simpleAPICall(options => {
   return gapi.client.gmail.users.threads.modify({
     userID: 'me',
@@ -336,9 +352,10 @@ function handleError(response, reject) {
 }
 
 window.API = Object.assign(module.exports, {
-  listMessages,
+  archiveThread,
   isInProgress,
   listLabels,
+  listMessages,
   listThreads,
   markThreadAsRead,
   markThreadAsUnread,

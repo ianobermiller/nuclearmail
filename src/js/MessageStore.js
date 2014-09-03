@@ -15,47 +15,50 @@ class MessageStore extends BaseStore {
   }
 
   handleDispatch(action) {
-    var didChange = false;
     switch (action.type) {
       case ActionType.Message.ADD_MANY:
         action.messages.forEach(message => {
           this._messagesByID[message.id] = message;
         });
-        didChange = true;
+        this.emitChange();
         break;
 
       case ActionType.Thread.MARK_AS_READ_STARTED:
-        _.filter(
-          this._messagesByID,
-          msg => msg.threadID === action.threadID
-        ).forEach(msg => {
-          if (msg.isUnread) {
-            didChange = true;
-            this._messagesByID[msg.id] = Object.assign(
-              {},
-              msg,
-              {isUnread: false}
-            );
-          }
-        });
+        this._updateMessagesWhere(
+          {threadID: action.threadID, isUnread: true},
+          {isUnread: false}
+        );
         break;
 
       case ActionType.Thread.MARK_AS_UNREAD_STARTED:
-        _.filter(
-          this._messagesByID,
-          msg => msg.threadID === action.threadID
-        ).forEach(msg => {
-          if (!msg.isUnread) {
-            didChange = true;
-            this._messagesByID[msg.id] = Object.assign(
-              {},
-              msg,
-              {isUnread: true}
-            );
-          }
-        });
+        this._updateMessagesWhere(
+          {threadID: action.threadID, isUnread: false},
+          {isUnread: true}
+        );
+        break;
+
+      case ActionType.Thread.ARCHIVE_STARTED:
+        this._updateMessagesWhere(
+          {threadID: action.threadID, isInInbox: true},
+          {isInInbox: false}
+        );
         break;
     }
+  }
+
+  _updateMessagesWhere(where, updates) {
+    var didChange = false;
+    _.filter(
+      this._messagesByID,
+      where
+    ).forEach(msg => {
+      didChange = true;
+      this._messagesByID[msg.id] = Object.assign(
+        {},
+        msg,
+        updates
+      );
+    });
     didChange && this.emitChange();
   }
 

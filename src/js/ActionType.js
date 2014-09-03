@@ -6,9 +6,17 @@ var ActionType = {
   },
 
   Thread: {
+    ARCHIVE_STARTED: null,
+    ARCHIVE_COMPLETED: null,
+    ARCHIVE_FAILED: null,
+
     MARK_AS_READ_STARTED: null,
     MARK_AS_READ_COMPLETED: null,
     MARK_AS_READ_FAILED: null,
+
+    MARK_AS_UNREAD_STARTED: null,
+    MARK_AS_UNREAD_COMPLETED: null,
+    MARK_AS_UNREAD_FAILED: null,
   }
 };
 
