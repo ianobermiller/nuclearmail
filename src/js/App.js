@@ -70,6 +70,9 @@ var App = React.createClass({
       // run outside of this context in case the api call was synchronous
       asap(() => this.setState({isLoading: false}));
     }));
+    this._subscriptions.push(API.subscribe('isAuthororized', isAuthororized => {
+      this.setState({isAuthororized});
+    }));
   },
 
   componentWillUnmount() {
@@ -78,7 +81,8 @@ var App = React.createClass({
 
   getInitialState() {
     return {
-      isLoading: true,
+      isAuthororized: false,
+      isLoading: false,
       maxResultCount: PAGE_SIZE,
       query: 'is:unread',
       queryProgress: 'is:unread',
@@ -114,6 +118,10 @@ var App = React.createClass({
     });
   },
 
+  _onLoginClick() {
+    API.login();
+  },
+
   render() {
     var selectedThread = this.state.selectedThreadID && _.find(
       this.state.threads.result.items,
@@ -125,6 +133,11 @@ var App = React.createClass({
         <div className="App_logo">
           ☢ NUCLEARMAIL
         </div>
+        {!this.state.isAuthororized ? (
+          <button className="App_login" onClick={this._onLoginClick}>
+            Login with Google
+          </button>
+        ) : null}
         <SearchBox
           className="App_search"
           query={this.state.queryProgress}

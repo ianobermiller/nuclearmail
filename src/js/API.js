@@ -16,16 +16,25 @@ var isAvailable = false;
 var pendingRequests = [];
 
 window.handleGoogleClientLoad = function() {
-  var config = {
-    client_id: '108971935462-ied7vg89qivj0bsso4imp6imhvpuso5u.apps.googleusercontent.com',
-    scope: 'email https://mail.google.com',
-    immediate: true
-  };
-  gapi.auth.authorize(config, whenAuthenticated);
+  tryAuthorize(/*immediate*/ true);
 };
 
-function whenAuthenticated() {
-  gapi.client.load('gmail', 'v1', whenLoaded);
+function tryAuthorize(immediate) {
+  var config = {
+    client_id: '108971935462-ied7vg89qivj0bsso4imp6imhvpuso5u.apps.googleusercontent.com',
+    scope: 'email https://www.googleapis.com/auth/gmail.modify',
+    immediate
+  };
+  gapi.auth.authorize(config, whenAuthenticated);
+}
+
+function whenAuthenticated(authResult) {
+  if (authResult && !authResult.error) {
+    emitter.emit('isAuthororized', true);
+    gapi.client.load('gmail', 'v1', whenLoaded);
+  } else {
+    emitter.emit('isAuthororized', false);
+  }
 }
 
 function whenLoaded() {
@@ -357,6 +366,7 @@ window.API = Object.assign(module.exports, {
   listLabels,
   listMessages,
   listThreads,
+  login: tryAuthorize.bind(null, /*immediate*/ false),
   markThreadAsRead,
   markThreadAsUnread,
   subscribe,
