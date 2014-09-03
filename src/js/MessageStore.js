@@ -15,12 +15,13 @@ class MessageStore extends BaseStore {
   }
 
   handleDispatch(action) {
+    var didChange = false;
     switch (action.type) {
       case ActionType.Message.ADD_MANY:
         action.messages.forEach(message => {
           this._messagesByID[message.id] = message;
         });
-        this.emitChange();
+        didChange = true;
         break;
 
       case ActionType.Thread.MARK_AS_READ_STARTED:
@@ -29,6 +30,7 @@ class MessageStore extends BaseStore {
           msg => msg.threadID === action.threadID
         ).forEach(msg => {
           if (msg.isUnread) {
+            didChange = true;
             this._messagesByID[msg.id] = Object.assign(
               {},
               msg,
@@ -36,9 +38,25 @@ class MessageStore extends BaseStore {
             );
           }
         });
-        this.emitChange();
+        break;
+
+      case ActionType.Thread.MARK_AS_UNREAD_STARTED:
+        _.filter(
+          this._messagesByID,
+          msg => msg.threadID === action.threadID
+        ).forEach(msg => {
+          if (!msg.isUnread) {
+            didChange = true;
+            this._messagesByID[msg.id] = Object.assign(
+              {},
+              msg,
+              {isUnread: true}
+            );
+          }
+        });
         break;
     }
+    didChange && this.emitChange();
   }
 
   getByIDs({ids}) {

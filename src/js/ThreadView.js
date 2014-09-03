@@ -2,6 +2,7 @@
 
 var MessageStore = require('./MessageStore');
 var MessageView = require('./MessageView');
+var ThreadActions = require('./ThreadActions');
 var ThreadView = require('./ThreadView');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
@@ -31,6 +32,10 @@ var ThreadView = React.createClass({
     })
   ],
 
+  _markAsUnread() {
+    ThreadActions.markAsUnread(this.props.thread.id);
+  },
+
   render() /*object*/ {
     var messages = this.state.messages.result;
     if (!messages) {
@@ -44,7 +49,7 @@ var ThreadView = React.createClass({
             <button>Archive</button>
           </li>
           <li className="ThreadView_actionbar_item">
-            <button>Unread</button>
+            <button onClick={this._markAsUnread}>Unread</button>
           </li>
         </ul>
         <div className="ThreadView_messages">

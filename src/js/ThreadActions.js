@@ -24,3 +24,22 @@ module.exports.markAsRead = threadID => {
     })
   );
 };
+
+module.exports.markAsUnread = threadID => {
+  Dispatcher.dispatch({
+    type: ActionType.Thread.MARK_AS_READ_STARTED,
+    threadID,
+  });
+
+  API.markThreadAsUnread({threadID}).then(() =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.MARK_AS_UNREAD_COMPLETED,
+      threadID,
+    })
+  ).catch(() =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.MARK_AS_UNREAD_FAILED,
+      threadID,
+    })
+  );
+};
