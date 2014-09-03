@@ -1,3 +1,5 @@
+@import "util.less";
+
 /**
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com
@@ -79,7 +81,7 @@ button {
 }
 
 .App_logo {
-  color: #b00;
+  color: @accent;
   float: left;
   font-size: 24px;
   font-weight: bold;
@@ -124,7 +126,7 @@ button {
 
   &::after {
     animation: pulse 3s ease 0s infinite;
-    background: #b00;
+    background: @accent;
     content: '';
     display: block;
     height: 4px;

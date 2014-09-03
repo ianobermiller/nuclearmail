@@ -21,11 +21,11 @@
 }
 
 .BlockMessageList_item-unread .BlockMessageList_item_inner {
-  background: #ecc;
+  background: hsl(hue(@accent), saturation(@accent), 90%);
 }
 
 .BlockMessageList_item-selected .BlockMessageList_item_inner {
-  background: #b00;
+  background: @accent;
   color: white;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .BlockMessageList_item_sender {
-  color: #a00;
+  color: @accent;
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;

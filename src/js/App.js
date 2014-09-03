@@ -123,7 +123,7 @@ var App = React.createClass({
       <div className="App">
         {this.state.isLoading ? <div className="App_spinner" /> : null}
         <div className="App_logo">
-          ALTMAIL
+          ☢ NUCLEARMAIL
         </div>
         <SearchBox
           className="App_search"
