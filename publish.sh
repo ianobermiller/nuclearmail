@@ -2,5 +2,5 @@
 
 cp build/* ~/dev/nuclearmail-pages
 pushd ~/dev/nuclearmail-pages
-git commit -am "Code update" && git push
+git pull && git commit -am "Code update to rev `git rev-parse HEAD`" && git push
 popd
