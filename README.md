@@ -6,5 +6,4 @@ NuclearMail is an experiment of writing a webmail client using React and the Flu
 - Emit change for ThreadStore when marking read/unread and archiving,
   but only refresh if is:unread, in:inbox are in the search box
 - Simple compose
-- HTMLSandbox: refresh height after img's loaded
 - https://github.com/greypants/gulp-starter/tree/master/gulp/tasks

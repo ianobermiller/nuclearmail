@@ -65,6 +65,11 @@ var HTMLSandbox = React.createClass({
       notifyHeightChanged();
 
       Array.prototype.forEach.call(
+        document.getElementsByTagName('img'),
+        function(el) { el.addEventListener('load', notifyHeightChanged); }
+      );
+
+      Array.prototype.forEach.call(
         document.getElementsByTagName('a'),
         function(el) { el.target = '_blank'; }
       );
