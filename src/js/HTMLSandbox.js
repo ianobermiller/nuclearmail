@@ -63,6 +63,11 @@ var HTMLSandbox = React.createClass({
       }
       window.addEventListener('resize', notifyHeightChanged);
       notifyHeightChanged();
+
+      Array.prototype.forEach.call(
+        document.getElementsByTagName('a'),
+        function(el) { el.target = '_blank'; }
+      );
     `;
     iframe.contentDocument.body.appendChild(script);
   },
