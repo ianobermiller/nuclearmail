@@ -15,6 +15,7 @@ var cx = React.addons.classSet;
 var ThreadView = React.createClass({
   propTypes: {
     thread: PropTypes.object.isRequired,
+    onThreadClosed: PropTypes.func.isRequired,
 
     selectedMessageID: PropTypes.string,
   },
@@ -34,6 +35,7 @@ var ThreadView = React.createClass({
 
   _archive() {
     ThreadActions.archive(this.props.thread.id);
+    this.props.onThreadClosed();
   },
 
   _markAsUnread() {

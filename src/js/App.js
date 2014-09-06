@@ -84,8 +84,8 @@ var App = React.createClass({
       isAuthororized: false,
       isLoading: true,
       maxResultCount: PAGE_SIZE,
-      query: 'is:unread',
-      queryProgress: 'is:unread',
+      query: 'in:inbox',
+      queryProgress: 'in:inbox',
       selectedMessageID: null,
     };
   },
@@ -120,6 +120,10 @@ var App = React.createClass({
 
   _onLoginClick() {
     API.login();
+  },
+
+  _onThreadClosed() {
+    this.setState({selectedMessageID: null, selectedThreadID: null});
   },
 
   render() {
@@ -166,6 +170,7 @@ var App = React.createClass({
               <ThreadView
                 thread={selectedThread}
                 selectedMessageID={this.state.selectedMessageID}
+                onThreadClosed={this._onThreadClosed}
               />
             ) : null}
           </div>

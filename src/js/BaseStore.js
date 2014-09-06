@@ -28,7 +28,7 @@ class BaseStore {
     this._emitter.on(CHANGE_EVENT, fn);
 
     return {
-      remove() {
+      remove: () => {
         this._emitter.removeListener(CHANGE_EVENT, fn);
       }
     };

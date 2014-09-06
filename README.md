@@ -3,7 +3,7 @@ NuclearMail is an experiment of writing a webmail client using React and the Flu
 
 ## TODO
 
-- Emit change for ThreadStore when marking read/unread and archiving,
-  but only refresh if is:unread, in:inbox are in the search box
+- Go to next message when archiving
 - Simple compose
+- Don't cache query results if user hits enter in the search box or clicks the search button
 - https://github.com/greypants/gulp-starter/tree/master/gulp/tasks
