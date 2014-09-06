@@ -61,8 +61,10 @@ var HTMLSandbox = React.createClass({
           }, window.parent.location.href);
         }
       }
+
       window.addEventListener('resize', notifyHeightChanged);
       notifyHeightChanged();
+      setTimeout(notifyHeightChanged, 0);
 
       Array.prototype.forEach.call(
         document.getElementsByTagName('img'),
