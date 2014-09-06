@@ -28,7 +28,7 @@ var SearchBox = React.createClass({
 
   render() /*object*/ {
     return (
-      <div className={cx(this.props.className, 'SearchBox')}>
+      <span className={cx(this.props.className, 'SearchBox')}>
         <input
           className="SearchBox_input"
           value={this.props.query}
@@ -42,7 +42,7 @@ var SearchBox = React.createClass({
           type="button">
           Search
         </button>
-      </div>
+      </span>
     );
   }
 });

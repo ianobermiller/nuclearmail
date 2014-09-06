@@ -6,6 +6,10 @@ var Dispatcher = require('./Dispatcher');
 
 'use strict';
 
+module.exports.refresh = () => {
+  Dispatcher.dispatch({type: ActionType.Thread.REFRESH});
+};
+
 module.exports.markAsRead = threadID => {
   Dispatcher.dispatch({
     type: ActionType.Thread.MARK_AS_READ_STARTED,

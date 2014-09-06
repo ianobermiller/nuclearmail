@@ -15,6 +15,11 @@ class ThreadStore extends BaseStore {
   handleDispatch(action) {
     var shouldEmitChange = false;
     switch (action.type) {
+      case ActionType.Thread.REFRESH:
+        this._pagingInfoByQuery = {};
+        shouldEmitChange = true;
+        break;
+
       case ActionType.Thread.ARCHIVE_STARTED:
         _.each(this._pagingInfoByQuery, (pagingInfo, query) => {
           if (/in\:\s*inbox/.test(query)) {

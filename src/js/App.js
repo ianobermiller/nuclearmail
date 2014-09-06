@@ -136,6 +136,10 @@ var App = React.createClass({
     }
   },
 
+  _onRefresh() {
+    ThreadActions.refresh();
+  },
+
   render() {
     var selectedThread = this.state.selectedThreadID && _.find(
       this.state.threads.result.items,
@@ -144,20 +148,25 @@ var App = React.createClass({
     return (
       <div className="App">
         {this.state.isLoading ? <div className="App_spinner" /> : null}
-        <div className="App_logo">
-          ☢ NUCLEARMAIL
-        </div>
-        {!this.state.isAuthororized ? (
-          <button className="App_login" onClick={this._onLoginClick}>
-            Login with Google
+        <div className="App_header">
+          <span className="App_logo">
+            ☢ NUCLEARMAIL
+          </span>
+          <SearchBox
+            className="App_search"
+            query={this.state.queryProgress}
+            onQueryChange={this._onQueryChange}
+            onQuerySubmit={this._onQuerySubmit}
+          />
+          <button className="App_refresh" onClick={this._onRefresh}>
+          ⟳
           </button>
-        ) : null}
-        <SearchBox
-          className="App_search"
-          query={this.state.queryProgress}
-          onQueryChange={this._onQueryChange}
-          onQuerySubmit={this._onQuerySubmit}
-        />
+          {!this.state.isAuthororized ? (
+            <button className="App_login" onClick={this._onLoginClick}>
+              Login with Google
+            </button>
+          ) : null}
+        </div>
         <div className="App_messages">
           {this.state.lastMessages.result ? (
             <InfiniteScroll
