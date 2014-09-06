@@ -4,4 +4,7 @@ NuclearMail is an experiment of writing a webmail client using React and the Flu
 ## TODO
 
 - Simple compose
+- Keyboard shortcuts
+- Stars
+- Navigation between inbox, priority, labels, etc
 - https://github.com/greypants/gulp-starter/tree/master/gulp/tasks
