@@ -123,7 +123,17 @@ var App = React.createClass({
   },
 
   _onThreadClosed() {
-    this.setState({selectedMessageID: null, selectedThreadID: null});
+    var messages = this.state.lastMessages.result;
+
+    var selectedMessageIndex = messages.findIndex(
+      msg => msg.id === this.state.selectedMessageID
+    );
+
+    if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
+      this.setState({selectedMessageID: null, selectedThreadID: null});
+    } else {
+      this._onMessageSelected(messages[selectedMessageIndex + 1]);
+    }
   },
 
   render() {
