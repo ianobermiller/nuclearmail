@@ -17,14 +17,9 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('styles', [], function() {
-  return gulp.src('./src/style/*.less')
-    .pipe(sourcemaps.init())
-    .pipe(less())
-    .on('error', swallowError)
+  return gulp.src('./src/style/base.css')
     .pipe(autoprefix())
     .pipe(concat('app.css'))
-    .pipe(size())
-    .pipe(sourcemaps.write())
     .pipe(gulp.dest('build'));
 });
 
@@ -46,7 +41,8 @@ function scripts(isWatchingEnabled) {
   bundler.transform(function(file) { return reactify(file, {es6: true}); });
 
   rebundle = function() {
-    return bundler.bundle({debug: true})
+    return bundler.bundle()
+      .on('error', swallowError)
       .pipe(source('app.js'))
       .pipe(gulp.dest('build'));
   };
@@ -65,7 +61,7 @@ gulp.task('scriptsWatch', [], function() {
 });
 
 gulp.task('watch', ['build', 'scriptsWatch'], function () {
-  watch({glob: 'src/style/*.less'}, function() {
+  watch('src/style/base.css', function() {
     gulp.start('styles');
   });
 });

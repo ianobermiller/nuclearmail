@@ -4,17 +4,21 @@ require('es6-shim');
 
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
+var Colors = require('./Colors');
 var InfiniteScroll = require('./InfiniteScroll');
 var LabelStore = require('./LabelStore');
 var MessageStore = require('./MessageStore');
+var RCSS = require("rcss");
 var React = require('react');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
+var StyleSet = require('./StyleSet');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
 var _ = require('lodash');
 var asap = require('asap');
+var autoprefixer = require('autoprefixer');
 var moment = require('moment');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -146,31 +150,31 @@ var App = React.createClass({
       {id: this.state.selectedThreadID}
     );
     return (
-      <div className="App">
-        {this.state.isLoading ? <div className="App_spinner" /> : null}
-        <div className="App_header">
-          <span className="App_logo">
+      <div className={Classes.app}>
+        {this.state.isLoading && <div className={Classes.spinner} />}
+        <div className={Classes.header}>
+          <span className={Classes.logo}>
             ☢ NUCLEARMAIL
           </span>
           <SearchBox
-            className="App_search"
+            className={Classes.search}
             query={this.state.queryProgress}
             onQueryChange={this._onQueryChange}
             onQuerySubmit={this._onQuerySubmit}
           />
-          <button className="App_refresh" onClick={this._onRefresh}>
+          <button className={Classes.refresh} onClick={this._onRefresh}>
           ⟳
           </button>
           {!this.state.isAuthororized ? (
-            <button className="App_login" onClick={this._onLoginClick}>
+            <button className={Classes.login} onClick={this._onLoginClick}>
               Login with Google
             </button>
           ) : null}
         </div>
-        <div className="App_messages">
+        <div className={Classes.messages}>
           {this.state.lastMessages.result ? (
             <InfiniteScroll
-              className="App_messages_list"
+              className={Classes.messagesList}
               hasMore={this.state.threads.result.hasMore}
               isScrollContainer={true}
               onRequestMoreItems={this._onRequestMoreItems}>
@@ -182,9 +186,9 @@ var App = React.createClass({
               />
             </InfiniteScroll>
           ) : (
-            <div className="App_messages_list" />
+            <div className={Classes.messagesList} />
           )}
-          <div className="App_messages_selected">
+          <div className={Classes.threadView}>
             {selectedThread ? (
               <ThreadView
                 thread={selectedThread}
@@ -198,6 +202,85 @@ var App = React.createClass({
     );
   }
 });
+
+var {Classes, Styles} = StyleSet({
+  app: {
+    paddingTop: '20px',
+  },
+
+  logo: {
+    color: Colors.accent,
+    float: 'left',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    lineHeight: '32px',
+    margin: '0 12px',
+  },
+
+  search: {
+    float: 'left',
+    marginLeft: '12px',
+  },
+
+  refresh: {
+    float: 'left',
+    marginLeft: '12px',
+  },
+
+  login: {
+    float: 'right',
+    marginRight: '12px',
+  },
+
+  messages: {
+    borderTop: `1px solid ${Colors.gray2}`,
+    bottom: 0,
+    display: 'flex',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: '73px',
+  },
+
+  messagesList: {
+    borderRight: `1px solid ${Colors.gray2}`,
+    flex: 1,
+    minWidth: '300px',
+    maxWidth: '400px',
+    overflow: 'auto',
+  },
+
+  threadView: {
+    background: Colors.gray1,
+    flex: 2,
+  },
+
+  spinner: {
+    left: 0,
+    position: 'fixed',
+    top: 0,
+    width: '100%',
+    zIndex: 10000,
+
+    ':after': {
+      animation: 'pulse 3s ease 0s infinite',
+      background: Colors.accent,
+      content: ' ',
+      display: 'block',
+      height: '4px',
+      margin: '0 auto',
+    },
+  },
+});
+
+function injectStyles() {
+  var ap = autoprefixer();
+  var tag = document.createElement('style');
+  tag.innerHTML = ap.process(RCSS.getStylesString());
+  document.getElementsByTagName('head')[0].appendChild(tag);
+}
+
+injectStyles();
 
 React.renderComponent(<App />, document.body);
 

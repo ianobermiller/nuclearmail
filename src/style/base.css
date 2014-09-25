@@ -1,5 +1,3 @@
-@import "util.less";
-
 /**
  * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
  * http://cssreset.com
@@ -71,78 +69,10 @@ button {
   padding: 1px 16px;
   vertical-align: top;
 
-  &:active {
-    padding: 2px 15px 0 17px;
-  }
 }
 
-.App {
-  padding-top: 20px;
-}
-
-.App_logo {
-  color: @accent;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 32px;
-  margin: 0 12px;
-}
-
-.App_search {
-  float: left;
-  margin-left: 12px;
-}
-
-.App_refresh {
-  float: left;
-  margin-left: 12px;
-}
-
-.App_login {
-  float: right;
-  margin-right: 12px;
-}
-
-.App_messages {
-  border-top: 1px solid #ccc;
-  bottom: 0;
-  display: flex;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 73px;
-}
-
-.App_messages_list {
-  border-right: 1px solid #ccc;
-  flex: 1;
-  min-width: 300px;
-  max-width: 400px;
-  overflow: auto;
-}
-
-.App_messages_selected {
-  background: #eee;
-  flex: 2;
-}
-
-.App_spinner {
-  background: white;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 10000;
-
-  &::after {
-    animation: pulse 3s ease 0s infinite;
-    background: @accent;
-    content: '';
-    display: block;
-    height: 4px;
-    margin: 0 auto;
-  }
+button:active {
+  padding: 2px 15px 0 17px;
 }
 
 @keyframes pulse {

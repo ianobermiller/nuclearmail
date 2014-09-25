@@ -1,7 +1,9 @@
 /** @jsx React.DOM */
 
+var Colors = require('./Colors');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
+var StyleSet = require('./StyleSet');
 var _ = require('lodash');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -24,7 +26,7 @@ var BlockMessageList = React.createClass({
 
   render() {
     return (
-      <ul className={cx(this.props.className, 'BlockMessageList')}>
+      <ul className={cx(this.props.className, Classes.root)}>
         {this.props.messages.map((msg, index) => (
           <BlockMessageListItem
             index={index}
@@ -60,14 +62,10 @@ var BlockMessageListItem = React.createClass({
     var msg = this.props.message;
     return (
       <li
-        className={cx({
-          'BlockMessageList_item': true,
-          'BlockMessageList_item-unread': msg.isUnread,
-          'BlockMessageList_item-selected': this.props.isSelected,
-        })}
+        className={cx(Classes.item)}
         key={msg.id}
         onClick={this._onClick}>
-        <div className="BlockMessageList_item_inner">
+        <div className={Classes.itemInner}>
           <div className="BlockMessageList_item_top">
             <RelativeDate
               className="BlockMessageList_item_date"
@@ -96,6 +94,29 @@ var BlockMessageListItem = React.createClass({
       </li>
     );
   }
+});
+
+var {Classes, Styles} = StyleSet({
+  root: {
+    cursor: 'pointer',
+    userSelect: 'none',
+  },
+
+  item: {
+    borderTop: 'solid 1px #f5f5f5',
+    lineHeight: 1.6,
+    margin:' 8px',
+
+    ':first-child': {
+      borderTop: 'none',
+    }
+  },
+
+  itemInner: {
+    background: Colors.accent.lighten(30),
+    borderRadius: '8px',
+    padding: '8px 12px 12px 12px',
+  },
 });
 
 module.exports = BlockMessageList;

@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 
+var Colors = require('./Colors');
 var React = require('react');
+var StyleSet = require('./StyleSet');
 
 var PropTypes = React.PropTypes;
 var cx = React.addons.classSet;
@@ -30,14 +32,14 @@ var SearchBox = React.createClass({
     return (
       <span className={cx(this.props.className, 'SearchBox')}>
         <input
-          className="SearchBox_input"
+          className={Classes.input}
           value={this.props.query}
           onChange={this._onQueryChange}
           onKeyDown={this._onQueryKeyDown}
           type="search"
         />
         <button
-          className="SearchBox_button"
+          className={Classes.button}
           onClick={this._onSearchClick}
           type="button">
           Search
@@ -45,6 +47,18 @@ var SearchBox = React.createClass({
       </span>
     );
   }
+});
+
+var {Classes, Styles} = StyleSet({
+  input: {
+    marginRight: '8px',
+    width: '400px',
+  },
+
+  button: {
+    background: Colors.accent,
+    color: 'white',
+  },
 });
 
 module.exports = SearchBox;
