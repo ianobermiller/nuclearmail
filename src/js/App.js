@@ -8,7 +8,6 @@ var Colors = require('./Colors');
 var InfiniteScroll = require('./InfiniteScroll');
 var LabelStore = require('./LabelStore');
 var MessageStore = require('./MessageStore');
-var RCSS = require("rcss");
 var React = require('react');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
@@ -18,7 +17,6 @@ var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
 var _ = require('lodash');
 var asap = require('asap');
-var autoprefixer = require('autoprefixer');
 var moment = require('moment');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -273,14 +271,7 @@ var {Classes, Styles} = StyleSet({
   },
 });
 
-function injectStyles() {
-  var ap = autoprefixer();
-  var tag = document.createElement('style');
-  tag.innerHTML = ap.process(RCSS.getStylesString());
-  document.getElementsByTagName('head')[0].appendChild(tag);
-}
-
-injectStyles();
+StyleSet.injectStyles();
 
 React.renderComponent(<App />, document.body);
 
