@@ -65,13 +65,20 @@ var BlockMessageListItem = React.createClass({
         className={cx(Classes.item)}
         key={msg.id}
         onClick={this._onClick}>
-        <div className={Classes.itemInner}>
+        <div className={cx(
+          Classes.itemInner,
+          msg.isUnread && Classes.itemInnerIsUnread,
+          this.props.isSelected && Classes.itemInnerIsSelected
+        )}>
           <div className={Classes.itemTop}>
             <RelativeDate
               className={Classes.itemDate}
               date={msg.date}
             />
-            <div className={Classes.itemSender}>
+            <div className={cx(
+              Classes.itemSender,
+              this.props.isSelected && Classes.itemSenderIsSelected
+            )}>
               {msg.from.name || msg.from.email}
             </div>
           </div>
@@ -105,7 +112,7 @@ var {Classes, Styles} = StyleSet({
   item: {
     borderTop: 'solid 1px #f5f5f5',
     lineHeight: 1.6,
-    margin:' 8px',
+    margin: ' 8px',
 
     ':first-child': {
       borderTop: 'none',
@@ -113,15 +120,17 @@ var {Classes, Styles} = StyleSet({
   },
 
   itemInner: {
-    background: Colors.accent.lighten(30),
     borderRadius: '8px',
     padding: '8px 12px 12px 12px',
   },
 
-  itemInner: {
+  itemInnerIsUnread: {
     background: Colors.accent.lighten(30),
-    borderRadius: '8px',
-    padding: '8px 12px 12px 12px',
+  },
+
+  itemInnerIsSelected: {
+    background: Colors.accent,
+    color: 'white',
   },
 
   itemTop: StyleSet.clearfix,
@@ -151,6 +160,10 @@ var {Classes, Styles} = StyleSet({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+  },
+
+  itemSenderIsSelected: {
+    color: 'white',
   },
 
   itemSnippet: {
