@@ -142,6 +142,10 @@ var App = React.createClass({
     ThreadActions.refresh();
   },
 
+  _onLogoClick() {
+    window.location.reload();
+  },
+
   render() {
     var selectedThread = this.state.selectedThreadID && _.find(
       this.state.threads.result.items,
@@ -151,7 +155,7 @@ var App = React.createClass({
       <div className={Classes.app}>
         {this.state.isLoading && <div className={Classes.spinner} />}
         <div className={Classes.header}>
-          <span className={Classes.logo}>
+          <span className={Classes.logo} onClick={this._onLogoClick}>
             ☢ NUCLEARMAIL
           </span>
           <SearchBox
