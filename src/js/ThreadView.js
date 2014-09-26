@@ -7,6 +7,7 @@ var ThreadView = require('./ThreadView');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var StyleSet = require('./StyleSet');
+var Styles = require('./Styles');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -73,12 +74,12 @@ var ThreadView = React.createClass({
   }
 });
 
-var {Classes, Styles} = StyleSet({
+var {Classes, Styles} = StyleSet('ThreadView', {
   actionBar: [{
     background: 'white',
     borderBottom: '1px solid #ccc',
     padding: '12px',
-  }, StyleSet.clearfix],
+  }, Styles.clearfix],
 
   actionBarItem: {
     float: 'left',

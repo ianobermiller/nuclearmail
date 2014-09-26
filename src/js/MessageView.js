@@ -91,7 +91,7 @@ var MessageView = React.createClass({
   }
 });
 
-var {Classes, Styles} = StyleSet({
+var {Classes, Styles} = StyleSet('MessageView', {
   root: {
     padding: '12px 12px 0 12px',
   },

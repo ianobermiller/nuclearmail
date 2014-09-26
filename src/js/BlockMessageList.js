@@ -1,9 +1,11 @@
 /** @jsx React.DOM */
+/** @jsx React.DOM */
 
 var Colors = require('./Colors');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
 var StyleSet = require('./StyleSet');
+var Styles = require('./Styles');
 var _ = require('lodash');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -103,7 +105,7 @@ var BlockMessageListItem = React.createClass({
   }
 });
 
-var {Classes, Styles} = StyleSet({
+var {Classes, Styles} = StyleSet('BlockMessageList', {
   root: {
     cursor: 'pointer',
     userSelect: 'none',
@@ -133,7 +135,7 @@ var {Classes, Styles} = StyleSet({
     color: 'white',
   },
 
-  itemTop: StyleSet.clearfix,
+  itemTop: Styles.clearfix,
 
   itemDate: {
     float: 'right',
@@ -143,7 +145,7 @@ var {Classes, Styles} = StyleSet({
 
   itemText: [{
     fontSize: '14px',
-  }, StyleSet.lineClamp(2)],
+  }, Styles.lineClamp(2)],
 
   itemLabel: {
     background: Colors.accent,

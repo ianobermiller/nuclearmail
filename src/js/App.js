@@ -201,7 +201,7 @@ var App = React.createClass({
   }
 });
 
-var {Classes, Styles} = StyleSet({
+var {Classes, Styles} = StyleSet('App', {
   app: {
     paddingTop: '20px',
   },

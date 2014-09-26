@@ -49,7 +49,7 @@ var SearchBox = React.createClass({
   }
 });
 
-var {Classes, Styles} = StyleSet({
+var {Classes, Styles} = StyleSet('SearchBox', {
   input: {
     marginRight: '8px',
     width: '400px',

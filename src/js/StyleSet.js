@@ -5,13 +5,12 @@ var RCSS = require("rcss");
 var _ = require('lodash');
 var autoprefixer = require('autoprefixer');
 
-// TODO: convert to mixin so the RCSS generated name can include the component
-function StyleSet(stylesByName) {
+function StyleSet(componentName, stylesByName) {
   var result = {Classes: {}, Styles: {}};
   _.each(stylesByName, (style, name) => {
     var convertedStyle = processStyle(style);
 
-    var rcss = RCSS.registerClass(convertedStyle);
+    var rcss = RCSS.registerClass(convertedStyle, componentName + '_' + name);
     result.Classes[name] = rcss.className;
     result.Styles[name] = rcss.style;
   });
@@ -44,22 +43,5 @@ StyleSet.injectStyles = () => {
   tag.innerHTML = ap.process(RCSS.getStylesString());
   document.getElementsByTagName('head')[0].appendChild(tag);
 };
-
-StyleSet.clearfix = {
-  ':after': {
-    clear: 'both',
-    content: '',
-    display: 'table',
-  }
-};
-
-// TODO: use a JS lib like Clamp.js and do this in javascript instead
-StyleSet.lineClamp = (lines) => ({
-  '-webkit-box-orient': 'vertical',
-  display: '-webkit-box',
-  '-webkit-line-clamp': lines,
-  overflow : 'hidden',
-  textOverflow: 'ellipsis',
-});
 
 module.exports = StyleSet;
