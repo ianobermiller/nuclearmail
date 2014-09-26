@@ -44,11 +44,21 @@ var ThreadView = React.createClass({
     ThreadActions.markAsUnread(this.props.thread.id);
   },
 
+  _star() {
+    ThreadActions.star(this.props.thread.id);
+  },
+
+  _unstar() {
+    ThreadActions.unstar(this.props.thread.id);
+  },
+
   render() /*object*/ {
     var messages = this.state.messages.result;
     if (!messages) {
       return null;
     }
+
+    var isStarred = messages.some(m => m.isStarred);
 
     return (
       <div>
@@ -59,6 +69,15 @@ var ThreadView = React.createClass({
           <li className={Classes.actionBarItem}>
             <button onClick={this._markAsUnread}>Unread</button>
           </li>
+          {isStarred ? (
+            <li className={Classes.actionBarItem}>
+              <button onClick={this._unstar}>Unstar</button>
+            </li>
+          ) : (
+            <li className={Classes.actionBarItem}>
+              <button onClick={this._star}>Star</button>
+            </li>
+          )}
         </ul>
         <div className={Classes.messages}>
           {messages.map(message => (

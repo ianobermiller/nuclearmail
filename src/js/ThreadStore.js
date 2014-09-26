@@ -17,24 +17,36 @@ class ThreadStore extends BaseStore {
     switch (action.type) {
       case ActionType.Thread.REFRESH:
         this._pagingInfoByQuery = {};
-        shouldEmitChange = true;
+        this.emitChange();
         break;
 
       case ActionType.Thread.ARCHIVE_STARTED:
-        _.each(this._pagingInfoByQuery, (pagingInfo, query) => {
-          if (/in\:\s*inbox/.test(query)) {
-            var newFetchedResults = pagingInfo.fetchedResults.filter(
-              thread => thread.id !== action.threadID
-            );
+        this._invalidateCache(action.threadID, /in\:\s*inbox/);
+        break;
 
-            if (newFetchedResults.length < pagingInfo.fetchedResults.length) {
-              pagingInfo.fetchedResults = newFetchedResults;
-              shouldEmitChange = true;
-            }
-          }
-        });
+      case ActionType.Thread.UNSTAR_STARTED:
+        this._invalidateCache(action.threadID, /is\:\s*starred/);
         break;
     }
+
+    shouldEmitChange && this.emitChange();
+  }
+
+  _invalidateCache(threadID, queryRegex) {
+    var shouldEmitChange = false;
+
+    _.each(this._pagingInfoByQuery, (pagingInfo, query) => {
+      if (queryRegex.test(query)) {
+        var newFetchedResults = pagingInfo.fetchedResults.filter(
+          thread => thread.id !== threadID
+        );
+
+        if (newFetchedResults.length < pagingInfo.fetchedResults.length) {
+          pagingInfo.fetchedResults = newFetchedResults;
+          shouldEmitChange = true;
+        }
+      }
+    });
 
     shouldEmitChange && this.emitChange();
   }

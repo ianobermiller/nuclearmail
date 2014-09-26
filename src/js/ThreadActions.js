@@ -69,3 +69,44 @@ module.exports.archive = threadID => {
     })
   );
 };
+
+module.exports.star = threadID => {
+  Dispatcher.dispatch({
+    type: ActionType.Thread.STAR_STARTED,
+    threadID,
+  });
+
+  API.starThread({threadID}).then(() =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.STAR_COMPLETED,
+      threadID,
+    })
+  ).catch(error =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.STAR_FAILED,
+      threadID,
+      error,
+    })
+  );
+};
+
+
+module.exports.unstar = threadID => {
+  Dispatcher.dispatch({
+    type: ActionType.Thread.UNSTAR_STARTED,
+    threadID,
+  });
+
+  API.unstarThread({threadID}).then(() =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.UNSTAR_COMPLETED,
+      threadID,
+    })
+  ).catch(error =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.UNSTAR_FAILED,
+      threadID,
+      error,
+    })
+  );
+};

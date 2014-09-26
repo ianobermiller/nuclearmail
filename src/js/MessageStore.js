@@ -43,6 +43,20 @@ class MessageStore extends BaseStore {
           {isInInbox: false}
         );
         break;
+
+      case ActionType.Thread.STAR_STARTED:
+        this._updateMessagesWhere(
+          {threadID: action.threadID, isStarred: false},
+          {isStarred: true}
+        );
+        break;
+
+      case ActionType.Thread.UNSTAR_STARTED:
+        this._updateMessagesWhere(
+          {threadID: action.threadID, isStarred: true},
+          {isStarred: false}
+        );
+        break;
     }
   }
 

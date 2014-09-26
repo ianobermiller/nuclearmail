@@ -17,6 +17,14 @@ var ActionType = {
     MARK_AS_UNREAD_STARTED: null,
     MARK_AS_UNREAD_COMPLETED: null,
     MARK_AS_UNREAD_FAILED: null,
+
+    STAR_STARTED: null,
+    STAR_COMPLETED: null,
+    STAR_FAILED: null,
+
+    UNSTAR_STARTED: null,
+    UNSTAR_COMPLETED: null,
+    UNSTAR_FAILED: null,
   }
 };
 

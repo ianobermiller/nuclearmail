@@ -65,7 +65,10 @@ function translateMessage(rawMessage) {
     isInInbox: hasLabel(rawMessage, 'INBOX'),
     isUnread: hasLabel(rawMessage, 'UNREAD'),
     isStarred: hasLabel(rawMessage, 'STARRED'),
-    labelIDs: _.difference(rawMessage.labelIds, ['DRAFT', 'INBOX', 'UNREAD']),
+    labelIDs: _.difference(
+      rawMessage.labelIds,
+      ['DRAFT', 'INBOX', 'UNREAD', 'STARRED']
+    ),
     raw: rawMessage,
     snippet: _.unescape(rawMessage.snippet),
     subject: pluckHeader(msg.headers, 'Subject'),
@@ -323,6 +326,22 @@ var markThreadAsUnread = simpleAPICall(options => {
   });
 });
 
+var unstarThread = simpleAPICall(options => {
+  return gapi.client.gmail.users.threads.modify({
+    userID: 'me',
+    id: options.threadID,
+    removeLabelIds: ['STARRED'],
+  });
+});
+
+var starThread = simpleAPICall(options => {
+  return gapi.client.gmail.users.threads.modify({
+    userID: 'me',
+    id: options.threadID,
+    addLabelIds: ['STARRED'],
+  });
+});
+
 var inProgressAPICalls = {};
 function wrapAPICallWithEmitter(apiCall) {
   return function(options) {
@@ -370,5 +389,7 @@ window.API = Object.assign(module.exports, {
   login: tryAuthorize.bind(null, /*immediate*/ false),
   markThreadAsRead,
   markThreadAsUnread,
+  starThread,
   subscribe,
+  unstarThread,
 });
