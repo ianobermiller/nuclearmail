@@ -45,13 +45,13 @@ StyleSet.injectStyles = () => {
   document.getElementsByTagName('head')[0].appendChild(tag);
 };
 
-StyleSet.clearfix = () => ({
+StyleSet.clearfix = {
   ':after': {
     clear: 'both',
     content: '',
     display: 'table',
   }
-});
+};
 
 // TODO: use a JS lib like Clamp.js and do this in javascript instead
 StyleSet.lineClamp = (lines) => ({

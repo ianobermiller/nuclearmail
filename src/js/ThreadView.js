@@ -6,6 +6,7 @@ var ThreadActions = require('./ThreadActions');
 var ThreadView = require('./ThreadView');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
+var StyleSet = require('./StyleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -49,16 +50,16 @@ var ThreadView = React.createClass({
     }
 
     return (
-      <div className="ThreadView">
-        <ul className="ThreadView_actionbar">
-          <li className="ThreadView_actionbar_item">
+      <div>
+        <ul className={Classes.actionBar}>
+          <li className={Classes.actionBarItem}>
             <button onClick={this._archive}>Archive</button>
           </li>
-          <li className="ThreadView_actionbar_item">
+          <li className={Classes.actionBarItem}>
             <button onClick={this._markAsUnread}>Unread</button>
           </li>
         </ul>
-        <div className="ThreadView_messages">
+        <div className={Classes.messages}>
           {messages.map(message => (
             <MessageView
               key={message.id}
@@ -70,6 +71,26 @@ var ThreadView = React.createClass({
       </div>
     );
   }
+});
+
+var {Classes, Styles} = StyleSet({
+  actionBar: [{
+    background: 'white',
+    borderBottom: '1px solid #ccc',
+    padding: '12px',
+  }, StyleSet.clearfix],
+
+  actionBarItem: {
+    float: 'left',
+    marginRight: '12px',
+  },
+
+  messages: {
+    boxSizing: 'border-box',
+    height: 'calc(100% - 57px)',
+    overflow: 'auto',
+    paddingBottom: '12px',
+  },
 });
 
 module.exports = ThreadView;
