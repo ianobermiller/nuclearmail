@@ -1,7 +1,11 @@
 /** @jsx React.DOM */
+/** @jsx React.DOM */
 
+var Colors = require('./Colors');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
+var StyleSet = require('./StyleSet');
+var Styles = require('./Styles');
 var _ = require('lodash');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -24,7 +28,7 @@ var BlockMessageList = React.createClass({
 
   render() {
     return (
-      <ul className={cx(this.props.className, 'BlockMessageList')}>
+      <ul className={cx(this.props.className, Classes.root)}>
         {this.props.messages.map((msg, index) => (
           <BlockMessageListItem
             index={index}
@@ -60,41 +64,112 @@ var BlockMessageListItem = React.createClass({
     var msg = this.props.message;
     return (
       <li
-        className={cx({
-          'BlockMessageList_item': true,
-          'BlockMessageList_item-unread': msg.isUnread,
-          'BlockMessageList_item-selected': this.props.isSelected,
-        })}
+        className={cx(Classes.item)}
         key={msg.id}
         onClick={this._onClick}>
-        <div className="BlockMessageList_item_inner">
-          <div className="BlockMessageList_item_top">
+        <div className={cx(
+          Classes.itemInner,
+          msg.isUnread && Classes.itemInnerIsUnread,
+          this.props.isSelected && Classes.itemInnerIsSelected
+        )}>
+          <div className={Classes.itemTop}>
             <RelativeDate
-              className="BlockMessageList_item_date"
+              className={Classes.itemDate}
               date={msg.date}
             />
-            <div className="BlockMessageList_item_sender">
+            <div className={cx(
+              Classes.itemSender,
+              this.props.isSelected && Classes.itemSenderIsSelected
+            )}>
               {msg.from.name || msg.from.email}
             </div>
           </div>
-          <div className="BlockMessageList_item_text">
+          <div className={Classes.itemText}>
             {this.props.labels && msg.labelIDs.filter(labelID =>
               this.props.labels[labelID].type === 'user'
             ).map(labelID =>
-              <span className="BlockMessageList_item_label" key={labelID}>
+              <span className={Classes.itemLabel} key={labelID}>
                 {this.props.labels ? this.props.labels[labelID].name : labelID}
               </span>
             )}
-            <span className="BlockMessageList_item_subject">
+            <span>
               {msg.subject}{' '}
             </span>
-            <span className="BlockMessageList_item_snippet">
+            <span className={Classes.itemSnippet}>
               {_.unescape(msg.snippet)}…
             </span>
           </div>
         </div>
       </li>
     );
+  }
+});
+
+var {Classes, Styles} = StyleSet('BlockMessageList', {
+  root: {
+    cursor: 'pointer',
+    userSelect: 'none',
+  },
+
+  item: {
+    borderTop: 'solid 1px #f5f5f5',
+    lineHeight: 1.6,
+    margin: ' 8px',
+
+    ':first-child': {
+      borderTop: 'none',
+    }
+  },
+
+  itemInner: {
+    borderRadius: '8px',
+    padding: '8px 12px 12px 12px',
+  },
+
+  itemInnerIsUnread: {
+    background: Colors.accent.lighten(30),
+  },
+
+  itemInnerIsSelected: {
+    background: Colors.accent,
+    color: 'white',
+  },
+
+  itemTop: Styles.clearfix,
+
+  itemDate: {
+    float: 'right',
+    opacity: 0.5,
+    fontSize: '14px',
+  },
+
+  itemText: [{
+    fontSize: '14px',
+  }, Styles.lineClamp(2)],
+
+  itemLabel: {
+    background: Colors.accent,
+    borderRadius: '4px',
+    color: 'white',
+    display: 'inline-block',
+    marginRight: '4px',
+    padding: '0 4px',
+  },
+
+  itemSender: {
+    color: Colors.accent,
+    fontWeight: 'bold',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+
+  itemSenderIsSelected: {
+    color: 'white',
+  },
+
+  itemSnippet: {
+    opacity: 0.5,
   }
 });
 
