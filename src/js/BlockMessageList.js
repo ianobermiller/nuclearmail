@@ -2,6 +2,7 @@
 /** @jsx React.DOM */
 
 var Colors = require('./Colors');
+var LineClamp = require('./LineClamp');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
 var StyleSet = require('./StyleSet');
@@ -84,7 +85,7 @@ var BlockMessageListItem = React.createClass({
               {msg.from.name || msg.from.email}
             </div>
           </div>
-          <div className={Classes.itemText}>
+          <LineClamp className={Classes.itemText} lines={2}>
             {this.props.labels && msg.labelIDs.filter(labelID =>
               this.props.labels[labelID].type === 'user'
             ).map(labelID =>
@@ -98,7 +99,7 @@ var BlockMessageListItem = React.createClass({
             <span className={Classes.itemSnippet}>
               {_.unescape(msg.snippet)}…
             </span>
-          </div>
+          </LineClamp>
         </div>
       </li>
     );
@@ -143,9 +144,9 @@ var {Classes, Styles} = StyleSet('BlockMessageList', {
     fontSize: '14px',
   },
 
-  itemText: [{
+  itemText: {
     fontSize: '14px',
-  }, Styles.lineClamp(2)],
+  },
 
   itemLabel: {
     background: Colors.accent,
