@@ -64,6 +64,7 @@ function translateMessage(rawMessage) {
     isDraft: hasLabel(rawMessage, 'DRAFT'),
     isInInbox: hasLabel(rawMessage, 'INBOX'),
     isUnread: hasLabel(rawMessage, 'UNREAD'),
+    isStarred: hasLabel(rawMessage, 'STARRED'),
     labelIDs: _.difference(rawMessage.labelIds, ['DRAFT', 'INBOX', 'UNREAD']),
     raw: rawMessage,
     snippet: _.unescape(rawMessage.snippet),

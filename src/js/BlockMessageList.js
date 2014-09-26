@@ -82,6 +82,9 @@ var BlockMessageListItem = React.createClass({
               Classes.itemSender,
               this.props.isSelected && Classes.itemSenderIsSelected
             )}>
+              {msg.isStarred ? (
+                <span className={Classes.star}>{'\u2605'}</span>
+              ) : null}
               {msg.from.name || msg.from.email}
             </div>
           </div>
@@ -171,7 +174,22 @@ var {Classes, Styles} = StyleSet('BlockMessageList', {
 
   itemSnippet: {
     opacity: 0.5,
-  }
+  },
+
+  star: {
+    color: 'yellow',
+    marginRight: '4px',
+    textShadow: `
+      -1px -1px 0 #999,
+      1px -1px 0 #999,
+      -1px 1px 0 #999,
+      1px 1px 0 #999,
+      -1px 0 0 #999,
+      1px 0 0 #999,
+      0 1px 0 #999,
+      0 -1px 0 #999
+    `,
+  },
 });
 
 module.exports = BlockMessageList;
