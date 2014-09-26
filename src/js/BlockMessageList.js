@@ -131,7 +131,7 @@ var {Classes, Styles} = StyleSet('BlockMessageList', {
   },
 
   itemInnerIsUnread: {
-    background: Colors.accent.lighten(30),
+    background: Colors.accent.lighten(40),
   },
 
   itemInnerIsSelected: {
