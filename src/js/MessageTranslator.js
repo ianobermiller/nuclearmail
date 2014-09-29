@@ -1,5 +1,4 @@
 /** @jsx React.DOM */
-/* global gapi */
 
 var _ = require('lodash');
 var utf8 = require('utf8');

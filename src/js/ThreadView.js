@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 
+var KeybindingMixin = require('./KeybindingMixin');
 var MessageStore = require('./MessageStore');
 var MessageView = require('./MessageView');
 var ThreadActions = require('./ThreadActions');
@@ -24,6 +25,7 @@ var ThreadView = React.createClass({
 
   mixins: [
     PureRenderMixin,
+    KeybindingMixin,
     StoreToStateMixin({
       messages: {
         method: MessageStore.getByIDs,
@@ -34,6 +36,10 @@ var ThreadView = React.createClass({
       },
     })
   ],
+
+  componentWillMount() {
+    this.bindKey('y', this._archive);
+  },
 
   _archive() {
     ThreadActions.archive(this.props.thread.id);
