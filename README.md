@@ -10,7 +10,6 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 - WYSIWYG composer?
 - PGP encryption?
 - Keyboard shortcuts
-- Stars
 - Navigation between inbox, priority, labels, etc
 - Fancy scrollbars
 - Post to website

@@ -6,6 +6,7 @@ var Cache = require('./Cache.js');
 var ClientID = require('./ClientID.js');
 var Dispatcher = require('./Dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
+var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
 var _ = require('lodash');
 var utf8 = require('utf8');
@@ -51,81 +52,6 @@ function whenGoogleApiAvailable(fn) {
   } else {
     pendingRequests.push(fn);
   }
-}
-
-function translateMessage(rawMessage) {
-  var msg = rawMessage.payload;
-  return {
-    body: decodeBody(rawMessage),
-    date: new Date(pluckHeader(msg.headers, 'Date')),
-    from: parseFrom(pluckHeader(msg.headers, 'From')),
-    hasAttachment: !!msg.body.data,
-    id: rawMessage.id,
-    isDraft: hasLabel(rawMessage, 'DRAFT'),
-    isInInbox: hasLabel(rawMessage, 'INBOX'),
-    isUnread: hasLabel(rawMessage, 'UNREAD'),
-    isStarred: hasLabel(rawMessage, 'STARRED'),
-    labelIDs: _.difference(
-      rawMessage.labelIds,
-      ['DRAFT', 'INBOX', 'UNREAD', 'STARRED']
-    ),
-    raw: rawMessage,
-    snippet: _.unescape(rawMessage.snippet),
-    subject: pluckHeader(msg.headers, 'Subject'),
-    threadID: rawMessage.threadId,
-  };
-}
-
-function hasLabel(rawMessage, label) {
-  return rawMessage.labelIds && rawMessage.labelIds.indexOf(label) >= 0;
-}
-
-function parseFrom(from) {
-  var i = from.indexOf('<');
-  return {
-    // remove surrounding quotes from name
-    name: from.substring(0, i).trim().replace(/(^")|("$)/g, ''),
-    email: from.substring(i + 1, from.length - 1)
-  };
-}
-
-function decodeBody(rawMessage) {
-  var parts = (rawMessage.payload.parts || []).concat(rawMessage.payload);
-  var result = {};
-
-  collectParts(parts, result);
-
-  return result;
-}
-
-function collectParts(parts, result) {
-  if (!parts) {
-    return;
-  }
-
-  parts.forEach(part => {
-    if (part.body.data) {
-      var contentTypeHeader = pluckHeader(part.headers, 'Content-Type');
-      var contentType = contentTypeHeader ?
-        contentTypeHeader.split(';')[0] :
-        'text/html';
-      result[contentType] =
-        utf8.decode(decodeUrlSafeBase64(part.body.data));
-    }
-
-    if (part.parts) {
-      collectParts(part.parts, result);
-    }
-  });
-}
-
-function decodeUrlSafeBase64(s) {
-  return atob(s.replace(/\-/g, '+').replace(/\_/g, '/'));
-}
-
-function pluckHeader(headers, name) {
-  var header = headers && headers.filter(h => h.name === name)[0];
-  return header ? header.value : null;
 }
 
 var listThreads = wrapAPICallWithEmitter(function(options) {
@@ -174,7 +100,7 @@ var listThreads = wrapAPICallWithEmitter(function(options) {
           var allMessages = [];
           var threads = threadIDs.map(threadID => {
             var thread = itemsResponse[threadID].result;
-            var messages = thread.messages.map(translateMessage);
+            var messages = thread.messages.map(MessageTranslator.translate);
             allMessages.push.apply(allMessages, messages);
             return {
               id: threadID,
@@ -239,7 +165,7 @@ var listMessages = wrapAPICallWithEmitter(function(options) {
           resolve({
             nextPageToken: response.nextPageToken,
             resultSizeEstimate: response.resultSizeEstimate,
-            items: _.map(cachedMessagesByID, translateMessage),
+            items: _.map(cachedMessagesByID, MessageTranslator.translate),
           });
           return;
         }
@@ -257,7 +183,7 @@ var listMessages = wrapAPICallWithEmitter(function(options) {
                 itemsResponse[id].result :
                 messageCache.get(id);
               messageCache.set(msg.id, msg);
-              return translateMessage(msg);
+              return MessageTranslator.translate(msg);
             }),
           });
         });
