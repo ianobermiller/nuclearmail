@@ -24,10 +24,10 @@ function tryAuthorize(immediate) {
 
 function whenAuthenticated(authResult) {
   if (authResult && !authResult.error) {
-    emitter.emit('isAuthororized', true);
+    emitter.emit('isAuthorized', true);
     gapi.client.load('gmail', 'v1', whenLoaded);
   } else {
-    emitter.emit('isAuthororized', false);
+    emitter.emit('isAuthorized', false);
   }
 }
 

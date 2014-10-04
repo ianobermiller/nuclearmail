@@ -72,8 +72,8 @@ var App = React.createClass({
       // run outside of this context in case the api call was synchronous
       asap(() => this.setState({isLoading: false}));
     }));
-    this._subscriptions.push(API.subscribe('isAuthororized', isAuthororized => {
-      this.setState({isAuthororized});
+    this._subscriptions.push(API.subscribe('isAuthorized', isAuthorized => {
+      this.setState({isAuthorized});
     }));
   },
 
@@ -83,7 +83,7 @@ var App = React.createClass({
 
   getInitialState() {
     return {
-      isAuthororized: false,
+      isAuthorized: false,
       isLoading: true,
       maxResultCount: PAGE_SIZE,
       query: 'in:inbox',
@@ -167,7 +167,7 @@ var App = React.createClass({
           <button className={Classes.refresh} onClick={this._onRefresh}>
           ⟳
           </button>
-          {!this.state.isAuthororized ? (
+          {!this.state.isAuthorized ? (
             <button className={Classes.login} onClick={this._onLoginClick}>
               Login with Google
             </button>
