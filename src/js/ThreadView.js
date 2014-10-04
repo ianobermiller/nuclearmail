@@ -103,12 +103,12 @@ var {Classes, Styles} = StyleSet('ThreadView', {
   actionBar: [{
     background: 'white',
     borderBottom: '1px solid #ccc',
-    padding: '12px',
+    padding: '0 12px 12px 12px',
   }, Styles.clearfix],
 
   actionBarItem: {
     float: 'left',
-    marginRight: '12px',
+    margin: '12px 12px 0 0',
   },
 
   messages: {

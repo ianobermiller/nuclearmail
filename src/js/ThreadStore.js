@@ -71,7 +71,6 @@ class ThreadStore extends BaseStore {
       }
     }
 
-
     var apiOptions = {
       query,
       maxResults,

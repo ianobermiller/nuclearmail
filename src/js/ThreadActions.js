@@ -90,7 +90,6 @@ module.exports.star = threadID => {
   );
 };
 
-
 module.exports.unstar = threadID => {
   Dispatcher.dispatch({
     type: ActionType.Thread.UNSTAR_STARTED,
