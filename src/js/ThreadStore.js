@@ -1,8 +1,8 @@
 /** @jsx React.DOM */
 
-var API = require('./API.js');
 var ActionType = require('./ActionType.js');
 var BaseStore = require('./BaseStore.js');
+var ThreadAPI = require('./ThreadAPI.js');
 var _ = require('lodash');
 
 class ThreadStore extends BaseStore {
@@ -78,7 +78,7 @@ class ThreadStore extends BaseStore {
       pageToken,
     };
 
-    return API.listThreads(apiOptions).then(result => {
+    return ThreadAPI.list(apiOptions).then(result => {
       var previousResults = pageToken ? pagingInfo.fetchedResults : [];
 
       var newPagingInfo = this._pagingInfoByQuery[query] = {};

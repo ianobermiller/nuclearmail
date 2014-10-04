@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-var API = require('./API.js');
+var LabelAPI = require('./LabelAPI.js');
 var BaseStore = require('./BaseStore.js');
 
 class LabelStore extends BaseStore {
@@ -15,7 +15,7 @@ class LabelStore extends BaseStore {
       return Promise.resolve(this._labesl);
     }
 
-    return API.listLabels().then(labels => {
+    return LabelAPI.list().then(labels => {
       this._labels = labels;
       return labels;
     });

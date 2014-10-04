@@ -1,18 +1,11 @@
 /** @jsx React.DOM */
 /* global gapi */
 
-var ActionType = require('./ActionType.js');
-var Cache = require('./Cache.js');
 var ClientID = require('./ClientID.js');
 var Dispatcher = require('./Dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
-var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
-var _ = require('lodash');
-var utf8 = require('utf8');
-
 var emitter = new EventEmitter();
-var messageCache = new Cache('messages');
 var isAvailable = false;
 var pendingRequests = [];
 
@@ -54,162 +47,6 @@ function whenGoogleApiAvailable(fn) {
   }
 }
 
-var listThreads = wrapAPICallWithEmitter(function(options) {
-  return new RSVP.Promise((resolve, reject) => {
-    whenGoogleApiAvailable(() => {
-      var request = gapi.client.gmail.users.threads.list({
-        userID: 'me',
-        maxResults: options.maxResults,
-        q: options.query || null,
-        pageToken: options.pageToken || null,
-      });
-
-      request.execute(response => {
-        if (!handleError(response, reject)) {
-          return;
-        }
-
-        var threadIDs = (response.threads || []).map(m => m.id);
-
-        if (!threadIDs.length) {
-          resolve({
-            nextPageToken: null,
-            resultSizeEstimate: 0,
-            items: [],
-          });
-          return;
-        }
-
-        var batch = gapi.client.newHttpBatch();
-        threadIDs.forEach(id => {
-          batch.add(
-            gapi.client.request({
-              path: 'gmail/v1/users/me/threads/' + id
-            }),
-            {id}
-            // TODO: file a task, this is broken :(
-            // dump(gapi.client.gmail.users.messages.get({id: message.id}))
-          );
-        });
-
-        batch.execute(itemsResponse => {
-          if (!handleError(response, reject)) {
-            return;
-          }
-
-          var allMessages = [];
-          var threads = threadIDs.map(threadID => {
-            var thread = itemsResponse[threadID].result;
-            var messages = thread.messages.map(MessageTranslator.translate);
-            allMessages.push.apply(allMessages, messages);
-            return {
-              id: threadID,
-              messageIDs: _.pluck(messages, 'id'),
-            };
-          });
-
-          Dispatcher.dispatch({
-            type: ActionType.Message.ADD_MANY,
-            messages: allMessages,
-          });
-
-          resolve({
-            nextPageToken: response.nextPageToken,
-            resultSizeEstimate: response.resultSizeEstimate,
-            items: threads,
-          });
-        });
-      });
-    });
-  });
-});
-
-var listMessages = wrapAPICallWithEmitter(function(options) {
-  return new RSVP.Promise((resolve, reject) => {
-    whenGoogleApiAvailable(() => {
-      var request = gapi.client.gmail.users.messages.list({
-        userID: 'me',
-        maxResults: options.maxResults,
-        q: options.query || null,
-        pageToken: options.pageToken || null,
-      });
-
-      request.execute(response => {
-        if (!handleError(response, reject)) {
-          return;
-        }
-
-        var messageIDs = response.messages.map(m => m.id);
-        var cachedMessagesByID = {};
-        var batch;
-
-        messageIDs.forEach(id => {
-          var cachedMessage = messageCache.get(id);
-          if (cachedMessage) {
-            cachedMessagesByID[id] = cachedMessage;
-            return;
-          }
-
-          batch = batch || gapi.client.newHttpBatch();
-          batch.add(
-            gapi.client.request({
-              path: 'gmail/v1/users/me/messages/' + id
-            }),
-            {id: id}
-            // TODO: file a task, this is broken :(
-            // dump(gapi.client.gmail.users.messages.get({id: message.id}))
-          );
-        });
-
-        if (!batch) {
-          resolve({
-            nextPageToken: response.nextPageToken,
-            resultSizeEstimate: response.resultSizeEstimate,
-            items: _.map(cachedMessagesByID, MessageTranslator.translate),
-          });
-          return;
-        }
-
-        batch.execute(itemsResponse => {
-          if (!handleError(response, reject)) {
-            return;
-          }
-
-          resolve({
-            nextPageToken: response.nextPageToken,
-            resultSizeEstimate: response.resultSizeEstimate,
-            items: messageIDs.map(id => {
-              var msg = itemsResponse[id] ?
-                itemsResponse[id].result :
-                messageCache.get(id);
-              messageCache.set(msg.id, msg);
-              return MessageTranslator.translate(msg);
-            }),
-          });
-        });
-      });
-    });
-  });
-});
-
-var listLabels = wrapAPICallWithEmitter(function() {
-  return new RSVP.Promise((resolve, reject) => {
-    whenGoogleApiAvailable(() => {
-      var request = gapi.client.gmail.users.labels.list({
-        userID: 'me',
-      });
-
-      request.execute(response => {
-        if (!handleError(response, reject)) {
-          return;
-        }
-
-        resolve(response.labels);
-      });
-    });
-  });
-});
-
 function simpleAPICall(getRequest) {
   return wrapAPICallWithEmitter(options => {
     return new RSVP.Promise((resolve, reject) => {
@@ -227,46 +64,6 @@ function simpleAPICall(getRequest) {
     });
   });
 }
-
-var markThreadAsRead = simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
-    id: options.threadID,
-    removeLabelIds: ['UNREAD'],
-  });
-});
-
-var archiveThread = simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
-    id: options.threadID,
-    removeLabelIds: ['INBOX'],
-  });
-});
-
-var markThreadAsUnread = simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
-    id: options.threadID,
-    addLabelIds: ['UNREAD'],
-  });
-});
-
-var unstarThread = simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
-    id: options.threadID,
-    removeLabelIds: ['STARRED'],
-  });
-});
-
-var starThread = simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
-    id: options.threadID,
-    addLabelIds: ['STARRED'],
-  });
-});
 
 var inProgressAPICalls = {};
 function wrapAPICallWithEmitter(apiCall) {
@@ -306,16 +103,12 @@ function handleError(response, reject) {
   return true;
 }
 
-window.API = Object.assign(module.exports, {
-  archiveThread,
+module.exports = {
+  handleError,
   isInProgress,
-  listLabels,
-  listMessages,
-  listThreads,
   login: tryAuthorize.bind(null, /*immediate*/ false),
-  markThreadAsRead,
-  markThreadAsUnread,
-  starThread,
+  simpleAPICall,
   subscribe,
-  unstarThread,
-});
+  whenGoogleApiAvailable,
+  wrapAPICallWithEmitter,
+};

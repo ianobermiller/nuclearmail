@@ -1,8 +1,8 @@
 /** @jsx React.DOM */
 
 var ActionType = require('./ActionType');
-var API = require('./API');
 var Dispatcher = require('./Dispatcher');
+var ThreadAPI = require('./ThreadAPI');
 
 'use strict';
 
@@ -16,7 +16,7 @@ module.exports.markAsRead = threadID => {
     threadID,
   });
 
-  API.markThreadAsRead({threadID}).then(() =>
+  ThreadAPI.markAsRead({threadID}).then(() =>
     Dispatcher.dispatch({
       type: ActionType.Thread.MARK_AS_READ_COMPLETED,
       threadID,
@@ -36,7 +36,7 @@ module.exports.markAsUnread = threadID => {
     threadID,
   });
 
-  API.markThreadAsUnread({threadID}).then(() =>
+  ThreadAPI.markAsUnread({threadID}).then(() =>
     Dispatcher.dispatch({
       type: ActionType.Thread.MARK_AS_UNREAD_COMPLETED,
       threadID,
@@ -56,7 +56,7 @@ module.exports.archive = threadID => {
     threadID,
   });
 
-  API.archiveThread({threadID}).then(() =>
+  ThreadAPI.archive({threadID}).then(() =>
     Dispatcher.dispatch({
       type: ActionType.Thread.ARCHIVE_COMPLETED,
       threadID,
@@ -76,7 +76,7 @@ module.exports.star = threadID => {
     threadID,
   });
 
-  API.starThread({threadID}).then(() =>
+  ThreadAPI.star({threadID}).then(() =>
     Dispatcher.dispatch({
       type: ActionType.Thread.STAR_COMPLETED,
       threadID,
@@ -97,7 +97,7 @@ module.exports.unstar = threadID => {
     threadID,
   });
 
-  API.unstarThread({threadID}).then(() =>
+  ThreadAPI.unstar({threadID}).then(() =>
     Dispatcher.dispatch({
       type: ActionType.Thread.UNSTAR_COMPLETED,
       threadID,
