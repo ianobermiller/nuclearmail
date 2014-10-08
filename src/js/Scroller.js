@@ -1,5 +1,14 @@
-/** @jsx React.DOM */
+/**
+ * @jsx React.DOM
+ *
+ * A fancy, Facebook-style scrollbar.
+ *
+ * Known issues:
+ * - scrolling over the scrollbar does not work
+ * - clicking the scrollbar not on the thumb doesn't scroll
+ */
 
+// Inspired by:
 // https://github.com/leoselig/jsFancyScroll/
 
 var Colors = require('./Colors');
@@ -22,20 +31,32 @@ var Scroller = React.createClass({
   },
 
   componentDidMount() {
-    this._attachListeners();
-  },
-
-  componentWillUnmount() {
-    this._detachListeners();
-  },
-
-  _attachListeners() {
     window.addEventListener('resize', this._onScroll);
     this._onScroll();
   },
 
-  _detachListeners() {
+  componentDidUpdate() {
+    this._onScroll();
+  },
+
+  componentWillUnmount() {
     window.removeEventListener('resize', this._onScroll);
+  },
+
+  _attachBodyListeners() {
+    document.addEventListener('mouseup', this._onDocumentMouseUp);
+    document.addEventListener('mouseleave', this._onDocumentMouseUp);
+    document.addEventListener('mousemove', this._onDocumentMouseMove);
+    document.addEventListener('selectstart', this._onDocumentSelectStart);
+    document.body.classList.add(Classes.unselectable);
+  },
+
+  _detachBodyListeners() {
+    document.removeEventListener('mouseup', this._onDocumentMouseUp);
+    document.removeEventListener('mouseleave', this._onDocumentMouseUp);
+    document.removeEventListener('mousemove', this._onDocumentMouseMove);
+    document.removeEventListener('selectstart', this._onDocumentSelectStart);
+    document.body.classList.remove(Classes.unselectable);
   },
 
   _onScroll() {
@@ -47,14 +68,67 @@ var Scroller = React.createClass({
     });
   },
 
+  _onDocumentSelectStart(event) {
+    event.preventDefault();
+  },
+
+  _onScrollbarMouseDown(event) {
+    this._attachBodyListeners();
+    this._isMouseDown = true;
+    this._lastPageY = event.pageY;
+    this.setState({isMouseDown: true});
+  },
+
+  _onDocumentMouseUp(event) {
+    this._detachBodyListeners();
+    this._isMouseDown = false;
+    this.setState({isMouseDown: false});
+  },
+
+  _onDocumentMouseMove(event) {
+    if (this._isMouseDown) {
+      var scale = this._getScale();
+      var diff = event.pageY - this._lastPageY;
+      var viewport = this.refs.viewport.getDOMNode();
+      var newScrollTop = (viewport.scrollTop + diff / scale);
+
+      viewport.scrollTop = Math.max(0, newScrollTop);
+      this._lastPageY = event.pageY;
+    }
+  },
+
+  _onScrollerMouseEnter() {
+    this.setState({isHover: true});
+  },
+
+  _onScrollerMouseLeave() {
+    this.setState({isHover: false});
+  },
+
+  _getScale() {
+    return this.state.offsetHeight / this.state.scrollHeight;
+  },
+
   render() /*object*/ {
-    var thumbHeight = this.state.offsetHeight / this.state.scrollHeight * this.state.offsetHeight;
-    var thumbTop = this.state.scrollTop / this.state.scrollHeight * this.state.offsetHeight;
+    var scale = this._getScale();
+    var thumbHeight = this.state.offsetHeight * scale;
+    var thumbTop = this.state.scrollTop * scale;
 
     return (
-      <div className={this.props.className + ' ' + Classes.scroller}>
-        <div className={Classes.scrollbar}>
-          <div className={Classes.thumb} style={{height: thumbHeight, top: thumbTop}} />
+      <div
+        className={cx(this.props.className, Classes.scroller)}
+        onMouseEnter={this._onScrollerMouseEnter}
+        onMouseLeave={this._onScrollerMouseLeave}>
+        <div
+          className={cx(
+            Classes.scrollbar,
+            (this.state.isHover || this.state.isMouseDown) && Classes.scrollbarHover
+          )}
+          onMouseDown={this._onScrollbarMouseDown}>
+          <div
+            className={Classes.thumb}
+            style={{height: thumbHeight, top: thumbTop}}
+          />
         </div>
         <div
           className={Classes.viewport}
@@ -71,6 +145,10 @@ var Scroller = React.createClass({
 
 var scrollBarWidth = '15px';
 var {Classes, Styles} = StyleSet('Scroller', {
+  unselectable: {
+    userSelect: 'none',
+  },
+
   scroller: {
     overflow: 'hidden',
     position: 'relative',
@@ -80,23 +158,22 @@ var {Classes, Styles} = StyleSet('Scroller', {
     bottom: 0,
     opacity: 0,
     position: 'absolute',
-    right: '1px',
+    right: '0',
     top: 0,
     transition: 'opacity .25s',
-    width: '6px',
+    width: '8px',
   },
 
-  // TODO: this is hacky!
-  'scroller:hover .Scroller_scrollbar': {
+  scrollbarHover: {
     opacity: 1,
   },
 
   thumb: {
     background: 'rgba(0, 0, 0, .4)',
-    borderRadius: '2px',
+    borderRadius: '4px',
     position: 'absolute',
-    right: '1px',
-    width: '4px',
+    right: '0',
+    width: '8px',
   },
 
   viewport: {
