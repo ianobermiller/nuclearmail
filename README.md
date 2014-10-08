@@ -5,6 +5,8 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 ## TODO
 
+- Stop using a locally hacked version of RCSS
+- Routing
 - Simple compose
 - Compose with Markdown
 - WYSIWYG composer?

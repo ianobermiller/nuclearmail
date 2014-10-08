@@ -34,31 +34,31 @@ var InfiniteScroll = React.createClass({
   },
 
   componentDidMount() {
-    this._attachScrollListener();
+    this._attachListeners();
   },
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.hasMore) {
-      this._detachScrollListener();
+      this._detachListeners();
     }
   },
 
   componentWillUnmount() {
-    this._detachScrollListener();
+    this._detachListeners();
   },
 
   _getScrollNode() {
     return this.props.isScrollContainer ? this.getDOMNode() : window;
   },
 
-  _attachScrollListener() {
+  _attachListeners() {
     var scrollNode = this._getScrollNode();
     scrollNode.addEventListener('scroll', this._onScroll);
     window.addEventListener('resize', this._onScroll);
     this._onScroll();
   },
 
-  _detachScrollListener() {
+  _detachListeners() {
     var scrollNode = this._getScrollNode();
     scrollNode.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onScroll);
@@ -98,7 +98,7 @@ var InfiniteScroll = React.createClass({
     }
 
     if ((!this.lastHeight || this.lastHeight < height) && isPastThreshold) {
-      // call loadMore after _detachScrollListener to allow
+      // call loadMore after _detachListeners to allow
       // for non-async loadMore functions
       this.props.onRequestMoreItems && this.props.onRequestMoreItems();
       this.lastHeight = height;

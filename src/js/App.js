@@ -9,6 +9,7 @@ var InfiniteScroll = require('./InfiniteScroll');
 var LabelStore = require('./LabelStore');
 var MessageStore = require('./MessageStore');
 var React = require('react');
+var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var StyleSet = require('./StyleSet');
@@ -175,7 +176,7 @@ var App = React.createClass({
         </div>
         <div className={Classes.messages}>
           {this.state.lastMessages.result ? (
-            <InfiniteScroll
+            <Scroller
               className={Classes.messagesList}
               hasMore={this.state.threads.result.hasMore}
               isScrollContainer={true}
@@ -186,7 +187,7 @@ var App = React.createClass({
                 onMessageSelected={this._onMessageSelected}
                 selectedMessageID={this.state.selectedMessageID}
               />
-            </InfiniteScroll>
+            </Scroller>
           ) : (
             <div className={Classes.messagesList} />
           )}
@@ -249,7 +250,7 @@ var {Classes, Styles} = StyleSet('App', {
     flex: 1,
     minWidth: '300px',
     maxWidth: '400px',
-    overflow: 'auto',
+    // overflow: 'auto',
   },
 
   threadView: {
