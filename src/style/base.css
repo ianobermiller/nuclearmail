@@ -75,6 +75,10 @@ button:active {
   padding: 2px 15px 0 17px;
 }
 
+body {
+  overflow: hidden;
+}
+
 @keyframes pulse {
     0%   {width: 10%;}
     50%  {width: 50%;}
