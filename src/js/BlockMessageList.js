@@ -116,7 +116,6 @@ var {Classes, Styles} = StyleSet('BlockMessageList', {
   },
 
   item: {
-    borderTop: 'solid 1px #f5f5f5',
     lineHeight: 1.6,
     margin: '0 8px 8px 8px',
 
