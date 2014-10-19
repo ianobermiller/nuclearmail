@@ -5,7 +5,6 @@ require('es6-shim');
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Colors = require('./Colors');
-var InfiniteScroll = require('./InfiniteScroll');
 var LabelStore = require('./LabelStore');
 var MessageStore = require('./MessageStore');
 var React = require('react');
@@ -236,7 +235,6 @@ var {Classes, Styles} = StyleSet('App', {
   },
 
   messages: {
-    borderTop: `1px solid ${Colors.gray2}`,
     bottom: 0,
     display: 'flex',
     left: 0,
@@ -246,7 +244,6 @@ var {Classes, Styles} = StyleSet('App', {
   },
 
   messagesList: {
-    borderRight: `1px solid ${Colors.gray2}`,
     flex: 1,
     minWidth: '300px',
     maxWidth: '400px',
@@ -254,7 +251,6 @@ var {Classes, Styles} = StyleSet('App', {
   },
 
   threadView: {
-    background: Colors.gray1,
     flex: 2,
   },
 

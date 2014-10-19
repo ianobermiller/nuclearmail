@@ -101,14 +101,12 @@ var ThreadView = React.createClass({
 
 var {Classes, Styles} = StyleSet('ThreadView', {
   actionBar: [{
-    background: 'white',
-    borderBottom: '1px solid #ccc',
     padding: '0 12px 12px 12px',
   }, Styles.clearfix],
 
   actionBarItem: {
     float: 'left',
-    margin: '12px 12px 0 0',
+    marginRight: '12px',
   },
 
   messages: {
