@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 
-var Color = require("./Color");
-var RCSS = require("rcss");
+var Color = require('./Color');
+var RCSS = require('./rcss');
 var _ = require('lodash');
 var autoprefixer = require('autoprefixer');
 

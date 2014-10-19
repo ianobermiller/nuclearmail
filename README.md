@@ -14,7 +14,9 @@ If you get Uncaught SyntaxError: Unexpected token ILLEGAL pointing to the end of
 
 ## TODO
 
-- Stop using a locally hacked version of RCSS
+- Fancy scrollbar on messages list is not yet working with infinite scroll.
+- Use lodash modules
+- Contribute RCSS changes upstream if applicable
 - Routing
 - Simple compose
 - Compose with Markdown
