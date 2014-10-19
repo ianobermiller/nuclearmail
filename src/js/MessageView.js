@@ -99,7 +99,7 @@ var {Classes, Styles} = StyleSet('MessageView', {
   inner: {
     background: '#f9f9f9',
     borderRadius: '4px',
-    boxShadow: '0px 2px 2px 0px #ddd',
+    boxShadow: '0px 1px 2px 1px #ddd',
   },
 
   innerIsExpanded: {
