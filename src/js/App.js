@@ -73,7 +73,7 @@ var App = React.createClass({
       asap(() => this.setState({isLoading: false}));
     }));
     this._subscriptions.push(API.subscribe('isAuthorized', isAuthorized => {
-      this.setState({isAuthorized});
+      this.setState({isAuthorizing: false, isAuthorized});
     }));
   },
 
@@ -83,6 +83,7 @@ var App = React.createClass({
 
   getInitialState() {
     return {
+      isAuthorizing: true,
       isAuthorized: false,
       isLoading: true,
       maxResultCount: PAGE_SIZE,
@@ -167,11 +168,6 @@ var App = React.createClass({
           <button className={Classes.refresh} onClick={this._onRefresh}>
           ⟳
           </button>
-          {!this.state.isAuthorized ? (
-            <button className={Classes.login} onClick={this._onLoginClick}>
-              Login with Google
-            </button>
-          ) : null}
         </div>
         <div className={Classes.messages}>
           {this.state.lastMessages.result ? (
@@ -200,6 +196,21 @@ var App = React.createClass({
             ) : null}
           </div>
         </div>
+        {(!this.state.isAuthorizing && !this.state.isAuthorized) ? (
+          <div className={Classes.loginOverlay}>
+            <div className={Classes.loginDialog}>
+              <h1 className={Classes.loginTitle}>
+                ☢ NUCLEARMAIL
+              </h1>
+              <p className={Classes.loginDescription}>
+                NuclearMail is an experiment of writing a webmail client using React and the Flux architecture. It runs completely in the browser and uses the Gmail REST API.
+              </p>
+              <button onClick={this._onLoginClick}>
+                Login with Google
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -229,9 +240,35 @@ var {Classes, Styles} = StyleSet('App', {
     marginLeft: '12px',
   },
 
-  login: {
-    float: 'right',
-    marginRight: '12px',
+  loginOverlay: {
+    background: 'rgba(255, 255, 255, .9)',
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+
+  loginDialog: {
+    background: 'white',
+    boxShadow: '0 0 20px 0 rgba(0, 0, 0, .5)',
+    left: '50%',
+    padding: '40px',
+    position: 'absolute',
+    textAlign: 'center',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '300px',
+  },
+
+  loginTitle: {
+    color: Colors.accent,
+    fontSize: '24px',
+    marginBottom: '24px',
+  },
+
+  loginDescription: {
+    marginBottom: '24px',
   },
 
   messages: {
