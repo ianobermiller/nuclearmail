@@ -7,7 +7,6 @@ var ThreadActions = require('./ThreadActions');
 var ThreadView = require('./ThreadView');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
-var StyleSet = require('./StyleSet');
 var Styles = require('./Styles');
 var StyleMixin = require('./StyleMixin');
 
