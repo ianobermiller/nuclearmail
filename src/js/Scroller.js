@@ -13,14 +13,63 @@
 
 var Colors = require('./Colors');
 var React = require('react');
-var StyleSet = require('./StyleSet');
+var StyleMixin = require('./StyleMixin');
 
 var PropTypes = React.PropTypes;
 var cx = React.addons.classSet;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
+var scrollBarWidth = '15px';
+
 var Scroller = React.createClass({
-  mixins: [PureRenderMixin],
+  mixins: [
+    PureRenderMixin,
+    StyleMixin({
+      unselectable: {
+        userSelect: 'none',
+      },
+
+      scroller: {
+        overflow: 'hidden',
+        position: 'relative',
+      },
+
+      scrollbar: {
+        bottom: 0,
+        opacity: 0,
+        position: 'absolute',
+        right: '0',
+        top: 0,
+        transition: 'opacity .25s',
+        width: '8px',
+      },
+
+      scrollbarHover: {
+        opacity: 1,
+      },
+
+      thumb: {
+        background: 'rgba(0, 0, 0, .4)',
+        borderRadius: '4px',
+        position: 'absolute',
+        right: '0',
+        width: '8px',
+      },
+
+      viewport: {
+        height: '100%',
+        marginRight: '-' + scrollBarWidth,
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+        paddingRight: scrollBarWidth,
+        width: '100%',
+      },
+
+      content: {
+        marginRight: '-' + scrollBarWidth,
+      },
+    })
+  ],
 
   getInitialState() /*object*/ {
     return {
@@ -48,7 +97,7 @@ var Scroller = React.createClass({
     document.addEventListener('mouseleave', this._onDocumentMouseUp);
     document.addEventListener('mousemove', this._onDocumentMouseMove);
     document.addEventListener('selectstart', this._onDocumentSelectStart);
-    document.body.classList.add(Classes.unselectable);
+    document.body.classList.add(this.styles.unselectable);
   },
 
   _detachBodyListeners() {
@@ -56,7 +105,7 @@ var Scroller = React.createClass({
     document.removeEventListener('mouseleave', this._onDocumentMouseUp);
     document.removeEventListener('mousemove', this._onDocumentMouseMove);
     document.removeEventListener('selectstart', this._onDocumentSelectStart);
-    document.body.classList.remove(Classes.unselectable);
+    document.body.classList.remove(this.styles.unselectable);
   },
 
   _onScroll() {
@@ -116,25 +165,25 @@ var Scroller = React.createClass({
 
     return (
       <div
-        className={cx(this.props.className, Classes.scroller)}
+        className={cx(this.props.className, this.styles.scroller)}
         onMouseEnter={this._onScrollerMouseEnter}
         onMouseLeave={this._onScrollerMouseLeave}>
         <div
           className={cx(
-            Classes.scrollbar,
-            (this.state.isHover || this.state.isMouseDown) && Classes.scrollbarHover
+            this.styles.scrollbar,
+            (this.state.isHover || this.state.isMouseDown) && this.styles.scrollbarHover
           )}
           onMouseDown={this._onScrollbarMouseDown}>
           <div
-            className={Classes.thumb}
+            className={this.styles.thumb}
             style={{height: thumbHeight, top: thumbTop}}
           />
         </div>
         <div
-          className={Classes.viewport}
+          className={this.styles.viewport}
           onScroll={this._onScroll}
           ref="viewport">
-          <div className={Classes.content}>
+          <div className={this.styles.content}>
             {this.props.children}
           </div>
         </div>
@@ -143,51 +192,5 @@ var Scroller = React.createClass({
   }
 });
 
-var scrollBarWidth = '15px';
-var {Classes, Styles} = StyleSet('Scroller', {
-  unselectable: {
-    userSelect: 'none',
-  },
-
-  scroller: {
-    overflow: 'hidden',
-    position: 'relative',
-  },
-
-  scrollbar: {
-    bottom: 0,
-    opacity: 0,
-    position: 'absolute',
-    right: '0',
-    top: 0,
-    transition: 'opacity .25s',
-    width: '8px',
-  },
-
-  scrollbarHover: {
-    opacity: 1,
-  },
-
-  thumb: {
-    background: 'rgba(0, 0, 0, .4)',
-    borderRadius: '4px',
-    position: 'absolute',
-    right: '0',
-    width: '8px',
-  },
-
-  viewport: {
-    height: '100%',
-    marginRight: '-' + scrollBarWidth,
-    overflowX: 'hidden',
-    overflowY: 'scroll',
-    paddingRight: scrollBarWidth,
-    width: '100%',
-  },
-
-  content: {
-    marginRight: '-' + scrollBarWidth,
-  },
-});
 
 module.exports = Scroller;
