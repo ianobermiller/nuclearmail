@@ -5,7 +5,7 @@ var Colors = require('./Colors');
 var LineClamp = require('./LineClamp');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
-var StyleSet = require('./StyleSet');
+var StyleMixin = require('./StyleMixin');
 var Styles = require('./Styles');
 var _ = require('lodash');
 
@@ -14,8 +14,6 @@ var PropTypes = React.PropTypes;
 var cx = React.addons.classSet;
 
 var BlockMessageList = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
     messages: PropTypes.array.isRequired,
 
@@ -23,13 +21,23 @@ var BlockMessageList = React.createClass({
     selectedMessageID: PropTypes.string,
   },
 
+  mixins: [
+    PureRenderMixin,
+    StyleMixin({
+      root: {
+        cursor: 'pointer',
+        userSelect: 'none',
+      },
+    }),
+  ],
+
   _onMessageClick(index, message) {
     this.props.onMessageSelected(message);
   },
 
   render() {
     return (
-      <ul className={cx(this.props.className, Classes.root)}>
+      <ul className={cx(this.props.className, this.styles.root)}>
         {this.props.messages.map((msg, index) => (
           <BlockMessageListItem
             index={index}
@@ -46,8 +54,6 @@ var BlockMessageList = React.createClass({
 });
 
 var BlockMessageListItem = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
     index: PropTypes.number.isRequired,
     isSelected: PropTypes.bool.isRequired,
@@ -57,6 +63,86 @@ var BlockMessageListItem = React.createClass({
     labels: PropTypes.object,
   },
 
+  mixins: [
+    PureRenderMixin,
+    StyleMixin({
+      item: {
+        lineHeight: 1.6,
+        margin: '0 8px 8px 8px',
+
+        ':first-child': {
+          borderTop: 'none',
+        }
+      },
+
+      itemInner: {
+        borderRadius: '8px',
+        padding: '8px 12px 12px 12px',
+      },
+
+      itemInnerIsUnread: {
+        background: Colors.accent.lighten(40),
+      },
+
+      itemInnerIsSelected: {
+        background: Colors.accent,
+        color: 'white',
+      },
+
+      itemTop: Styles.clearfix,
+
+      itemDate: {
+        float: 'right',
+        opacity: 0.5,
+        fontSize: '14px',
+      },
+
+      itemText: {
+        fontSize: '14px',
+      },
+
+      itemLabel: {
+        background: Colors.accent,
+        borderRadius: '4px',
+        color: 'white',
+        display: 'inline-block',
+        marginRight: '4px',
+        padding: '0 4px',
+      },
+
+      itemSender: {
+        color: Colors.accent,
+        fontWeight: 'bold',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      },
+
+      itemSenderIsSelected: {
+        color: 'white',
+      },
+
+      itemSnippet: {
+        opacity: 0.5,
+      },
+
+      star: {
+        color: 'yellow',
+        marginRight: '4px',
+        textShadow: `
+          -1px -1px 0 #999,
+          1px -1px 0 #999,
+          -1px 1px 0 #999,
+          1px 1px 0 #999,
+          -1px 0 0 #999,
+          1px 0 0 #999,
+          0 1px 0 #999,
+          0 -1px 0 #999
+        `,
+      },
+    }),
+  ],
+
   _onClick() {
     this.props.onClick(this.props.index, this.props.message);
   },
@@ -65,41 +151,41 @@ var BlockMessageListItem = React.createClass({
     var msg = this.props.message;
     return (
       <li
-        className={cx(Classes.item)}
+        className={cx(this.styles.item)}
         key={msg.id}
         onClick={this._onClick}>
         <div className={cx(
-          Classes.itemInner,
-          msg.isUnread && Classes.itemInnerIsUnread,
-          this.props.isSelected && Classes.itemInnerIsSelected
+          this.styles.itemInner,
+          msg.isUnread && this.styles.itemInnerIsUnread,
+          this.props.isSelected && this.styles.itemInnerIsSelected
         )}>
-          <div className={Classes.itemTop}>
+          <div className={this.styles.itemTop}>
             <RelativeDate
-              className={Classes.itemDate}
+              className={this.styles.itemDate}
               date={msg.date}
             />
             <div className={cx(
-              Classes.itemSender,
-              this.props.isSelected && Classes.itemSenderIsSelected
+              this.styles.itemSender,
+              this.props.isSelected && this.styles.itemSenderIsSelected
             )}>
               {msg.isStarred ? (
-                <span className={Classes.star}>{'\u2605'}</span>
+                <span className={this.styles.star}>{'\u2605'}</span>
               ) : null}
               {msg.from.name || msg.from.email}
             </div>
           </div>
-          <LineClamp className={Classes.itemText} lines={2}>
+          <LineClamp className={this.styles.itemText} lines={2}>
             {this.props.labels && msg.labelIDs.filter(labelID =>
               this.props.labels[labelID].type === 'user'
             ).map(labelID =>
-              <span className={Classes.itemLabel} key={labelID}>
+              <span className={this.styles.itemLabel} key={labelID}>
                 {this.props.labels ? this.props.labels[labelID].name : labelID}
               </span>
             )}
             <span>
               {msg.subject}{' '}
             </span>
-            <span className={Classes.itemSnippet}>
+            <span className={this.styles.itemSnippet}>
               {_.unescape(msg.snippet)}…
             </span>
           </LineClamp>
@@ -107,88 +193,6 @@ var BlockMessageListItem = React.createClass({
       </li>
     );
   }
-});
-
-var {Classes, Styles} = StyleSet('BlockMessageList', {
-  root: {
-    cursor: 'pointer',
-    userSelect: 'none',
-  },
-
-  item: {
-    lineHeight: 1.6,
-    margin: '0 8px 8px 8px',
-
-    ':first-child': {
-      borderTop: 'none',
-    }
-  },
-
-  itemInner: {
-    borderRadius: '8px',
-    padding: '8px 12px 12px 12px',
-  },
-
-  itemInnerIsUnread: {
-    background: Colors.accent.lighten(40),
-  },
-
-  itemInnerIsSelected: {
-    background: Colors.accent,
-    color: 'white',
-  },
-
-  itemTop: Styles.clearfix,
-
-  itemDate: {
-    float: 'right',
-    opacity: 0.5,
-    fontSize: '14px',
-  },
-
-  itemText: {
-    fontSize: '14px',
-  },
-
-  itemLabel: {
-    background: Colors.accent,
-    borderRadius: '4px',
-    color: 'white',
-    display: 'inline-block',
-    marginRight: '4px',
-    padding: '0 4px',
-  },
-
-  itemSender: {
-    color: Colors.accent,
-    fontWeight: 'bold',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-
-  itemSenderIsSelected: {
-    color: 'white',
-  },
-
-  itemSnippet: {
-    opacity: 0.5,
-  },
-
-  star: {
-    color: 'yellow',
-    marginRight: '4px',
-    textShadow: `
-      -1px -1px 0 #999,
-      1px -1px 0 #999,
-      -1px 1px 0 #999,
-      1px 1px 0 #999,
-      -1px 0 0 #999,
-      1px 0 0 #999,
-      0 1px 0 #999,
-      0 -1px 0 #999
-    `,
-  },
 });
 
 module.exports = BlockMessageList;
