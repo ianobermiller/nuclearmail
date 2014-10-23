@@ -14,13 +14,9 @@ var InfiniteScroll = React.createClass({
     // when you have loaded all the data already.
     hasMore: PropTypes.bool.isRequired,
 
-    // If true, treat this element as the scroll container, and style it with
-    // `overflow: auto`.
-    // If false, `window` will be treated as the scroll container.
-    isScrollContainer: PropTypes.bool,
-
     // Called when page is within `threshold` of the bottom.
     onRequestMoreItems: PropTypes.func.isRequired,
+    onScroll: PropTypes.func,
     threshold: PropTypes.number,
   },
 
@@ -47,55 +43,29 @@ var InfiniteScroll = React.createClass({
     this._detachListeners();
   },
 
-  _getScrollNode() {
-    return this.props.isScrollContainer ? this.getDOMNode() : window;
-  },
-
   _attachListeners() {
-    var scrollNode = this._getScrollNode();
-    scrollNode.addEventListener('scroll', this._onScroll);
-    window.addEventListener('resize', this._onScroll);
-    this._onScroll();
+    window.addEventListener('resize', this._update);
+    this._update();
   },
 
   _detachListeners() {
-    var scrollNode = this._getScrollNode();
-    scrollNode.removeEventListener('scroll', this._onScroll);
-    window.removeEventListener('resize', this._onScroll);
+    window.removeEventListener('resize', this._update);
   },
 
-  render() {
-    var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
-    return (
-      <div
-        className={this.props.className}
-        style={style}>
-        {this.props.children}
-      </div>
-    );
+  _onScroll(event) {
+    this.props.onScroll && this.props.onScroll(event);
+
+    this._update();
   },
 
-  _onScroll() {
+  _update() {
     var el = this.getDOMNode();
-    var isPastThreshold = false;
-    var height = null;
-
-    if (this.props.isScrollContainer) {
-      height = el.scrollHeight;
-      // ScrollTop + offsetHeight is within threshold of scrollHeight
-      isPastThreshold = (el.scrollHeight -
-        el.offsetHeight -
-        el.scrollTop
-      ) < Number(this.props.threshold);
-    } else {
-      height = el.offsetHeight;
-      isPastThreshold = (
-        getAbsoluteOffsetTop(el) +
-        el.offsetHeight -
-        getWindowScrollTop() -
-        window.innerHeight
-      ) < Number(this.props.threshold);
-    }
+    var height = el.scrollHeight;
+    // ScrollTop + offsetHeight is within threshold of scrollHeight
+    var isPastThreshold = (el.scrollHeight -
+      el.offsetHeight -
+      el.scrollTop
+    ) < Number(this.props.threshold);
 
     if ((!this.lastHeight || this.lastHeight < height) && isPastThreshold) {
       // call loadMore after _detachListeners to allow
@@ -103,6 +73,18 @@ var InfiniteScroll = React.createClass({
       this.props.onRequestMoreItems && this.props.onRequestMoreItems();
       this.lastHeight = height;
     }
+  },
+
+  render() {
+    var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
+    return (
+      <div
+        className={this.props.className}
+        onScroll={this._onScroll}
+        style={style}>
+        {this.props.children}
+      </div>
+    );
   },
 });
 
