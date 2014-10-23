@@ -1,8 +1,8 @@
 /** @jsx React.DOM */
 
 var ClientID = require('./ClientID');
+var StyleConverter = require('./StyleConverter');
 var _ = require('lodash');
-var styleRuleConverter = require('./rcss/styleRuleConverter');
 
 var countByStyleName = {};
 
@@ -28,7 +28,7 @@ function StyleMixin(stylesByName) {
       var cssRules = [];
       classesByStyleName = _.mapValues(processedStylesByName, (style, name) => {
         var className = classNameBase + '_' + name;
-        var css = styleRuleConverter.rulesToString(className, style);
+        var css = StyleConverter.toCssString(className, style);
         cssRules.push(css);
         return className;
       });

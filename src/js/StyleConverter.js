@@ -1,3 +1,5 @@
+/* Lifted mostly as-is from RCSS */
+
 var _ = require('lodash');
 
 var _uppercasePattern = /([A-Z])/g;
@@ -70,5 +72,5 @@ function rulesToString(className, styleObj) {
 }
 
 module.exports = {
-  rulesToString: rulesToString
+  toCssString: rulesToString
 };
