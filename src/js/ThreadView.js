@@ -9,6 +9,7 @@ var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var StyleSet = require('./StyleSet');
 var Styles = require('./Styles');
+var StyleMixin = require('./StyleMixin');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -34,7 +35,24 @@ var ThreadView = React.createClass({
         }),
         shouldFetch: options => !!options.ids,
       },
-    })
+    }),
+    StyleMixin({
+      actionBar: [{
+        padding: '0 12px 12px 12px',
+      }, Styles.clearfix],
+
+      actionBarItem: {
+        float: 'left',
+        marginRight: '12px',
+      },
+
+      messages: {
+        boxSizing: 'border-box',
+        height: 'calc(100% - 57px)',
+        overflow: 'auto',
+        paddingBottom: '12px',
+      },
+    }),
   ],
 
   componentWillMount() {
@@ -68,24 +86,24 @@ var ThreadView = React.createClass({
 
     return (
       <div>
-        <ul className={Classes.actionBar}>
-          <li className={Classes.actionBarItem}>
+        <ul className={this.styles.actionBar}>
+          <li className={this.styles.actionBarItem}>
             <button onClick={this._archive}>Archive</button>
           </li>
-          <li className={Classes.actionBarItem}>
+          <li className={this.styles.actionBarItem}>
             <button onClick={this._markAsUnread}>Unread</button>
           </li>
           {isStarred ? (
-            <li className={Classes.actionBarItem}>
+            <li className={this.styles.actionBarItem}>
               <button onClick={this._unstar}>Unstar</button>
             </li>
           ) : (
-            <li className={Classes.actionBarItem}>
+            <li className={this.styles.actionBarItem}>
               <button onClick={this._star}>Star</button>
             </li>
           )}
         </ul>
-        <div className={Classes.messages}>
+        <div className={this.styles.messages}>
           {messages.map(message => (
             <MessageView
               key={message.id}
@@ -97,24 +115,6 @@ var ThreadView = React.createClass({
       </div>
     );
   }
-});
-
-var {Classes, Styles} = StyleSet('ThreadView', {
-  actionBar: [{
-    padding: '0 12px 12px 12px',
-  }, Styles.clearfix],
-
-  actionBarItem: {
-    float: 'left',
-    marginRight: '12px',
-  },
-
-  messages: {
-    boxSizing: 'border-box',
-    height: 'calc(100% - 57px)',
-    overflow: 'auto',
-    paddingBottom: '12px',
-  },
 });
 
 module.exports = ThreadView;

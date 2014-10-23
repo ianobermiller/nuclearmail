@@ -7,6 +7,4 @@ function getClientID() {
   return 'ClientID-' + counter;
 }
 
-window.getClientID = getClientID;
-
 module.exports.get = getClientID;
