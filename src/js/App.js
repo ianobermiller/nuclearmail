@@ -34,6 +34,9 @@ moment.locale('en', {
   }
 });
 
+// Expose React for the dev tools
+window.React = React;
+
 var App = React.createClass({
   mixins: [
     PureRenderMixin,
