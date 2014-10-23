@@ -14,7 +14,6 @@ If you get Uncaught SyntaxError: Unexpected token ILLEGAL pointing to the end of
 
 ## TODO
 
-- Use lodash modules
 - Routing
 - Simple compose
 - Compose with Markdown
@@ -22,6 +21,7 @@ If you get Uncaught SyntaxError: Unexpected token ILLEGAL pointing to the end of
 - PGP encryption?
 - Keyboard shortcuts
 - Navigation between inbox, priority, labels, etc
+- Use lodash modules
 - Contribute RCSS changes upstream if applicable
 - https://github.com/naman34/react-stylePrefixr (needs value support)
 - https://github.com/greypants/gulp-starter/tree/master/gulp/tasks
