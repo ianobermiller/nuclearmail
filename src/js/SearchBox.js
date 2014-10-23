@@ -2,7 +2,7 @@
 
 var Colors = require('./Colors');
 var React = require('react');
-var StyleSet = require('./StyleSet');
+var StyleMixin = require('./StyleMixin');
 
 var PropTypes = React.PropTypes;
 var cx = React.addons.classSet;
@@ -13,6 +13,20 @@ var SearchBox = React.createClass({
     onQuerySubmit: PropTypes.func.isRequired,
     query: PropTypes.string.isRequired,
   },
+
+  mixins: [
+    StyleMixin({
+      input: {
+        marginRight: '8px',
+        width: '400px',
+      },
+
+      button: {
+        background: Colors.accent,
+        color: 'white',
+      },
+    })
+  ],
 
   _onQueryKeyDown(e) {
     if (e.key === 'Enter') {
@@ -32,14 +46,14 @@ var SearchBox = React.createClass({
     return (
       <span className={cx(this.props.className, 'SearchBox')}>
         <input
-          className={Classes.input}
+          className={this.styles.input}
           value={this.props.query}
           onChange={this._onQueryChange}
           onKeyDown={this._onQueryKeyDown}
           type="search"
         />
         <button
-          className={Classes.button}
+          className={this.styles.button}
           onClick={this._onSearchClick}
           type="button">
           Search
@@ -47,18 +61,6 @@ var SearchBox = React.createClass({
       </span>
     );
   }
-});
-
-var {Classes, Styles} = StyleSet('SearchBox', {
-  input: {
-    marginRight: '8px',
-    width: '400px',
-  },
-
-  button: {
-    background: Colors.accent,
-    color: 'white',
-  },
 });
 
 module.exports = SearchBox;
