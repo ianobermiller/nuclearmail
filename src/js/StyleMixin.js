@@ -3,7 +3,9 @@
 var ClientID = require('./ClientID');
 var StyleConverter = require('./StyleConverter');
 var _ = require('lodash');
+var autoprefixer = require('autoprefixer');
 
+var autoprefixerInstance = autoprefixer();
 var countByStyleName = {};
 
 function StyleMixin(stylesByName) {
@@ -29,6 +31,7 @@ function StyleMixin(stylesByName) {
       classesByStyleName = _.mapValues(processedStylesByName, (style, name) => {
         var className = classNameBase + '_' + name;
         var css = StyleConverter.toCssString(className, style);
+        css = autoprefixerInstance.process(css);
         cssRules.push(css);
         return className;
       });
