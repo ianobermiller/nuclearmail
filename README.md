@@ -26,4 +26,5 @@ If you get Uncaught SyntaxError: Unexpected token ILLEGAL pointing to the end of
 - Navigation between inbox, priority, labels, etc
 - Fancy scrollbars
 - Post to website
+- https://github.com/naman34/react-stylePrefixr (needs value support)
 - https://github.com/greypants/gulp-starter/tree/master/gulp/tasks
