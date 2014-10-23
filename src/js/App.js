@@ -11,7 +11,7 @@ var React = require('react');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
-var StyleSet = require('./StyleSet');
+var StyleMixin = require('./StyleMixin');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
@@ -57,6 +57,98 @@ var App = React.createClass({
           return {ids: messageIDs};
         },
         shouldFetch: options => !!options.ids,
+      },
+    }),
+    StyleMixin({
+      app: {
+        paddingTop: '20px',
+      },
+
+      logo: {
+        color: Colors.accent,
+        float: 'left',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        lineHeight: '32px',
+        margin: '0 12px',
+      },
+
+      search: {
+        float: 'left',
+        marginLeft: '12px',
+      },
+
+      refresh: {
+        float: 'left',
+        marginLeft: '12px',
+      },
+
+      loginOverlay: {
+        background: 'rgba(255, 255, 255, .9)',
+        bottom: 0,
+        left: 0,
+        position: 'absolute',
+        right: 0,
+        top: 0,
+      },
+
+      loginDialog: {
+        background: 'white',
+        boxShadow: '0 0 20px 0 rgba(0, 0, 0, .5)',
+        left: '50%',
+        padding: '40px',
+        position: 'absolute',
+        textAlign: 'center',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '300px',
+      },
+
+      loginTitle: {
+        color: Colors.accent,
+        fontSize: '24px',
+        marginBottom: '24px',
+      },
+
+      loginDescription: {
+        marginBottom: '24px',
+      },
+
+      messages: {
+        bottom: 0,
+        display: 'flex',
+        left: 0,
+        position: 'absolute',
+        right: 0,
+        top: '73px',
+      },
+
+      messagesList: {
+        flex: 1,
+        minWidth: '300px',
+        maxWidth: '400px',
+        // overflow: 'auto',
+      },
+
+      threadView: {
+        flex: 2,
+      },
+
+      spinner: {
+        left: 0,
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        zIndex: 10000,
+
+        ':after': {
+          animation: 'pulse 3s ease 0s infinite',
+          background: Colors.accent,
+          content: ' ',
+          display: 'block',
+          height: '4px',
+          margin: '0 auto',
+        },
       },
     })
   ],
@@ -153,26 +245,26 @@ var App = React.createClass({
       {id: this.state.selectedThreadID}
     );
     return (
-      <div className={Classes.app}>
-        {this.state.isLoading && <div className={Classes.spinner} />}
-        <div className={Classes.header}>
-          <span className={Classes.logo} onClick={this._onLogoClick}>
+      <div className={this.styles.app}>
+        {this.state.isLoading && <div className={this.styles.spinner} />}
+        <div className={this.styles.header}>
+          <span className={this.styles.logo} onClick={this._onLogoClick}>
             ☢ NUCLEARMAIL
           </span>
           <SearchBox
-            className={Classes.search}
+            className={this.styles.search}
             query={this.state.queryProgress}
             onQueryChange={this._onQueryChange}
             onQuerySubmit={this._onQuerySubmit}
           />
-          <button className={Classes.refresh} onClick={this._onRefresh}>
+          <button className={this.styles.refresh} onClick={this._onRefresh}>
           ⟳
           </button>
         </div>
-        <div className={Classes.messages}>
+        <div className={this.styles.messages}>
           {this.state.lastMessages.result ? (
             <Scroller
-              className={Classes.messagesList}
+              className={this.styles.messagesList}
               hasMore={this.state.threads.result.hasMore}
               isScrollContainer={true}
               onRequestMoreItems={this._onRequestMoreItems}>
@@ -184,9 +276,9 @@ var App = React.createClass({
               />
             </Scroller>
           ) : (
-            <div className={Classes.messagesList} />
+            <div className={this.styles.messagesList} />
           )}
-          <div className={Classes.threadView}>
+          <div className={this.styles.threadView}>
             {selectedThread ? (
               <ThreadView
                 thread={selectedThread}
@@ -197,12 +289,12 @@ var App = React.createClass({
           </div>
         </div>
         {(!this.state.isAuthorizing && !this.state.isAuthorized) ? (
-          <div className={Classes.loginOverlay}>
-            <div className={Classes.loginDialog}>
-              <h1 className={Classes.loginTitle}>
+          <div className={this.styles.loginOverlay}>
+            <div className={this.styles.loginDialog}>
+              <h1 className={this.styles.loginTitle}>
                 ☢ NUCLEARMAIL
               </h1>
-              <p className={Classes.loginDescription}>
+              <p className={this.styles.loginDescription}>
                 NuclearMail is an experiment of writing a webmail client using React and the Flux architecture. It runs completely in the browser and uses the Gmail REST API.
               </p>
               <button onClick={this._onLoginClick}>
@@ -215,101 +307,6 @@ var App = React.createClass({
     );
   }
 });
-
-var {Classes, Styles} = StyleSet('App', {
-  app: {
-    paddingTop: '20px',
-  },
-
-  logo: {
-    color: Colors.accent,
-    float: 'left',
-    fontSize: '24px',
-    fontWeight: 'bold',
-    lineHeight: '32px',
-    margin: '0 12px',
-  },
-
-  search: {
-    float: 'left',
-    marginLeft: '12px',
-  },
-
-  refresh: {
-    float: 'left',
-    marginLeft: '12px',
-  },
-
-  loginOverlay: {
-    background: 'rgba(255, 255, 255, .9)',
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-
-  loginDialog: {
-    background: 'white',
-    boxShadow: '0 0 20px 0 rgba(0, 0, 0, .5)',
-    left: '50%',
-    padding: '40px',
-    position: 'absolute',
-    textAlign: 'center',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '300px',
-  },
-
-  loginTitle: {
-    color: Colors.accent,
-    fontSize: '24px',
-    marginBottom: '24px',
-  },
-
-  loginDescription: {
-    marginBottom: '24px',
-  },
-
-  messages: {
-    bottom: 0,
-    display: 'flex',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: '73px',
-  },
-
-  messagesList: {
-    flex: 1,
-    minWidth: '300px',
-    maxWidth: '400px',
-    // overflow: 'auto',
-  },
-
-  threadView: {
-    flex: 2,
-  },
-
-  spinner: {
-    left: 0,
-    position: 'fixed',
-    top: 0,
-    width: '100%',
-    zIndex: 10000,
-
-    ':after': {
-      animation: 'pulse 3s ease 0s infinite',
-      background: Colors.accent,
-      content: ' ',
-      display: 'block',
-      height: '4px',
-      margin: '0 auto',
-    },
-  },
-});
-
-StyleSet.injectStyles();
 
 React.renderComponent(<App />, document.body);
 
