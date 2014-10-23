@@ -12,6 +12,7 @@
 // https://github.com/leoselig/jsFancyScroll/
 
 var Colors = require('./Colors');
+var InfiniteScroll = require('./InfiniteScroll');
 var React = require('react');
 var StyleMixin = require('./StyleMixin');
 
@@ -22,6 +23,8 @@ var PureRenderMixin = React.addons.PureRenderMixin;
 var scrollBarWidth = '15px';
 
 var Scroller = React.createClass({
+  propTypes: InfiniteScroll.propTypes,
+
   mixins: [
     PureRenderMixin,
     StyleMixin({
@@ -179,14 +182,15 @@ var Scroller = React.createClass({
             style={{height: thumbHeight, top: thumbTop}}
           />
         </div>
-        <div
+        <InfiniteScroll
+          {...this.props}
           className={this.styles.viewport}
           onScroll={this._onScroll}
           ref="viewport">
           <div className={this.styles.content}>
             {this.props.children}
           </div>
-        </div>
+        </InfiniteScroll>
       </div>
     );
   }

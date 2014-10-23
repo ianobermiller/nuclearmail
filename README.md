@@ -14,9 +14,7 @@ If you get Uncaught SyntaxError: Unexpected token ILLEGAL pointing to the end of
 
 ## TODO
 
-- Fancy scrollbar on messages list is not yet working with infinite scroll.
 - Use lodash modules
-- Contribute RCSS changes upstream if applicable
 - Routing
 - Simple compose
 - Compose with Markdown
@@ -24,7 +22,6 @@ If you get Uncaught SyntaxError: Unexpected token ILLEGAL pointing to the end of
 - PGP encryption?
 - Keyboard shortcuts
 - Navigation between inbox, priority, labels, etc
-- Fancy scrollbars
-- Post to website
+- Contribute RCSS changes upstream if applicable
 - https://github.com/naman34/react-stylePrefixr (needs value support)
 - https://github.com/greypants/gulp-starter/tree/master/gulp/tasks
