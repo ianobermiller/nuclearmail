@@ -97,7 +97,8 @@ function subscribe(eventName, callback) {
 
 function handleError(response, reject) {
   if (response.error) {
-    reject();
+    console.error('API Error', response.error);
+    reject(response.error);
     return false;
   }
   return true;
