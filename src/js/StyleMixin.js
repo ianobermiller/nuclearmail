@@ -4,10 +4,9 @@ var ClientID = require('./ClientID');
 var _ = require('lodash');
 var styleRuleConverter = require('./rcss/styleRuleConverter');
 
-var lastMixinID = 1;
+var countByStyleName = {};
 
 function StyleMixin(stylesByName) {
-  var mixinID = lastMixinID++;
   var classesByStyleName;
   var hasInjectedStyles = false;
 
@@ -19,7 +18,13 @@ function StyleMixin(stylesByName) {
       }
 
       var processedStylesByName = _.mapValues(stylesByName, processStyle);
-      var classNameBase = this.constructor.displayName + '-' + mixinID;
+      var classNameBase = this.constructor.displayName;
+      if (countByStyleName[classNameBase]) {
+        classNameBase += '-' + countByStyleName[classNameBase];
+      }
+      countByStyleName[classNameBase] =
+        (countByStyleName[classNameBase] || 0) + 1;
+
       var cssRules = [];
       classesByStyleName = _.mapValues(processedStylesByName, (style, name) => {
         var className = classNameBase + '_' + name;
