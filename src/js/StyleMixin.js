@@ -9,12 +9,21 @@ var autoprefixerInstance = autoprefixer();
 var countByStyleName = {};
 
 function StyleMixin(stylesByName) {
+  var tag;
   var classesByStyleName;
-  var hasInjectedStyles = false;
+  var mountedComponentCount = 0;
+  var cleanupStyleTag = function() {
+    mountedComponentCount--;
+    if (mountedComponentCount === 0) {
+      tag.parentNode.removeChild(tag);
+    }
+  };
 
   return {
     componentWillMount() {
-      if (hasInjectedStyles) {
+      mountedComponentCount++;
+
+      if (mountedComponentCount > 1) {
         this.styles = classesByStyleName;
         return;
       }
@@ -37,11 +46,13 @@ function StyleMixin(stylesByName) {
       });
       this.styles = classesByStyleName;
 
-      var tag = document.createElement('style');
+      tag = document.createElement('style');
       tag.innerHTML = cssRules.join('\n');
       document.getElementsByTagName('head')[0].appendChild(tag);
+    },
 
-      hasInjectedStyles = true;
+    componentWillUnmount() {
+      setTimeout(cleanupStyleTag, 100);
     },
   };
 }
