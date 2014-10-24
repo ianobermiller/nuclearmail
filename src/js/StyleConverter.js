@@ -25,7 +25,7 @@ function escapeValueForProp(value, prop) {
 
 function ruleToString(propName, value) {
   var cssPropName = hyphenateProp(propName);
-  return cssPropName + ':' + escapeValueForProp(value, cssPropName) + ';';
+  return cssPropName + ': ' + escapeValueForProp(value, cssPropName) + ';';
 }
 
 function _rulesToStringHeadless(styleObj) {
@@ -39,7 +39,7 @@ function _rulesToStringHeadless(styleObj) {
     if (key[0] === ':' || key.substring(0, 6) === '@media') {
       continue;
     }
-    markup += ruleToString(key, styleObj[key]);
+    markup += '  ' + ruleToString(key, styleObj[key]) + '\n';
   }
   return markup;
 }
@@ -55,17 +55,18 @@ function rulesToString(className, styleObj) {
     }
     // Skipping the special pseudo-selectors and media queries.
     if (key[0] === ':') {
-      pseudos += '.' + className + key + '{' +
+      pseudos += '\n.' + className + key + ' {\n' +
         _rulesToStringHeadless(styleObj[key]) + '}';
     } else if (key.substring(0, 6) === '@media') {
-      mediaQueries += key + '{' + rulesToString(className, styleObj[key]) + '}';
+      mediaQueries += '\n' + key + ' {\n' +
+        rulesToString(className, styleObj[key]);
     } else {
-      markup += ruleToString(key, styleObj[key]);
+      markup += '  ' + ruleToString(key, styleObj[key]) + '\n';
     }
   }
 
   if (markup !== '') {
-    markup = '.' + className + '{' + markup + '}';
+    markup = '.' + className + ' {\n' + markup + '}';
   }
 
   return markup + pseudos + mediaQueries;
