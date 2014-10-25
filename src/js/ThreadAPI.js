@@ -8,110 +8,95 @@ var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
 var _ = require('lodash');
 
-var list = API.wrapAPICallWithEmitter(function(options) {
-  return new RSVP.Promise((resolve, reject) => {
-    API.whenGoogleApiAvailable(() => {
-      var request = gapi.client.gmail.users.threads.list({
-        userId: 'me',
-        maxResults: options.maxResults,
-        q: options.query || null,
-        pageToken: options.pageToken || null,
+var list = API.wrap((options) => {
+  return API.execute(gapi.client.gmail.users.threads.list({
+    userId: 'me',
+    maxResults: options.maxResults,
+    q: options.query || null,
+    pageToken: options.pageToken || null,
+  })).then(listResponse => {
+    var threadIDs = (listResponse.threads || []).map(m => m.id);
+
+    if (!threadIDs.length) {
+      return Promise.resolve({
+        nextPageToken: null,
+        resultSizeEstimate: 0,
+        items: [],
+      });
+    }
+
+    var batch = gapi.client.newHttpBatch();
+    threadIDs.forEach(id => {
+      batch.add(
+        gapi.client.gmail.users.threads.get({userId: 'me', id}),
+        {id}
+      );
+    });
+
+    return API.execute(batch).then(batchResponse => {
+      var allMessages = [];
+      var threads = threadIDs.map(threadID => {
+        var thread = batchResponse[threadID].result;
+        var messages = thread.messages.map(MessageTranslator.translate);
+        allMessages.push.apply(allMessages, messages);
+        return {
+          id: threadID,
+          messageIDs: _.pluck(messages, 'id'),
+        };
       });
 
-      request.execute(response => {
-        if (!API.handleError(response, reject)) {
-          return;
-        }
-
-        var threadIDs = (response.threads || []).map(m => m.id);
-
-        if (!threadIDs.length) {
-          resolve({
-            nextPageToken: null,
-            resultSizeEstimate: 0,
-            items: [],
-          });
-          return;
-        }
-
-        var batch = gapi.client.newHttpBatch();
-        threadIDs.forEach(id => {
-          batch.add(
-            gapi.client.gmail.users.threads.get({userId: 'me', id}),
-            {id}
-          );
-        });
-
-        batch.execute(itemsResponse => {
-          if (!API.handleError(response, reject)) {
-            return;
-          }
-
-          var allMessages = [];
-          var threads = threadIDs.map(threadID => {
-            var thread = itemsResponse[threadID].result;
-            var messages = thread.messages.map(MessageTranslator.translate);
-            allMessages.push.apply(allMessages, messages);
-            return {
-              id: threadID,
-              messageIDs: _.pluck(messages, 'id'),
-            };
-          });
-
-          Dispatcher.dispatch({
-            type: ActionType.Message.ADD_MANY,
-            messages: allMessages,
-          });
-
-          resolve({
-            nextPageToken: response.nextPageToken,
-            resultSizeEstimate: response.resultSizeEstimate,
-            items: threads,
-          });
-        });
+      Dispatcher.dispatch({
+        type: ActionType.Message.ADD_MANY,
+        messages: allMessages,
       });
+
+      return {
+        nextPageToken: listResponse.nextPageToken,
+        resultSizeEstimate: listResponse.resultSizeEstimate,
+        items: threads,
+      };
     });
   });
 });
 
-var markAsRead = API.simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
+var markAsRead = API.wrap((options) => {
+  return API.execute(gapi.client.gmail.users.threads.modify({
     userId: 'me',
     id: options.threadID,
     removeLabelIds: ['UNREAD'],
-  });
+  }));
 });
 
-var archive = API.simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
+var archive = API.wrap((options) => {
+  return API.execute(gapi.client.gmail.users.threads.modify({
     userId: 'me',
     id: options.threadID,
     removeLabelIds: ['INBOX'],
-  });
+  }));
 });
 
-var markAsUnread = API.simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
+var markAsUnread = API.wrap((options) => {
+  return API.execute(gapi.client.gmail.users.threads.modify({
     userId: 'me',
     id: options.threadID,
     addLabelIds: ['UNREAD'],
-  });
+  }));
 });
 
-var unstar = API.simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
+var unstar = API.wrap((options) => {
+  return API.execute(gapi.client.gmail.users.threads.modify({
     userId: 'me',
     id: options.threadID,
     removeLabelIds: ['STARRED'],
-  });
+  }));
 });
 
-var star = API.simpleAPICall(options => {
-  return gapi.client.gmail.users.threads.modify({
+var star = API.wrap((options) => {
+  return API.execute(gapi.client.gmail.users.threads.modify({
     userId: 'me',
     id: options.threadID,
     addLabelIds: ['STARRED'],
-  });
+  }));
 });
 
 module.exports = {

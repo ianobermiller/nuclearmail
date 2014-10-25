@@ -39,6 +39,16 @@ function whenLoaded() {
   pendingRequests = [];
 }
 
+function promiseGoogleApiAvailable() {
+  if (isAvailable) {
+    return RSVP.Promise.resolve();
+  }
+
+  return new RSVP.Promise((resolve, reject) => {
+    pendingRequests.push(resolve);
+  });
+}
+
 function whenGoogleApiAvailable(fn) {
   if (isAvailable) {
     fn();
@@ -47,32 +57,20 @@ function whenGoogleApiAvailable(fn) {
   }
 }
 
-function simpleAPICall(getRequest) {
-  return wrapAPICallWithEmitter(options => {
-    return new RSVP.Promise((resolve, reject) => {
-      whenGoogleApiAvailable(() => {
-        var request = getRequest(options);
-
-        request.execute(response => {
-          if (!handleError(response, reject)) {
-            return;
-          }
-
-          resolve(response);
-        });
-      });
-    });
-  });
-}
-
 var inProgressAPICalls = {};
-function wrapAPICallWithEmitter(apiCall) {
+
+/**
+ * Wraps a function with API in-progress reporting and error logging.
+ */
+function wrap(getPromise) {
   return function(options) {
     var id = ClientID.get();
     inProgressAPICalls[id] = true;
     emitter.emit('start', id);
 
-    var promise = apiCall(options);
+    var promise = promiseGoogleApiAvailable().then(() => {
+      return getPromise(options);
+    });
 
     promise.catch(error => console.log('API Error', error));
 
@@ -99,21 +97,29 @@ function subscribe(eventName, callback) {
   };
 }
 
-function handleError(response, reject) {
-  if (response.error) {
-    console.error('API Error', response.error);
-    reject(response.error);
-    return false;
-  }
-  return true;
+/**
+ * Executes a Google API request (anything with an execute method), turning
+ * it into a promise. The promise is rejected if the response contains an
+ * error field, resolved otherwise.
+ */
+function execute(request) {
+  return new RSVP.Promise((resolve, reject) => {
+    request.execute(response => {
+      if (response.error) {
+        console.error('API Error', response.error);
+        reject(response.error);
+        return;
+      }
+
+      resolve(response);
+    });
+  });
 }
 
 module.exports = {
-  handleError,
+  execute,
   isInProgress,
   login: tryAuthorize.bind(null, /*immediate*/ false),
-  simpleAPICall,
   subscribe,
-  whenGoogleApiAvailable,
-  wrapAPICallWithEmitter,
+  wrap,
 };
