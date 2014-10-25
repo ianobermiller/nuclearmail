@@ -14,6 +14,7 @@ var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var StyleMixin = require('./StyleMixin');
+var Styles = require('./Styles');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
