@@ -37,12 +37,8 @@ var list = API.wrapAPICallWithEmitter(function(options) {
         var batch = gapi.client.newHttpBatch();
         threadIDs.forEach(id => {
           batch.add(
-            gapi.client.request({
-              path: 'gmail/v1/users/me/threads/' + id
-            }),
+            gapi.client.gmail.users.threads.get({userId: 'me', id}),
             {id}
-            // TODO: file a task, this is broken :(
-            // dump(gapi.client.gmail.users.messages.get({id: message.id}))
           );
         });
 
