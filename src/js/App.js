@@ -6,6 +6,7 @@ var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Colors = require('./Colors');
 var LabelStore = require('./LabelStore');
+var LoginModal = require('./LoginModal');
 var MessageStore = require('./MessageStore');
 var React = require('react');
 var Scroller = require('./Scroller');
@@ -84,37 +85,6 @@ var App = React.createClass({
       refresh: {
         float: 'left',
         marginLeft: '12px',
-      },
-
-      loginOverlay: {
-        background: 'rgba(255, 255, 255, .9)',
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
-        right: 0,
-        top: 0,
-      },
-
-      loginDialog: {
-        background: 'white',
-        boxShadow: '0 0 20px 0 rgba(0, 0, 0, .5)',
-        left: '50%',
-        padding: '40px',
-        position: 'absolute',
-        textAlign: 'center',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '300px',
-      },
-
-      loginTitle: {
-        color: Colors.accent,
-        fontSize: '24px',
-        marginBottom: '24px',
-      },
-
-      loginDescription: {
-        marginBottom: '24px',
       },
 
       messages: {
@@ -216,10 +186,6 @@ var App = React.createClass({
     });
   },
 
-  _onLoginClick() {
-    API.login();
-  },
-
   _onThreadClosed() {
     var messages = this.state.lastMessages.result;
 
@@ -292,19 +258,7 @@ var App = React.createClass({
           </div>
         </div>
         {(!this.state.isAuthorizing && !this.state.isAuthorized) ? (
-          <div className={this.styles.loginOverlay}>
-            <div className={this.styles.loginDialog}>
-              <h1 className={this.styles.loginTitle}>
-                ☢ NUCLEARMAIL
-              </h1>
-              <p className={this.styles.loginDescription}>
-                NuclearMail is an experiment of writing a webmail client using React and the Flux architecture. It runs completely in the browser and uses the Gmail REST API.
-              </p>
-              <button onClick={this._onLoginClick}>
-                Login with Google
-              </button>
-            </div>
-          </div>
+          <LoginModal />
         ) : null}
       </div>
     );
