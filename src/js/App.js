@@ -8,6 +8,7 @@ var Colors = require('./Colors');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');
 var MessageStore = require('./MessageStore');
+var Nav = require('./Nav');
 var React = require('react');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
@@ -68,6 +69,8 @@ var App = React.createClass({
         paddingTop: '20px',
       },
 
+      header: Styles.clearfix,
+
       logo: {
         color: Colors.accent,
         float: 'left',
@@ -93,7 +96,7 @@ var App = React.createClass({
         left: 0,
         position: 'absolute',
         right: 0,
-        top: '73px',
+        top: '104px',
       },
 
       messagesList: {
@@ -230,6 +233,10 @@ var App = React.createClass({
           ⟳
           </button>
         </div>
+        <Nav
+          onQueryChanged={this._onQuerySubmit}
+          query={this.state.query}
+        />
         <div className={this.styles.messages}>
           {this.state.lastMessages.result ? (
             <Scroller
