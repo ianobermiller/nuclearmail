@@ -80,7 +80,7 @@ var list = API.wrapAPICallWithEmitter(function(options) {
 
 var markAsRead = API.simpleAPICall(options => {
   return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
+    userId: 'me',
     id: options.threadID,
     removeLabelIds: ['UNREAD'],
   });
@@ -88,7 +88,7 @@ var markAsRead = API.simpleAPICall(options => {
 
 var archive = API.simpleAPICall(options => {
   return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
+    userId: 'me',
     id: options.threadID,
     removeLabelIds: ['INBOX'],
   });
@@ -96,7 +96,7 @@ var archive = API.simpleAPICall(options => {
 
 var markAsUnread = API.simpleAPICall(options => {
   return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
+    userId: 'me',
     id: options.threadID,
     addLabelIds: ['UNREAD'],
   });
@@ -104,7 +104,7 @@ var markAsUnread = API.simpleAPICall(options => {
 
 var unstar = API.simpleAPICall(options => {
   return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
+    userId: 'me',
     id: options.threadID,
     removeLabelIds: ['STARRED'],
   });
@@ -112,7 +112,7 @@ var unstar = API.simpleAPICall(options => {
 
 var star = API.simpleAPICall(options => {
   return gapi.client.gmail.users.threads.modify({
-    userID: 'me',
+    userId: 'me',
     id: options.threadID,
     addLabelIds: ['STARRED'],
   });
