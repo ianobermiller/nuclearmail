@@ -72,7 +72,11 @@ function wrapAPICallWithEmitter(apiCall) {
     inProgressAPICalls[id] = true;
     emitter.emit('start', id);
 
-    return apiCall(options).finally(() => {
+    var promise = apiCall(options);
+
+    promise.catch(error => console.log('API Error', error));
+
+    return promise.finally(() => {
       delete inProgressAPICalls[id];
       emitter.emit('stop', id);
       if (!Object.keys(inProgressAPICalls).length) {
