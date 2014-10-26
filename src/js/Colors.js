@@ -6,8 +6,10 @@ var _ = require('lodash');
 var Colors = _.mapValues(
   {
     accent: '#ff6817',
+    black: '#000',
     gray1: '#eee',
     gray2: '#ccc',
+    gray3: '#666',
   },
   value => new Color(value)
 );

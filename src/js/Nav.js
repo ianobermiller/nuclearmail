@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 
+var Colors = require('./Colors');
 var React = require('react');
 var StyleMixin = require('./StyleMixin');
 var Styles = require('./Styles');
@@ -73,13 +74,23 @@ var NavItem = React.createClass({
       }, Styles.clearfix],
 
       link: {
+        color: Colors.gray3,
         display: 'block',
         padding: '16px',
         textDecoration: 'none',
+
+        ':hover': {
+          color: Colors.black,
+        },
       },
 
       linkSelected: {
-        textDecoration: 'overline underline',
+        color: Colors.accent,
+        cursor: 'default',
+
+        ':hover': {
+          color: Colors.accent,
+        }
       }
     }),
   ],
