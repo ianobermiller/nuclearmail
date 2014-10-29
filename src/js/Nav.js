@@ -48,6 +48,7 @@ var Nav = React.createClass({
             <NavItem
               label={config.label}
               query={config.query}
+              key={config.label}
               onQueryChanged={this.props.onQueryChanged}
               isSelected={this.props.query === config.query}
             />
