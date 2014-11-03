@@ -24,7 +24,7 @@ function escapeValueForProp(value, prop) {
   return _.escape(value);
 }
 
-function ruleToString(keyframeNameMap, propName, value) {
+function declarationToString(keyframeNameMap, propName, value) {
   var cssPropName = hyphenateProp(propName);
   var value = escapeValueForProp(value, cssPropName);
   if (cssPropName.contains('animation')) {
@@ -47,9 +47,8 @@ function getkeyframeNameMap(className, styles) {
   );
 }
 
-function rulesToString(className, styles) {
+function ruleSetToString(className, styles) {
   var keyframeNameMap = getkeyframeNameMap(className, styles);
-  console.log(keyframeNameMap);
   var markup = '';
   var pseudos = '';
   var mediaQueries = '';
@@ -62,21 +61,21 @@ function rulesToString(className, styles) {
 
     if (key[0] === ':') {
       pseudos += '\n.' + className + key + ' {\n' +
-        _.map(styles[key], (v, k) => '  ' + ruleToString(keyframeNameMap, k, v)).join('') + '}';
+        _.map(styles[key], (v, k) => '  ' + declarationToString(keyframeNameMap, k, v)).join('') + '}';
     } else if (key.startsWith('@media')) {
       mediaQueries += '\n' + key + ' {\n' +
-        rulesToString(className, styles[key]);
+        ruleSetToString(className, styles[key]);
     } else if (key.startsWith('@keyframes')) {
       var keyframeName = key.split(' ')[1];
       var newkeyframeName = keyframeNameMap[keyframeName];
       keyframes += '\n @keyframes ' + newkeyframeName + ' {\n' +
-        _.map(styles[key], (styles, percentage) => {
+        _.map(styles[key], (keyframeStyles, percentage) => {
           return '  ' + percentage + ' {\n' +
-            _.map(styles, (v, k) => '    ' + ruleToString(keyframeNameMap, k, v)).join('') +
+            _.map(keyframeStyles, (v, k) => '    ' + declarationToString(keyframeNameMap, k, v)).join('') +
             '  }';
         }).join('\n') + '\n}';
     } else {
-      markup += '  ' + ruleToString(keyframeNameMap, key, styles[key]);
+      markup += '  ' + declarationToString(keyframeNameMap, key, styles[key]);
     }
   }
 
@@ -88,5 +87,5 @@ function rulesToString(className, styles) {
 }
 
 module.exports = {
-  toCssString: rulesToString
+  toCssString: ruleSetToString
 };
