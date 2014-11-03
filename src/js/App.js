@@ -119,14 +119,21 @@ var App = React.createClass({
         zIndex: 10000,
 
         ':after': {
-          animation: 'pulse 3s ease 0s infinite',
+          animation: 'App_pulse 3s ease 0s infinite',
           background: Colors.accent,
           content: ' ',
           display: 'block',
           height: '4px',
           margin: '0 auto',
         },
+
+        '@keyframes App_pulse': {
+          '0%':   {width: '10%'},
+          '50%':  {width: '50%'},
+          '100%': {width: '10%'},
+        },
       },
+
     })
   ],
 
