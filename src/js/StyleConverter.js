@@ -24,52 +24,59 @@ function escapeValueForProp(value, prop) {
   return _.escape(value);
 }
 
-function ruleToString(propName, value) {
+function ruleToString(keyframeNameMap, propName, value) {
   var cssPropName = hyphenateProp(propName);
-  return cssPropName + ': ' + escapeValueForProp(value, cssPropName) + ';';
-}
-
-function _rulesToStringHeadless(styleObj) {
-  var markup = '';
-
-  for (var key in styleObj) {
-    if (!styleObj.hasOwnProperty(key)) {
-      continue;
-    }
-
-    if (key[0] === ':' || key.startsWith('@media')) {
-      continue;
-    }
-    markup += '  ' + ruleToString(key, styleObj[key]) + '\n';
+  var value = escapeValueForProp(value, cssPropName);
+  if (cssPropName.contains('animation')) {
+    _.forEach(keyframeNameMap, (newkeyframeName, oldkeyframeName) => {
+      if (value.contains(oldkeyframeName)) {
+        value = value.replace(oldkeyframeName, newkeyframeName);
+      }
+    });
   }
-  return markup;
+  return cssPropName + ': ' + value + ';\n';
 }
 
-function rulesToString(className, styleObj) {
+function getkeyframeNameMap(className, styles) {
+  var keyframeNames = Object.keys(styles)
+    .filter(key => key.startsWith('@keyframes'))
+    .map(key => key.split(' ')[1]);
+  return _.object(
+    keyframeNames,
+    keyframeNames.map(name => className + '_' + name)
+  );
+}
+
+function rulesToString(className, styles) {
+  var keyframeNameMap = getkeyframeNameMap(className, styles);
+  console.log(keyframeNameMap);
   var markup = '';
   var pseudos = '';
   var mediaQueries = '';
   var keyframes = '';
 
-  for (var key in styleObj) {
-    if (!styleObj.hasOwnProperty(key)) {
+  for (var key in styles) {
+    if (!styles.hasOwnProperty(key)) {
       continue;
     }
 
-    // Skipping the special pseudo-selectors and media queries.
     if (key[0] === ':') {
       pseudos += '\n.' + className + key + ' {\n' +
-        _rulesToStringHeadless(styleObj[key]) + '}';
+        _.map(styles[key], (v, k) => '  ' + ruleToString(keyframeNameMap, k, v)).join('') + '}';
     } else if (key.startsWith('@media')) {
       mediaQueries += '\n' + key + ' {\n' +
-        rulesToString(className, styleObj[key]);
+        rulesToString(className, styles[key]);
     } else if (key.startsWith('@keyframes')) {
-      keyframes += '\n' + key + ' {\n' +
-        _.map(styleObj[key], (styles, percentage) => {
-          return percentage + ' {' + _.map(styles, (v, k) => ruleToString(k, v)).join('\n') + '}';
-        }).join('\n') + '}';
+      var keyframeName = key.split(' ')[1];
+      var newkeyframeName = keyframeNameMap[keyframeName];
+      keyframes += '\n @keyframes ' + newkeyframeName + ' {\n' +
+        _.map(styles[key], (styles, percentage) => {
+          return '  ' + percentage + ' {\n' +
+            _.map(styles, (v, k) => '    ' + ruleToString(keyframeNameMap, k, v)).join('') +
+            '  }';
+        }).join('\n') + '\n}';
     } else {
-      markup += '  ' + ruleToString(key, styleObj[key]) + '\n';
+      markup += '  ' + ruleToString(keyframeNameMap, key, styles[key]);
     }
   }
 
