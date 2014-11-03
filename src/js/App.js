@@ -78,7 +78,15 @@ var App = React.createClass({
         fontSize: '24px',
         fontWeight: 'bold',
         lineHeight: '32px',
-        margin: '0 12px',
+        marginLeft: '12px',
+      },
+
+      logoName: {
+        marginRight: '12px',
+
+        '@media (max-width: 800px)': {
+          display: 'none',
+        },
       },
 
       search: {
@@ -229,7 +237,8 @@ var App = React.createClass({
         {this.state.isLoading && <div className={this.styles.spinner} />}
         <div className={this.styles.header}>
           <span className={this.styles.logo} onClick={this._onLogoClick}>
-            ☢ NUCLEARMAIL
+            ☢
+            <span className={this.styles.logoName}>{' '}NUCLEARMAIL</span>
           </span>
           <SearchBox
             className={this.styles.search}

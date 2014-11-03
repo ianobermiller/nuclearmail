@@ -34,7 +34,7 @@ function declarationToString(keyframeNameMap, propName, value) {
       }
     });
   }
-  return cssPropName + ': ' + value + ';\n';
+  return '  ' + cssPropName + ': ' + value + ';\n';
 }
 
 function getkeyframeNameMap(className, styles) {
@@ -47,12 +47,18 @@ function getkeyframeNameMap(className, styles) {
   );
 }
 
+function indent(text, tabs) {
+  tabs = tabs || 1;
+  var spaces = new Array(tabs + 1).join('  ');
+  return text.split('\n').map(t => spaces + t).join('\n');
+}
+
 function ruleSetToString(className, styles) {
   var keyframeNameMap = getkeyframeNameMap(className, styles);
-  var markup = '';
-  var pseudos = '';
-  var mediaQueries = '';
-  var keyframes = '';
+  var declarations = [];
+  var pseudos = [];
+  var mediaQueries = [];
+  var keyframes = [];
 
   for (var key in styles) {
     if (!styles.hasOwnProperty(key)) {
@@ -60,30 +66,45 @@ function ruleSetToString(className, styles) {
     }
 
     if (key[0] === ':') {
-      pseudos += '\n.' + className + key + ' {\n' +
-        _.map(styles[key], (v, k) => '  ' + declarationToString(keyframeNameMap, k, v)).join('') + '}';
+      pseudos.push(
+        '.' + className + key + ' {\n' +
+        _.map(
+          styles[key],
+          (v, k) => declarationToString(keyframeNameMap, k, v)
+        ).join('') + '}'
+      );
     } else if (key.startsWith('@media')) {
-      mediaQueries += '\n' + key + ' {\n' +
-        ruleSetToString(className, styles[key]);
+      mediaQueries.push(
+        key + ' {\n' +
+        indent(ruleSetToString(className, styles[key])) +
+        '\n}'
+      );
     } else if (key.startsWith('@keyframes')) {
       var keyframeName = key.split(' ')[1];
       var newkeyframeName = keyframeNameMap[keyframeName];
-      keyframes += '\n @keyframes ' + newkeyframeName + ' {\n' +
-        _.map(styles[key], (keyframeStyles, percentage) => {
-          return '  ' + percentage + ' {\n' +
-            _.map(keyframeStyles, (v, k) => '    ' + declarationToString(keyframeNameMap, k, v)).join('') +
-            '  }';
-        }).join('\n') + '\n}';
+      keyframes.push('@keyframes ' + newkeyframeName + ' {\n' +
+        indent(
+          _.map(styles[key], (keyframeStyles, percentage) => {
+            return percentage + ' {\n' +
+              _.map(
+                keyframeStyles,
+                (v, k) => declarationToString(keyframeNameMap, k, v)
+              ).join('') +
+              '}';
+          }).join('\n')
+        ) + '\n}'
+      );
     } else {
-      markup += '  ' + declarationToString(keyframeNameMap, key, styles[key]);
+      declarations.push(declarationToString(keyframeNameMap, key, styles[key]));
     }
   }
 
-  if (markup !== '') {
-    markup = '.' + className + ' {\n' + markup + '}';
+  var markup = '';
+  if (declarations.length) {
+    markup = '.' + className + ' {\n' + declarations.join('') + '}';
   }
 
-  return markup + pseudos + mediaQueries + keyframes;
+  return [].concat(markup, pseudos, mediaQueries, keyframes).join('\n');
 }
 
 module.exports = {
