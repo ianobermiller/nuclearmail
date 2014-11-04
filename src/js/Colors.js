@@ -10,6 +10,7 @@ var Colors = _.mapValues(
     gray1: '#eee',
     gray2: '#ccc',
     gray3: '#666',
+    white: '#fff',
   },
   value => new Color(value)
 );

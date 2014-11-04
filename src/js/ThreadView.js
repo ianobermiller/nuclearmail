@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 
+var Button = require('./Button');
 var KeybindingMixin = require('./KeybindingMixin');
 var MessageStore = require('./MessageStore');
 var MessageView = require('./MessageView');
 var ThreadActions = require('./ThreadActions');
-var ThreadView = require('./ThreadView');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var Styles = require('./Styles');
@@ -87,18 +87,18 @@ var ThreadView = React.createClass({
       <div>
         <ul className={this.styles.actionBar}>
           <li className={this.styles.actionBarItem}>
-            <button onClick={this._archive}>Archive</button>
+            <Button onClick={this._archive}>Archive</Button>
           </li>
           <li className={this.styles.actionBarItem}>
-            <button onClick={this._markAsUnread}>Unread</button>
+            <Button onClick={this._markAsUnread}>Unread</Button>
           </li>
           {isStarred ? (
             <li className={this.styles.actionBarItem}>
-              <button onClick={this._unstar}>Unstar</button>
+              <Button onClick={this._unstar}>Unstar</Button>
             </li>
           ) : (
             <li className={this.styles.actionBarItem}>
-              <button onClick={this._star}>Star</button>
+              <Button onClick={this._star}>Star</Button>
             </li>
           )}
         </ul>

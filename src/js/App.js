@@ -4,6 +4,7 @@ require('es6-shim');
 
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
+var Button = require('./Button');
 var Colors = require('./Colors');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');
@@ -96,7 +97,7 @@ var App = React.createClass({
 
       refresh: {
         float: 'left',
-        marginLeft: '12px',
+        marginLeft: '12px', // TODO: not getting applied. need override :(
       },
 
       messages: {
@@ -246,9 +247,9 @@ var App = React.createClass({
             onQueryChange={this._onQueryChange}
             onQuerySubmit={this._onQuerySubmit}
           />
-          <button className={this.styles.refresh} onClick={this._onRefresh}>
+          <Button className={this.styles.refresh} onClick={this._onRefresh}>
           ⟳
-          </button>
+          </Button>
         </div>
         <Nav
           onQueryChanged={this._onQuerySubmit}

@@ -59,22 +59,6 @@ input[type=search] {
   padding: 0 4px;
 }
 
-button {
-  background: #eee;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-  line-height: 30px;
-  margin: 0;
-  padding: 1px 16px;
-  vertical-align: top;
-
-}
-
-button:active {
-  padding: 2px 15px 0 17px;
-}
-
 body {
   overflow: hidden;
 }

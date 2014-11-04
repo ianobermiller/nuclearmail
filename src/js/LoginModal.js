@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var API = require('./API');
+var Button = require('./Button');
 var Colors = require('./Colors');
 var React = require('react');
 var StyleMixin = require('./StyleMixin');
@@ -60,9 +61,9 @@ var LoginModal = React.createClass({
             and the Flux architecture. It runs completely in the browser and
             uses the Gmail REST API.
           </p>
-          <button onClick={this._onLoginClick}>
+          <Button onClick={this._onLoginClick}>
             Login with Google
-          </button>
+          </Button>
         </div>
       </div>
     );

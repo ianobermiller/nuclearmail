@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 
+var Button = require('./Button');
 var Colors = require('./Colors');
 var React = require('react');
 var StyleMixin = require('./StyleMixin');
@@ -19,11 +20,6 @@ var SearchBox = React.createClass({
       input: {
         marginRight: '8px',
         width: '400px',
-      },
-
-      button: {
-        background: Colors.accent,
-        color: 'white',
       },
     })
   ],
@@ -52,12 +48,12 @@ var SearchBox = React.createClass({
           onKeyDown={this._onQueryKeyDown}
           type="search"
         />
-        <button
+        <Button
           className={this.styles.button}
           onClick={this._onSearchClick}
-          type="button">
+          use="special">
           Search
-        </button>
+        </Button>
       </span>
     );
   }
