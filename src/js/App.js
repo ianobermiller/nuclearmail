@@ -111,12 +111,14 @@ var App = React.createClass({
 
       messagesList: {
         flex: 1,
+        height: '100%',
         minWidth: '300px',
         maxWidth: '400px',
       },
 
       threadView: {
         flex: 2,
+        height: '100%',
       },
 
       spinner: {

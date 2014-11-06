@@ -36,6 +36,9 @@ var ThreadView = React.createClass({
       },
     }),
     StyleMixin({
+      root: {
+        height: '100%',
+      },
       actionBar: [{
         padding: '0 12px 12px 12px',
       }, Styles.clearfix],
@@ -84,7 +87,7 @@ var ThreadView = React.createClass({
     var isStarred = messages.some(m => m.isStarred);
 
     return (
-      <div>
+      <div className={this.styles.root}>
         <ul className={this.styles.actionBar}>
           <li className={this.styles.actionBarItem}>
             <Button onClick={this._archive}>Archive</Button>
