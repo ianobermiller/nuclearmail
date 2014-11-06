@@ -113,7 +113,6 @@ var App = React.createClass({
         flex: 1,
         minWidth: '300px',
         maxWidth: '400px',
-        // overflow: 'auto',
       },
 
       threadView: {
