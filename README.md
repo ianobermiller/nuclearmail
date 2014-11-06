@@ -5,12 +5,7 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 ## Getting started
 
-1. Run `gulp` in the root directory
-2. Any changes will automatically refresh the browser
-
-## Known Issues
-
-If you get Uncaught SyntaxError: Unexpected token ILLEGAL pointing to the end of App.js, just change something and let it rebuild. This sometimes happens on the first build.
+1. `npm start` will start watchify and browser-sync and open a browser window. Changing any file will build and refresh the window.
 
 ## TODO
 
