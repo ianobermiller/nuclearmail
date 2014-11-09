@@ -1,5 +1,4 @@
 /** @jsx React.DOM */
-/** @jsx React.DOM */
 
 var Colors = require('./Colors');
 var LineClamp = require('./LineClamp');

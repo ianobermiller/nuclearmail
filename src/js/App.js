@@ -144,6 +144,10 @@ var App = React.createClass({
         },
       },
 
+      messageLoading: {
+        textAlign: 'center',
+        padding: '20px',
+      },
     })
   ],
 
@@ -269,6 +273,15 @@ var App = React.createClass({
                 onMessageSelected={this._onMessageSelected}
                 selectedMessageID={this.state.selectedMessageID}
               />
+              {this.state.threads.result.hasMore ? (
+                <div className={this.styles.messageLoading}>
+                  You{"'"}ve seen {this.state.threads.result.items.length}.
+                  {this.state.threads.result.items.length >= 100 ? (
+                    ' ' + _.sample(pagingMessages)
+                  ) : null}
+                  {' '}Loading more...
+                </div>
+              ) : null}
             </Scroller>
           ) : (
             <div className={this.styles.messagesList} />
@@ -290,6 +303,23 @@ var App = React.createClass({
     );
   }
 });
+
+var pagingMessages = [
+  'Still going?',
+  'Now you\'re just getting greedy.',
+  '\u266b I still haven\'t found what I\'m lookin\' for. \u266b',
+  'I could go on forever.',
+  'Perhaps you should narrow the search term?',
+  'Look at you go!',
+  '\u266b This is the song that never ends \u266b',
+  '\u266b Scrollin, scrollin, scrollin through the emails \u266b',
+  'Really?',
+  'Give up, you\'ll never find it now.',
+  'I know it must be here somewhere.',
+  'You can do it!',
+  'Eventually you\'ll just give up.',
+  'Dig dig dig!'
+];
 
 React.render(<App />, document.body);
 
