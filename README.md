@@ -19,4 +19,4 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 - Use lodash modules
 - Contribute RCSS changes upstream if applicable
 - https://github.com/naman34/react-stylePrefixr (needs value support)
-- https://github.com/greypants/gulp-starter/tree/master/gulp/tasks
+- https://github.com/gaearon/react-hot-loader
