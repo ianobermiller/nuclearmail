@@ -4,7 +4,8 @@ var _ = require('lodash');
 
 function styleSet(...styles) {
   styles = _.compact(styles);
-  return Object.assign.apply(null, styles);
+  var style = Object.assign.apply(null, [{}].concat(styles));
+  return style;
 }
 
 module.exports = styleSet;
