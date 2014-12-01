@@ -19,7 +19,7 @@ var Button = React.createClass({
   mixins: [
     PureRenderMixin,
     InteractiveStyleMixin({
-      button: ['focus', 'active'],
+      button: ['hover', 'active'],
     })
   ],
 

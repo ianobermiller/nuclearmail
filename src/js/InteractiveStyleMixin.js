@@ -17,67 +17,75 @@ class InteractiveStyleMixin {
     this._config = config;
     this._component.interactions =
       _.mapValues(config, (requestedInteractions, interactionID) => {
-        var interaction = {
-          props: {
-            onMouseEnter: () => {
-              this._setState(interactionID, {
-                isHovering: true,
-                isActive: this._getState(interactionID, 'isMouseDown'),
-              });
-            },
+        var interaction = {props: {}};
+        if (
+          requestedInteractions.indexOf('hover') !== -1 ||
+          requestedInteractions.indexOf('active') !== -1
+        ) {
+          interaction.props.onMouseEnter = () => {
+            this._setState(interactionID, {
+              isHovering: true,
+              isActive: this._getState(interactionID, 'isMouseDown'),
+            });
+          };
 
-            onMouseLeave: () => {
-              this._setState(interactionID, {
-                isHovering: false,
-                isActive: false,
-              });
-            },
+          interaction.props.onMouseLeave = () => {
+            this._setState(interactionID, {
+              isHovering: false,
+              isActive: false,
+            });
+          };
 
-            onMouseUp: () => {
+          interaction.isHovering = () => {
+            return this._getState(interactionID, 'isHovering');
+          };
+        }
+
+        if (requestedInteractions.indexOf('active') !== -1) {
+          interaction.props.onMouseUp = () => {
+            this._setState(interactionID, {
+              isActive: false,
+              isMouseDown: false,
+            });
+          };
+
+          interaction.props.onMouseDown = () => {
+            this._setState(interactionID, {
+              isActive: true,
+              isMouseDown: true,
+            });
+          };
+
+          // Sometimes a quick tap registers the mousedown and up events
+          // at the same time, and the active state never renders.
+          interaction.props.onClick = () => {
+            this._setState(interactionID, {
+              isActive: true,
+              isMouseDown: true,
+            });
+
+            setTimeout(() => {
               this._setState(interactionID, {
                 isActive: false,
                 isMouseDown: false,
               });
-            },
+            }, 100);
+          };
 
-            onMouseDown: () => {
-              this._setState(interactionID, {
-                isActive: true,
-                isMouseDown: true,
-              });
-            },
-
-            // Sometimes a quick tap registers the mousedown and up events
-            // at the same time, and the active state never renders.
-            onClick: () => {
-              this._setState(interactionID, {
-                isActive: true,
-                isMouseDown: true,
-              });
-
-              setTimeout(() => {
-                this._setState(interactionID, {
-                  isActive: false,
-                  isMouseDown: false,
-                });
-              }, 100);
-            },
-          },
-          isActive: () => {
+          interaction.isActive = () => {
             return this._getState(interactionID, 'isActive');
-          },
-          isHovering: () => {
-            return this._getState(interactionID, 'isHovering');
-          },
-        };
-        emitter.addListener('mouseup', interaction.props.onMouseUp);
+          };
+        }
+        interaction.props.onMouseUp &&
+          emitter.addListener('mouseup', interaction.props.onMouseUp);
         return interaction;
       });
   }
 
   componentWillUnmount() {
     _.forEach(this._component.interactions, (interaction, interactionID) => {
-      emitter.removeListener('mouseup', interaction.props.onMouseUp);
+      interaction.props.onMouseUp &&
+        emitter.removeListener('mouseup', interaction.props.onMouseUp);
     });
   }
 
