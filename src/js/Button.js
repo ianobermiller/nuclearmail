@@ -1,10 +1,9 @@
 /** @jsx React.DOM */
 
-var Button = require('./Button');
 var Colors = require('./Colors');
+var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var React = require('react');
 var StylePropTypes = require('./StylePropTypes');
-var _ = require('lodash');
 var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
@@ -17,7 +16,12 @@ var Button = React.createClass({
     style: StylePropTypes.including('margin'),
   },
 
-  mixins: [PureRenderMixin],
+  mixins: [
+    PureRenderMixin,
+    InteractiveStyleMixin({
+      button: ['focus', 'active'],
+    })
+  ],
 
   getDefaultProps: function() {
     return {
@@ -26,15 +30,21 @@ var Button = React.createClass({
   },
 
   render() /*object*/ {
+    var interaction = this.interactions.button;
     return (
       <button
         type="button"
         {...this.props}
+        {...this.interactions.button.props}
         style={sx(
           styles.root,
           (this.props.use === 'default') && styles.default,
+          (this.props.use === 'default' && interaction.isHovering()) &&
+            styles.defaultHover,
           (this.props.use === 'special') && styles.special,
-          _.pick(this.props.style, 'margin')
+          (this.props.use === 'special' && interaction.isHovering()) &&
+            styles.specialHover,
+          interaction.isActive() && styles.active
         )}
       />
     );
@@ -50,10 +60,10 @@ var styles = {
     margin: 0,
     padding: '1px 16px',
     verticalAlign: 'top',
+  },
 
-    ':active': {
-      padding: '2px 15px 0 17px',
-    },
+  active: {
+    padding: '2px 15px 0 17px',
   },
 
   default: {
@@ -61,9 +71,17 @@ var styles = {
     color: Colors.black,
   },
 
+  defaultHover: {
+    background: Colors.gray1.darken(5),
+  },
+
   special: {
     background: Colors.accent,
     color: Colors.white,
+  },
+
+  specialHover: {
+    background: Colors.accent.darken(5),
   },
 };
 
