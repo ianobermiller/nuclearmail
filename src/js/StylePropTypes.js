@@ -2,8 +2,9 @@
 
 var React = require('react');
 var PropTypes = React.PropTypes;
+var _ = require('lodash');
 
-var  StylePropTypes = {
+var StylePropTypes = {
   including(...names) {
     return function(props, propName, componentName) {
       var style = props[propName];
@@ -24,7 +25,12 @@ var  StylePropTypes = {
         );
       }
     };
-  }
+  },
 };
+
+StylePropTypes.layout = StylePropTypes.including(
+  'margin', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom',
+  'float', 'flex'
+);
 
 module.exports = StylePropTypes;

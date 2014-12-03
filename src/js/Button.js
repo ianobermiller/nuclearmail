@@ -13,7 +13,7 @@ var cx = React.addons.classSet;
 var Button = React.createClass({
   propTypes: {
     use: PropTypes.oneOf(['default', 'special']),
-    style: StylePropTypes.including('margin'),
+    style: StylePropTypes.layout,
   },
 
   mixins: [
@@ -23,7 +23,7 @@ var Button = React.createClass({
     })
   ],
 
-  getDefaultProps: function() {
+  getDefaultProps() {
     return {
       use: 'default'
     };
@@ -44,7 +44,8 @@ var Button = React.createClass({
           (this.props.use === 'special') && styles.special,
           (this.props.use === 'special' && interaction.isHovering()) &&
             styles.specialHover,
-          interaction.isActive() && styles.active
+          interaction.isActive() && styles.active,
+          this.props.style
         )}
       />
     );
