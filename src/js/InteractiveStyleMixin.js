@@ -11,104 +11,148 @@ document.body.addEventListener('mouseup', event => {
   emitter.emit('mouseup', event);
 });
 
-class InteractiveStyleMixin {
-  constructor(component, config) {
+class Interaction {
+  constructor(id, component, requestedInteractions) {
+    this._id = id;
     this._component = component;
-    this._config = config;
-    this._component.interactions =
-      _.mapValues(config, (requestedInteractions, interactionID) => {
-        var interaction = {props: {}};
-        if (
-          requestedInteractions.indexOf('hover') !== -1 ||
-          requestedInteractions.indexOf('active') !== -1
-        ) {
-          interaction.props.onMouseEnter = () => {
-            this._setState(interactionID, {
-              isHovering: true,
-              isActive: this._getState(interactionID, 'isMouseDown'),
-            });
-          };
+    this.props = {};
+    this._mediaQueries = {};
+    this._teardownFunctions = [];
+    this._requestedInteractions = requestedInteractions;
 
-          interaction.props.onMouseLeave = () => {
-            this._setState(interactionID, {
-              isHovering: false,
-              isActive: false,
-            });
-          };
+    if (
+      _.contains(requestedInteractions, 'hover') ||
+      _.contains(requestedInteractions, 'active')
+    ) {
+      this.props.onMouseEnter = this._onMouseEnter.bind(this);
+      this.props.onMouseLeave = this._onMouseLeave.bind(this);
+    }
 
-          interaction.isHovering = () => {
-            return this._getState(interactionID, 'isHovering');
-          };
-        }
-
-        if (requestedInteractions.indexOf('active') !== -1) {
-          interaction.props.onMouseUp = () => {
-            this._setState(interactionID, {
-              isActive: false,
-              isMouseDown: false,
-            });
-          };
-
-          interaction.props.onMouseDown = () => {
-            this._setState(interactionID, {
-              isActive: true,
-              isMouseDown: true,
-            });
-          };
-
-          // Sometimes a quick tap registers the mousedown and up events
-          // at the same time, and the active state never renders.
-          interaction.props.onClick = () => {
-            this._setState(interactionID, {
-              isActive: true,
-              isMouseDown: true,
-            });
-
-            setTimeout(() => {
-              this._setState(interactionID, {
-                isActive: false,
-                isMouseDown: false,
-              });
-            }, 100);
-          };
-
-          interaction.isActive = () => {
-            return this._getState(interactionID, 'isActive');
-          };
-        }
-        interaction.props.onMouseUp &&
-          emitter.addListener('mouseup', interaction.props.onMouseUp);
-        return interaction;
+    if (_.contains(requestedInteractions, 'active')) {
+      this.props.onMouseUp = this._onMouseUp.bind(this);
+      this.props.onMouseDown = this._onMouseDown.bind(this);
+      this.props.onClick = this._onClick.bind(this);
+      emitter.addListener('mouseup', this.props.onMouseUp);
+      this._teardownFunctions.push(() => {
+        emitter.removeListener('mouseup', this.props.onMouseUp);
       });
+    }
   }
 
-  componentWillUnmount() {
-    _.forEach(this._component.interactions, (interaction, interactionID) => {
-      interaction.props.onMouseUp &&
-        emitter.removeListener('mouseup', interaction.props.onMouseUp);
+  teardown() {
+    this._teardownFunctions.forEach(t => t());
+  }
+
+  isHovering() {
+    if (!_.contains(this._requestedInteractions, 'hover')) {
+      throw new Error(
+        'You must request the `hover` interaction to use isHovering'
+      );
+    }
+    return this._getState('isHovering');
+  }
+
+  isActive() {
+    if (!_.contains(this._requestedInteractions, 'active')) {
+      throw new Error(
+        'You must request the `active` interaction to use isActive'
+      );
+    }
+    return this._getState('isActive');
+  }
+
+  _onMouseEnter() {
+    this._setState({
+      isHovering: true,
+      isActive: this._getState('isMouseDown'),
     });
   }
 
-  _setState(interactionID, newInteractionState) {
+  _onMouseLeave() {
+    this._setState({
+      isHovering: false,
+      isActive: false,
+    });
+  }
+
+  _onMouseUp() {
+    this._setState({
+      isActive: false,
+      isMouseDown: false,
+    });
+  }
+
+  _onMouseDown() {
+    this._setState({
+      isActive: true,
+      isMouseDown: true,
+    });
+  }
+
+  // Sometimes a quick tap registers the mousedown and up events
+  // at the same time, and the active state never renders.
+  _onClick() {
+    this._setState({
+      isActive: true,
+      isMouseDown: true,
+    });
+
+    setTimeout(() => {
+      this._setState({
+        isActive: false,
+        isMouseDown: false,
+      });
+    }, 100);
+  }
+
+  matchMedia(mediaQuery) {
+    if (!this._mediaQueries[mediaQuery]) {
+      this._mediaQueries[mediaQuery] = window.matchMedia(mediaQuery);
+      var bound = this._onMediaQueryChange.bind(this, mediaQuery);
+      this._mediaQueries[mediaQuery].addListener(bound);
+      this._teardownFunctions.push(() => {
+        this._mediaQueries[mediaQuery].removeListener(bound);
+      });
+    }
+    return this._mediaQueries[mediaQuery].matches;
+  }
+
+  _onMediaQueryChange(query, mediaQueryList) {
     var state = {};
-    var interactionState = (this._component.state || {})[interactionID] || {};
+    state[query] = mediaQueryList.matches;
+    this._setState(state);
+  }
+
+  _setState(newInteractionState) {
+    var state = {};
+    var interactionState = (this._component.state || {})[this._id] || {};
 
     if (_.isEqual(interactionState, newInteractionState)) {
       return;
     }
 
     interactionState = {...interactionState, ...newInteractionState};
-    state[interactionID] = interactionState;
+    state[this._id] = interactionState;
     this._component.setState(state);
   }
 
-  _getState(interactionID, name) {
-    return ((this._component.state || {})[interactionID] || {})[name];
+  _getState(name) {
+    return ((this._component.state || {})[this._id] || {})[name];
   }
 }
 
-function defaultGetOptions() {
-  return {};
+class InteractiveStyleMixin {
+  constructor(component, config) {
+    this._component = component;
+    this._component.interactions =
+      _.mapValues(config, (requestedInteractions, interactionID) => {
+        return new Interaction(interactionID, component, requestedInteractions);
+      });
+  }
+
+  componentWillUnmount() {
+    _.invoke(this._component.interactions, 'teardown');
+  }
 }
 
 module.exports = classToMixinFunction(InteractiveStyleMixin);
