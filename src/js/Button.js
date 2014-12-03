@@ -12,6 +12,7 @@ var cx = React.addons.classSet;
 
 var Button = React.createClass({
   propTypes: {
+    onClick: PropTypes.func,
     use: PropTypes.oneOf(['default', 'special']),
     style: StylePropTypes.layout,
   },
@@ -29,13 +30,18 @@ var Button = React.createClass({
     };
   },
 
+  _onClick() {
+    this.props.onClick && this.props.onClick();
+    this.interactions.button.props.onClick();
+  },
+
   render() /*object*/ {
     var interaction = this.interactions.button;
     return (
       <button
         type="button"
-        {...this.props}
         {...this.interactions.button.props}
+        onClick={this._onClick}
         style={sx(
           styles.root,
           (this.props.use === 'default') && styles.default,
@@ -46,8 +52,9 @@ var Button = React.createClass({
             styles.specialHover,
           interaction.isActive() && styles.active,
           this.props.style
-        )}
-      />
+        )}>
+        {this.props.children}
+      </button>
     );
   }
 });
