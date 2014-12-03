@@ -160,7 +160,7 @@ var App = React.createClass({
     return (
       <div style={styles.app}>
         {this.state.isLoading && <div style={styles.spinner} />}
-        <div>
+        <div style={styles.header}>
           <span style={styles.logo} onClick={this._onLogoClick}>
             ☢
             {!this.interactions.logo.matchMedia('(max-width: 800px)') ? (
@@ -230,9 +230,12 @@ var styles = {
     paddingTop: '20px',
   },
 
+  header: {
+    display: 'flex',
+  },
+
   logo: {
     color: Colors.accent,
-    display: 'inline-block',
     fontSize: '24px',
     fontWeight: 'bold',
     lineHeight: '32px',
@@ -244,7 +247,6 @@ var styles = {
   },
 
   search: {
-    display: 'inline-block',
     marginLeft: '12px',
   },
 
