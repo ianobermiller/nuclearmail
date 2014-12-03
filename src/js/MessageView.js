@@ -80,7 +80,7 @@ var MessageView = React.createClass({
                 style={styles.sandbox}
                 html={body}
                 iframeBodyStyle={{
-                  'font-family': window.getComputedStyle(document.body).fontFamily,
+                  'fontFamily': window.getComputedStyle(document.body).fontFamily,
                   padding: '12px',
                 }}
                 showImages={true}
