@@ -14,10 +14,9 @@
 var Colors = require('./Colors');
 var InfiniteScroll = require('./InfiniteScroll');
 var React = require('react');
-var StyleMixin = require('./StyleMixin');
+var sx = require('./StyleSet');
 
 var PropTypes = React.PropTypes;
-var cx = React.addons.classSet;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 var scrollBarWidth = '15px';
@@ -25,54 +24,7 @@ var scrollBarWidth = '15px';
 var Scroller = React.createClass({
   propTypes: InfiniteScroll.propTypes,
 
-  mixins: [
-    PureRenderMixin,
-    StyleMixin({
-      unselectable: {
-        userSelect: 'none',
-      },
-
-      scroller: {
-        overflow: 'hidden',
-        position: 'relative',
-      },
-
-      scrollbar: {
-        bottom: 0,
-        opacity: 0,
-        position: 'absolute',
-        right: '0',
-        top: 0,
-        transition: 'opacity .25s',
-        width: '8px',
-      },
-
-      scrollbarHover: {
-        opacity: 1,
-      },
-
-      thumb: {
-        background: 'rgba(0, 0, 0, .4)',
-        borderRadius: '4px',
-        position: 'absolute',
-        right: '0',
-        width: '8px',
-      },
-
-      viewport: {
-        height: '100%',
-        marginRight: '-' + scrollBarWidth,
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-        paddingRight: scrollBarWidth,
-        width: '100%',
-      },
-
-      content: {
-        marginRight: '-' + scrollBarWidth,
-      },
-    })
-  ],
+  mixins: [PureRenderMixin],
 
   getInitialState() /*object*/ {
     return {
@@ -100,7 +52,8 @@ var Scroller = React.createClass({
     document.addEventListener('mouseleave', this._onDocumentMouseUp);
     document.addEventListener('mousemove', this._onDocumentMouseMove);
     document.addEventListener('selectstart', this._onDocumentSelectStart);
-    document.body.classList.add(this.styles.unselectable);
+    this._previousUserSelect = document.body.style.userSelect;
+    document.body.style.userSelect = 'none';
   },
 
   _detachBodyListeners() {
@@ -108,7 +61,7 @@ var Scroller = React.createClass({
     document.removeEventListener('mouseleave', this._onDocumentMouseUp);
     document.removeEventListener('mousemove', this._onDocumentMouseMove);
     document.removeEventListener('selectstart', this._onDocumentSelectStart);
-    document.body.classList.remove(this.styles.unselectable);
+    document.body.style.userSelect = this._previousUserSelect;
   },
 
   _onScroll() {
@@ -168,26 +121,25 @@ var Scroller = React.createClass({
 
     return (
       <div
-        className={cx(this.props.className, this.styles.scroller)}
+        style={sx(this.props.style, styles.scroller)}
         onMouseEnter={this._onScrollerMouseEnter}
         onMouseLeave={this._onScrollerMouseLeave}>
         <div
-          className={cx(
-            this.styles.scrollbar,
-            (this.state.isHover || this.state.isMouseDown) && this.styles.scrollbarHover
+          style={sx(
+            styles.scrollbar,
+            (this.state.isHover || this.state.isMouseDown) && styles.scrollbarHover
           )}
           onMouseDown={this._onScrollbarMouseDown}>
           <div
-            className={this.styles.thumb}
-            style={{height: thumbHeight, top: thumbTop}}
+            style={sx(styles.thumb, {height: thumbHeight, top: thumbTop})}
           />
         </div>
         <InfiniteScroll
           {...this.props}
-          className={this.styles.viewport}
+          style={styles.viewport}
           onScroll={this._onScroll}
           ref="viewport">
-          <div className={this.styles.content}>
+          <div style={styles.content}>
             {this.props.children}
           </div>
         </InfiniteScroll>
@@ -196,5 +148,46 @@ var Scroller = React.createClass({
   }
 });
 
+var styles = {
+  scroller: {
+    overflow: 'hidden',
+    position: 'relative',
+  },
+
+  scrollbar: {
+    bottom: 0,
+    opacity: 0,
+    position: 'absolute',
+    right: '0',
+    top: 0,
+    transition: 'opacity .25s',
+    width: '8px',
+  },
+
+  scrollbarHover: {
+    opacity: 1,
+  },
+
+  thumb: {
+    background: 'rgba(0, 0, 0, .4)',
+    borderRadius: '4px',
+    position: 'absolute',
+    right: '0',
+    width: '8px',
+  },
+
+  viewport: {
+    height: '100%',
+    marginRight: '-' + scrollBarWidth,
+    overflowX: 'hidden',
+    overflowY: 'scroll',
+    paddingRight: scrollBarWidth,
+    width: '100%',
+  },
+
+  content: {
+    marginRight: '-' + scrollBarWidth,
+  },
+};
 
 module.exports = Scroller;

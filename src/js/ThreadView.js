@@ -8,12 +8,11 @@ var ThreadActions = require('./ThreadActions');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var Styles = require('./Styles');
-var StyleMixin = require('./StyleMixin');
+var sx = require('./StyleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
 var _ = require('lodash');
-var cx = React.addons.classSet;
 
 var ThreadView = React.createClass({
   propTypes: {
@@ -33,26 +32,6 @@ var ThreadView = React.createClass({
           ids: props.thread.messageIDs
         }),
         shouldFetch: options => !!options.ids,
-      },
-    }),
-    StyleMixin({
-      root: {
-        height: '100%',
-      },
-      actionBar: [{
-        padding: '0 12px 12px 12px',
-      }, Styles.clearfix],
-
-      actionBarItem: {
-        float: 'left',
-        marginRight: '12px',
-      },
-
-      messages: {
-        boxSizing: 'border-box',
-        height: 'calc(100% - 57px)',
-        overflow: 'auto',
-        paddingBottom: '12px',
       },
     }),
   ],
@@ -87,25 +66,25 @@ var ThreadView = React.createClass({
     var isStarred = messages.some(m => m.isStarred);
 
     return (
-      <div className={this.styles.root}>
-        <ul className={this.styles.actionBar}>
-          <li className={this.styles.actionBarItem}>
+      <div style={sx(styles.root, this.props.style)}>
+        <ul style={styles.actionBar}>
+          <li style={styles.actionBarItem}>
             <Button onClick={this._archive}>Archive</Button>
           </li>
-          <li className={this.styles.actionBarItem}>
+          <li style={styles.actionBarItem}>
             <Button onClick={this._markAsUnread}>Unread</Button>
           </li>
           {isStarred ? (
-            <li className={this.styles.actionBarItem}>
+            <li style={styles.actionBarItem}>
               <Button onClick={this._unstar}>Unstar</Button>
             </li>
           ) : (
-            <li className={this.styles.actionBarItem}>
+            <li style={styles.actionBarItem}>
               <Button onClick={this._star}>Star</Button>
             </li>
           )}
         </ul>
-        <div className={this.styles.messages}>
+        <div style={styles.messages}>
           {messages.map(message => (
             <MessageView
               key={message.id}
@@ -118,5 +97,27 @@ var ThreadView = React.createClass({
     );
   }
 });
+
+var styles = {
+  root: {
+    height: '100%',
+  },
+
+  actionBar: {
+    padding: '0 12px 12px 12px'
+  },
+
+  actionBarItem: {
+    display: 'inline-block',
+    marginRight: '12px',
+  },
+
+  messages: {
+    boxSizing: 'border-box',
+    height: 'calc(100% - 57px)',
+    overflow: 'auto',
+    paddingBottom: '12px',
+  },
+};
 
 module.exports = ThreadView;

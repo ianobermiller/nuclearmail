@@ -5,6 +5,7 @@
  */
 
 var React = require('react');
+var sx = require('./StyleSet');
 
 var PropTypes = React.PropTypes;
 
@@ -79,9 +80,8 @@ var InfiniteScroll = React.createClass({
     var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
     return (
       <div
-        className={this.props.className}
-        onScroll={this._onScroll}
-        style={style}>
+        style={sx(this.props.style, style)}
+        onScroll={this._onScroll}>
         {this.props.children}
       </div>
     );

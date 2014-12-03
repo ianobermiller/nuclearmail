@@ -29,8 +29,14 @@ var StylePropTypes = {
 };
 
 StylePropTypes.layout = StylePropTypes.including(
-  'margin', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom',
-  'float', 'flex'
+  'display',
+  'flex',
+  'float',
+  'margin',
+  'marginBottom',
+  'marginLeft',
+  'marginRight',
+  'marginTop'
 );
 
 module.exports = StylePropTypes;
