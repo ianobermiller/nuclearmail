@@ -6,11 +6,11 @@ var ThreadAPI = require('./ThreadAPI');
 
 'use strict';
 
-module.exports.refresh = () => {
+function refresh() {
   Dispatcher.dispatch({type: ActionType.Thread.REFRESH});
-};
+}
 
-module.exports.markAsRead = threadID => {
+function markAsRead(threadID) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MARK_AS_READ_STARTED,
     threadID,
@@ -28,9 +28,9 @@ module.exports.markAsRead = threadID => {
       error,
     })
   );
-};
+}
 
-module.exports.markAsUnread = threadID => {
+function markAsUnread(threadID) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MARK_AS_UNREAD_STARTED,
     threadID,
@@ -48,9 +48,9 @@ module.exports.markAsUnread = threadID => {
       error,
     })
   );
-};
+}
 
-module.exports.archive = threadID => {
+function archive(threadID) {
   Dispatcher.dispatch({
     type: ActionType.Thread.ARCHIVE_STARTED,
     threadID,
@@ -68,9 +68,29 @@ module.exports.archive = threadID => {
       error,
     })
   );
-};
+}
 
-module.exports.star = threadID => {
+function moveToInbox(threadID) {
+  Dispatcher.dispatch({
+    type: ActionType.Thread.MOVE_TO_INBOX_STARTED,
+    threadID,
+  });
+
+  ThreadAPI.moveToInbox({threadID}).then(() =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.MOVE_TO_INBOX_COMPLETED,
+      threadID,
+    })
+  ).catch(error =>
+    Dispatcher.dispatch({
+      type: ActionType.Thread.MOVE_TO_INBOX_FAILED,
+      threadID,
+      error,
+    })
+  );
+}
+
+function star(threadID) {
   Dispatcher.dispatch({
     type: ActionType.Thread.STAR_STARTED,
     threadID,
@@ -88,9 +108,9 @@ module.exports.star = threadID => {
       error,
     })
   );
-};
+}
 
-module.exports.unstar = threadID => {
+function unstar(threadID) {
   Dispatcher.dispatch({
     type: ActionType.Thread.UNSTAR_STARTED,
     threadID,
@@ -108,4 +128,14 @@ module.exports.unstar = threadID => {
       error,
     })
   );
+}
+
+module.exports = {
+  archive,
+  markAsRead,
+  markAsUnread,
+  moveToInbox,
+  refresh,
+  star,
+  unstar,
 };

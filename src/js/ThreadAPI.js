@@ -75,6 +75,14 @@ var archive = API.wrap((options) => {
   }));
 });
 
+var moveToInbox = API.wrap((options) => {
+  return API.execute(gapi.client.gmail.users.threads.modify({
+    userId: 'me',
+    id: options.threadID,
+    addLabelIds: ['INBOX'],
+  }));
+});
+
 var markAsUnread = API.wrap((options) => {
   return API.execute(gapi.client.gmail.users.threads.modify({
     userId: 'me',
@@ -104,6 +112,7 @@ module.exports = {
   list,
   markAsRead,
   markAsUnread,
+  moveToInbox,
   star,
   unstar,
 };

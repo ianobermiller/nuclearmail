@@ -38,6 +38,9 @@ var Nav = React.createClass({
           }, {
             label: 'DRAFTS',
             query: 'is:draft',
+          }, {
+            label: 'ALL',
+            query: '',
           }].map(config =>
             <NavItem
               label={config.label}

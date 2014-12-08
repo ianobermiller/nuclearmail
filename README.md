@@ -12,6 +12,8 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 ## TODO
 
+- Show search sign on hover over contact name, click to search by that
+- Scroll to top when navigating
 - Fetch more when archiving all of inbox
 - Routing
 - Simple compose

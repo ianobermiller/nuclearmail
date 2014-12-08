@@ -10,6 +10,10 @@ var ActionType = {
     ARCHIVE_COMPLETED: null,
     ARCHIVE_FAILED: null,
 
+    MOVE_TO_INBOX_STARTED: null,
+    MOVE_TO_INBOX_COMPLETED: null,
+    MOVE_TO_INBOX_FAILED: null,
+
     MARK_AS_READ_STARTED: null,
     MARK_AS_READ_COMPLETED: null,
     MARK_AS_READ_FAILED: null,

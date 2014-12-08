@@ -44,6 +44,10 @@ var ThreadView = React.createClass({
     this.props.onThreadClosed();
   },
 
+  _moveToInbox() {
+    ThreadActions.moveToInbox(this.props.thread.id);
+  },
+
   _markAsUnread() {
     ThreadActions.markAsUnread(this.props.thread.id);
   },
@@ -63,13 +67,20 @@ var ThreadView = React.createClass({
     }
 
     var isStarred = messages.some(m => m.isStarred);
+    var isInInbox = messages.some(m => m.isInInbox);
 
     return (
       <div style={sx(styles.root, this.props.style)}>
         <ul style={styles.actionBar}>
-          <li style={styles.actionBarItem}>
-            <Button onClick={this._archive}>Archive</Button>
-          </li>
+          {isInInbox ? (
+            <li style={styles.actionBarItem}>
+              <Button onClick={this._archive}>Archive</Button>
+            </li>
+          ) : (
+            <li style={styles.actionBarItem}>
+              <Button onClick={this._moveToInbox}>To Inbox</Button>
+            </li>
+          )}
           <li style={styles.actionBarItem}>
             <Button onClick={this._markAsUnread}>Unread</Button>
           </li>

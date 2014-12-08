@@ -8,6 +8,7 @@ var Button = require('./Button');
 var Colors = require('./Colors');
 var CSSAnimation = require('./CSSAnimation');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
+var KeybindingMixin = require('./KeybindingMixin');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');
 var MessageStore = require('./MessageStore');
@@ -44,6 +45,7 @@ window.React = React;
 var App = React.createClass({
   mixins: [
     PureRenderMixin,
+    KeybindingMixin,
     StoreToStateMixin({
       labels: {
         method: LabelStore.getLabels,
@@ -85,6 +87,9 @@ var App = React.createClass({
     this._subscriptions.push(API.subscribe('isAuthorized', isAuthorized => {
       this.setState({isAuthorizing: false, isAuthorized});
     }));
+
+    this.bindKey('k', this._selectNextMessage);
+    this.bindKey('j', this._selectPreviousMessage);
   },
 
   componentWillUnmount() {
@@ -141,16 +146,44 @@ var App = React.createClass({
   },
 
   _onThreadClosed() {
+    this._selectNextMessage();
+  },
+
+  _selectNextMessage() {
     var messages = this.state.lastMessages.result;
+    if (!messages) {
+      return;
+    }
+
+    var selectedMessageIndex = this.state.selectedMessageID && messages.findIndex(
+      msg => msg.id === this.state.selectedMessageID
+    );
+
+    if (!this.state.selectedMessageID) {
+      this._onMessageSelected(messages[0]);
+    } else if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
+      this.setState({selectedMessageID: null, selectedThreadID: null});
+    } else {
+      this._onMessageSelected(messages[selectedMessageIndex + 1]);
+    }
+  },
+
+  _selectPreviousMessage() {
+    var messages = this.state.lastMessages.result;
+    if (!messages) {
+      return;
+    }
 
     var selectedMessageIndex = messages.findIndex(
       msg => msg.id === this.state.selectedMessageID
     );
 
-    if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
+    if (!this.state.selectedMessageID) {
+      this._onMessageSelected(messages[0]);
+    } else if (selectedMessageIndex < 0 || selectedMessageIndex === 0) {
       this.setState({selectedMessageID: null, selectedThreadID: null});
     } else {
-      this._onMessageSelected(messages[selectedMessageIndex + 1]);
+      this._onMessageSelected(messages[selectedMessageIndex - 1]);
     }
   },
 

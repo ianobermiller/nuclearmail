@@ -21,18 +21,35 @@ class ThreadStore extends BaseStore {
         break;
 
       case ActionType.Thread.ARCHIVE_STARTED:
-        this._invalidateCache(action.threadID, /in\:\s*inbox/);
+        this._removeThreadFromCache(action.threadID, /in\:\s*inbox/);
+        break;
+
+      case ActionType.Thread.MOVE_TO_INBOX_STARTED:
+        this._invalidateCache(/in\:\s*inbox/);
         break;
 
       case ActionType.Thread.UNSTAR_STARTED:
-        this._invalidateCache(action.threadID, /is\:\s*starred/);
+        this._removeThreadFromCache(action.threadID, /is\:\s*starred/);
         break;
     }
 
     shouldEmitChange && this.emitChange();
   }
 
-  _invalidateCache(threadID, queryRegex) {
+  _invalidateCache(queryRegex) {
+    var shouldEmitChange = false;
+
+    _.each(this._pagingInfoByQuery, (pagingInfo, query) => {
+      if (queryRegex.test(query)) {
+        delete this._pagingInfoByQuery[query];
+        shouldEmitChange = true;
+      }
+    });
+
+    shouldEmitChange && this.emitChange();
+  }
+
+  _removeThreadFromCache(threadID, queryRegex) {
     var shouldEmitChange = false;
 
     _.each(this._pagingInfoByQuery, (pagingInfo, query) => {
