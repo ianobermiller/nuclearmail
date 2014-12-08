@@ -7,7 +7,6 @@ var MessageView = require('./MessageView');
 var ThreadActions = require('./ThreadActions');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
-var Styles = require('./Styles');
 var sx = require('./StyleSet');
 
 var PropTypes = React.PropTypes;
