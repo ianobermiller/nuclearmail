@@ -7,16 +7,19 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 1. `npm start` will start watchify and browser-sync and open a browser window. Changing any file will build and refresh the window.
 
+## Keyboard shortcuts
+- `y` - archive
+
 ## TODO
 
+- Fetch more when archiving all of inbox
 - Routing
 - Simple compose
 - Compose with Markdown
-- WYSIWYG composer?
+- WYSIWYG composer? http://neilj.github.io/Squire/
 - PGP encryption?
-- Keyboard shortcuts
-- Navigation between inbox, priority, labels, etc
+- More keyboard shortcuts
+- Navigation for labels
 - Use lodash modules
 - Contribute RCSS changes upstream if applicable
-- https://github.com/naman34/react-stylePrefixr (needs value support)
 - https://github.com/gaearon/react-hot-loader

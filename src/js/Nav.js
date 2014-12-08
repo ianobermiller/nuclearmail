@@ -1,13 +1,12 @@
 /** @jsx React.DOM */
 
 var Colors = require('./Colors');
+var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var React = require('react');
-var StyleMixin = require('./StyleMixin');
-var Styles = require('./Styles');
+var sx = require('./StyleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
-var cx = React.addons.classSet;
 
 var Nav = React.createClass({
   propTypes: {
@@ -15,17 +14,12 @@ var Nav = React.createClass({
     query: PropTypes.string,
   },
 
-  mixins: [
-    PureRenderMixin,
-    StyleMixin({
-      list: Styles.clearfix,
-    }),
-  ],
+  mixins: [PureRenderMixin],
 
   render() {
     return (
-      <nav>
-        <ul className={this.styles.list}>
+      <nav style={this.props.style}>
+        <ul>
           {[{
             label: 'INBOX',
             query: 'in:inbox',
@@ -69,30 +63,8 @@ var NavItem = React.createClass({
 
   mixins: [
     PureRenderMixin,
-    StyleMixin({
-      root: [{
-        float: 'left',
-      }, Styles.clearfix],
-
-      link: {
-        color: Colors.gray3,
-        display: 'block',
-        padding: '16px',
-        textDecoration: 'none',
-
-        ':hover': {
-          color: Colors.black,
-        },
-      },
-
-      linkSelected: {
-        color: Colors.accent,
-        cursor: 'default',
-
-        ':hover': {
-          color: Colors.accent,
-        }
-      }
+    InteractiveStyleMixin({
+      link: ['hover'],
     }),
   ],
 
@@ -103,11 +75,13 @@ var NavItem = React.createClass({
 
   render() /*object*/ {
     return (
-      <li className={this.styles.root}>
+      <li style={styles.item.root}>
         <a
-          className={cx(
-            this.styles.link,
-            this.props.isSelected && this.styles.linkSelected
+          {...this.interactions.link.props}
+          style={sx(
+            styles.item.link,
+            this.interactions.link.isHovering() && styles.item.linkHover,
+            this.props.isSelected && styles.item.linkSelected
           )}
           href="#"
           onClick={this._onClick}>
@@ -117,6 +91,30 @@ var NavItem = React.createClass({
     );
   }
 });
+
+var styles = {
+  item: {
+    root: {
+      display: 'inline-block',
+    },
+
+    link: {
+      color: Colors.gray3,
+      display: 'block',
+      padding: '16px',
+      textDecoration: 'none',
+    },
+
+    linkHover: {
+      color: Colors.black,
+    },
+
+    linkSelected: {
+      color: Colors.accent,
+      cursor: 'default',
+    },
+  }
+};
 
 module.exports = Nav;
 

@@ -13,7 +13,7 @@ var RelativeDate = React.createClass({
   render() /*object*/ {
     return (
       <div
-        className={this.props.className}
+        style={this.props.style}
         title={moment(this.props.date).format('llll')}>
         {moment(this.props.date).fromNow()}
       </div>

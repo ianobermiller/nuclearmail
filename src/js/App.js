@@ -6,6 +6,8 @@ var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
 var Colors = require('./Colors');
+var CSSAnimation = require('./CSSAnimation');
+var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');
 var MessageStore = require('./MessageStore');
@@ -14,8 +16,6 @@ var React = require('react');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
 var StoreToStateMixin = require('./StoreToStateMixin');
-var StyleMixin = require('./StyleMixin');
-var Styles = require('./Styles');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
@@ -66,89 +66,9 @@ var App = React.createClass({
         shouldFetch: options => !!options.ids,
       },
     }),
-    StyleMixin({
-      app: {
-        paddingTop: '20px',
-      },
-
-      header: Styles.clearfix,
-
-      logo: {
-        color: Colors.accent,
-        float: 'left',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        lineHeight: '32px',
-        marginLeft: '12px',
-      },
-
-      logoName: {
-        marginRight: '12px',
-
-        '@media (max-width: 800px)': {
-          display: 'none',
-        },
-      },
-
-      search: {
-        float: 'left',
-        marginLeft: '12px',
-      },
-
-      refresh: {
-        float: 'left',
-        marginLeft: '12px', // TODO: not getting applied. need override :(
-      },
-
-      messages: {
-        bottom: 0,
-        display: 'flex',
-        left: 0,
-        position: 'absolute',
-        right: 0,
-        top: '104px',
-      },
-
-      messagesList: {
-        flex: 1,
-        height: '100%',
-        minWidth: '300px',
-        maxWidth: '400px',
-      },
-
-      threadView: {
-        flex: 2,
-        height: '100%',
-      },
-
-      spinner: {
-        left: 0,
-        position: 'fixed',
-        top: 0,
-        width: '100%',
-        zIndex: 10000,
-
-        ':after': {
-          animation: 'pulse 3s ease 0s infinite',
-          background: Colors.accent,
-          content: ' ',
-          display: 'block',
-          height: '4px',
-          margin: '0 auto',
-        },
-
-        '@keyframes pulse': {
-          '0%':   {width: '10%'},
-          '50%':  {width: '50%'},
-          '100%': {width: '10%'},
-        },
-      },
-
-      messageLoading: {
-        textAlign: 'center',
-        padding: '20px',
-      },
-    })
+    InteractiveStyleMixin({
+      logo: ['matchMedia'],
+    }),
   ],
 
   componentDidMount() {
@@ -180,6 +100,7 @@ var App = React.createClass({
       query: 'in:inbox',
       queryProgress: 'in:inbox',
       selectedMessageID: null,
+      selectedThreadID: null,
     };
   },
 
@@ -188,6 +109,14 @@ var App = React.createClass({
   },
 
   _onMessageSelected(message) {
+    if (!message) {
+      this.setState({
+        selectedMessageID: null,
+        selectedThreadID: null,
+      });
+      return;
+    }
+
     ThreadActions.markAsRead(message.threadID);
 
     this.setState({
@@ -239,20 +168,26 @@ var App = React.createClass({
       {id: this.state.selectedThreadID}
     );
     return (
-      <div className={this.styles.app}>
-        {this.state.isLoading && <div className={this.styles.spinner} />}
-        <div className={this.styles.header}>
-          <span className={this.styles.logo} onClick={this._onLogoClick}>
+      <div style={styles.app}>
+        {this.state.isLoading && (
+          <div style={styles.spinner}>
+            <div style={styles.spinnerInner} />
+          </div>
+        )}
+        <div style={styles.header}>
+          <span style={styles.logo} onClick={this._onLogoClick}>
             ☢
-            <span className={this.styles.logoName}>{' '}NUCLEARMAIL</span>
+            {!this.interactions.logo.matchMedia('(max-width: 800px)') ? (
+              <span style={styles.logoName}>{' '}NUCLEARMAIL</span>
+            ) : null}
           </span>
           <SearchBox
-            className={this.styles.search}
+            style={styles.search}
             query={this.state.queryProgress}
             onQueryChange={this._onQueryChange}
             onQuerySubmit={this._onQuerySubmit}
           />
-          <Button className={this.styles.refresh} onClick={this._onRefresh}>
+          <Button style={styles.refresh} onClick={this._onRefresh}>
           ⟳
           </Button>
         </div>
@@ -260,10 +195,10 @@ var App = React.createClass({
           onQueryChanged={this._onQuerySubmit}
           query={this.state.query}
         />
-        <div className={this.styles.messages}>
+        <div style={styles.messages}>
           {this.state.lastMessages.result ? (
             <Scroller
-              className={this.styles.messagesList}
+              style={styles.messagesList}
               hasMore={this.state.threads.result.hasMore}
               isScrollContainer={true}
               onRequestMoreItems={this._onRequestMoreItems}>
@@ -274,7 +209,7 @@ var App = React.createClass({
                 selectedMessageID={this.state.selectedMessageID}
               />
               {this.state.threads.result.hasMore ? (
-                <div className={this.styles.messageLoading}>
+                <div style={styles.messageLoading}>
                   You{"'"}ve seen {this.state.threads.result.items.length}.
                   {this.state.threads.result.items.length >= 100 ? (
                     ' ' + _.sample(pagingMessages)
@@ -284,9 +219,9 @@ var App = React.createClass({
               ) : null}
             </Scroller>
           ) : (
-            <div className={this.styles.messagesList} />
+            <div style={styles.messagesList} />
           )}
-          <div className={this.styles.threadView}>
+          <div style={styles.threadView}>
             {selectedThread ? (
               <ThreadView
                 thread={selectedThread}
@@ -303,6 +238,83 @@ var App = React.createClass({
     );
   }
 });
+
+var pulseAnimation = new CSSAnimation({
+  '0%':   {width: '10%'},
+  '50%':  {width: '50%'},
+  '100%': {width: '10%'},
+});
+
+var styles = {
+  app: {
+    paddingTop: '20px',
+  },
+
+  header: {
+    display: 'flex',
+  },
+
+  logo: {
+    color: Colors.accent,
+    fontSize: '24px',
+    fontWeight: 'bold',
+    lineHeight: '32px',
+    marginLeft: '12px',
+  },
+
+  logoName: {
+    marginRight: '12px',
+  },
+
+  search: {
+    marginLeft: '12px',
+  },
+
+  refresh: {
+    marginLeft: '12px',
+  },
+
+  messages: {
+    bottom: 0,
+    display: 'flex',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: '104px',
+  },
+
+  messagesList: {
+    flex: 1,
+    height: '100%',
+    minWidth: '300px',
+    maxWidth: '400px',
+  },
+
+  threadView: {
+    flex: 2,
+    height: '100%',
+  },
+
+  spinner: {
+    left: 0,
+    position: 'fixed',
+    top: 0,
+    width: '100%',
+    zIndex: 10000,
+  },
+
+  spinnerInner: {
+    '-webkit-animation': pulseAnimation + ' 3s ease 0s infinite',
+    background: Colors.accent,
+    height: '4px',
+    margin: '0 auto',
+  },
+
+  messageLoading: {
+    textAlign: 'center',
+    padding: '20px',
+  },
+};
 
 var pagingMessages = [
   'Still going?',
