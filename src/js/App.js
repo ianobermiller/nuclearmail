@@ -6,6 +6,7 @@ var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
 var Colors = require('./Colors');
+var CSSAnimation = require('./CSSAnimation');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');
@@ -159,7 +160,11 @@ var App = React.createClass({
     );
     return (
       <div style={styles.app}>
-        {this.state.isLoading && <div style={styles.spinner} />}
+        {this.state.isLoading && (
+          <div style={styles.spinner}>
+            <div style={styles.spinnerInner} />
+          </div>
+        )}
         <div style={styles.header}>
           <span style={styles.logo} onClick={this._onLogoClick}>
             ☢
@@ -225,6 +230,12 @@ var App = React.createClass({
   }
 });
 
+var pulseAnimation = new CSSAnimation({
+  '0%':   {width: '10%'},
+  '50%':  {width: '50%'},
+  '100%': {width: '10%'},
+});
+
 var styles = {
   app: {
     paddingTop: '20px',
@@ -281,21 +292,13 @@ var styles = {
     top: 0,
     width: '100%',
     zIndex: 10000,
+  },
 
-    ':after': {
-      animation: 'pulse 3s ease 0s infinite',
-      background: Colors.accent,
-      content: ' ',
-      display: 'block',
-      height: '4px',
-      margin: '0 auto',
-    },
-
-    '@keyframes pulse': {
-      '0%':   {width: '10%'},
-      '50%':  {width: '50%'},
-      '100%': {width: '10%'},
-    },
+  spinnerInner: {
+    '-webkit-animation': pulseAnimation + ' 3s ease 0s infinite',
+    background: Colors.accent,
+    height: '4px',
+    margin: '0 auto',
   },
 
   messageLoading: {
