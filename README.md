@@ -9,6 +9,7 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 ## TODO
 
+- Fetch more when archiving all of inbox
 - Routing
 - Simple compose
 - Compose with Markdown

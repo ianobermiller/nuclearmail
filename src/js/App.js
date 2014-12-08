@@ -100,6 +100,7 @@ var App = React.createClass({
       query: 'in:inbox',
       queryProgress: 'in:inbox',
       selectedMessageID: null,
+      selectedThreadID: null,
     };
   },
 
@@ -108,6 +109,14 @@ var App = React.createClass({
   },
 
   _onMessageSelected(message) {
+    if (!message) {
+      this.setState({
+        selectedMessageID: null,
+        selectedThreadID: null,
+      });
+      return;
+    }
+
     ThreadActions.markAsRead(message.threadID);
 
     this.setState({
