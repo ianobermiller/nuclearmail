@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 require('es6-shim');
 
@@ -72,6 +72,8 @@ var App = React.createClass({
       logo: ['matchMedia'],
     }),
   ],
+
+  _subscriptions: [],
 
   componentDidMount() {
     this._subscriptions = [];

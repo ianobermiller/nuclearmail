@@ -1,10 +1,47 @@
-/** @jsx React.DOM */
+/** @flow */
 /* global gapi */
 
-var ClientID = require('./ClientID.js');
-var Dispatcher = require('./Dispatcher.js');
+var ClientID = require('./ClientID');
+var Dispatcher = require('./Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var RSVP = require('rsvp');
+
+declare class GoogleAPIClient {
+  load(
+    name: string,
+    version: string,
+    callback: () => void
+  ): void;
+}
+
+type GoogleAPIExecutable = {
+  execute: (callback: (response: GoogleAPIResponse) => void) => void;
+};
+
+type GoogleAPIResponse = {
+  error: Object;
+};
+
+type GoogleAPIAuthorizeConfig = {
+  client_id: string;
+  scope: string;
+  immediate: boolean;
+};
+
+declare class GoogleAPIAuth {
+  authorize(
+    config: GoogleAPIAuthorizeConfig,
+    callback: (result: GoogleAPIResponse) => void
+  ): void;
+}
+
+declare class GoogleAPIStatic {
+  auth: GoogleAPIAuth;
+  client: GoogleAPIClient;
+}
+
+declare var gapi: GoogleAPIStatic;
+
 var emitter = new EventEmitter();
 var isAvailable = false;
 var pendingRequests = [];
@@ -49,20 +86,14 @@ function promiseGoogleApiAvailable() {
   });
 }
 
-function whenGoogleApiAvailable(fn) {
-  if (isAvailable) {
-    fn();
-  } else {
-    pendingRequests.push(fn);
-  }
-}
-
 var inProgressAPICalls = {};
 
 /**
  * Wraps a function with API in-progress reporting and error logging.
  */
-function wrap(getPromise) {
+function wrap(
+  getPromise: (options: Object) => Promise
+): (options: Object) => Promise {
   return function(options) {
     var id = ClientID.get();
     inProgressAPICalls[id] = true;
@@ -84,11 +115,14 @@ function wrap(getPromise) {
   };
 }
 
-function isInProgress() {
+function isInProgress(): boolean {
   return !!Object.keys(inProgressAPICalls).length;
 }
 
-function subscribe(eventName, callback) {
+function subscribe(
+  eventName: string,
+  callback: (value: ?boolean) => void
+): {remove: () => void;} {
   emitter.on(eventName, callback);
   return {
     remove() {
@@ -102,7 +136,7 @@ function subscribe(eventName, callback) {
  * it into a promise. The promise is rejected if the response contains an
  * error field, resolved otherwise.
  */
-function execute(request) {
+function execute(request: GoogleAPIExecutable) {
   return new RSVP.Promise((resolve, reject) => {
     request.execute(response => {
       if (response.error) {

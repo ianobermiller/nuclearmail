@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var Colors = require('./Colors');
 var LineClamp = require('./LineClamp');
@@ -20,11 +20,11 @@ var BlockMessageList = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  _onMessageClick(index, message) {
+  _onMessageClick(index: number, message: string) {
     this.props.onMessageSelected(message);
   },
 
-  render() {
+  render(): any {
     return (
       <ul style={sx(styles.list.root, this.style)}>
         {this.props.messages.map((msg, index) => (
