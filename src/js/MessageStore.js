@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var API = require('./API.js');
 var ActionType = require('./ActionType.js');
@@ -6,15 +6,15 @@ var BaseStore = require('./BaseStore.js');
 var _ = require('lodash');
 
 class MessageStore extends BaseStore {
+  _messagesByID: Object;
+
   constructor() {
     super();
 
-    this._cache = {};
-    this._pagingInfoByQuery = {};
     this._messagesByID = {};
   }
 
-  handleDispatch(action) {
+  handleDispatch(action: any) {
     switch (action.type) {
       case ActionType.Message.ADD_MANY:
         action.messages.forEach(message => {
@@ -60,7 +60,7 @@ class MessageStore extends BaseStore {
     }
   }
 
-  _updateMessagesWhere(where, updates) {
+  _updateMessagesWhere(where: Object, updates: Object) {
     var didChange = false;
     _.filter(
       this._messagesByID,
@@ -76,7 +76,7 @@ class MessageStore extends BaseStore {
     didChange && this.emitChange();
   }
 
-  getByIDs({ids}) {
+  getByIDs({ids}: {ids: Array<String>}): Promise<Array<Object>> {
     var messages = ids.map(id => this._messagesByID[id]);
     return Promise.resolve(messages);
   }

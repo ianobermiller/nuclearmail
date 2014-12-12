@@ -197,7 +197,7 @@ var App = React.createClass({
     window.location.reload();
   },
 
-  render() {
+  render(): any {
     var selectedThread = this.state.selectedThreadID && _.find(
       this.state.threads.result.items,
       {id: this.state.selectedThreadID}

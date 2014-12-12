@@ -1,11 +1,11 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var HTMLSandbox = require('./HTMLSandbox');
 var React = require('react');
 var RelativeDate = require('./RelativeDate');
 var asap = require('asap');
 var moment = require('moment');
-var sx = require('./StyleSet');
+var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -35,12 +35,12 @@ var MessageView = React.createClass({
     }
   },
 
-  _isExpanded() {
+  _isExpanded(): boolean {
     return this.state.isExpanded ||
       (this.state.isExpanded === null && this.props.isExpandedInitially);
   },
 
-  render() /*object*/ {
+  render(): any {
     if (!this.props.message) {
       return (
         <div style={sx(this.props.style, 'MessageView')} />

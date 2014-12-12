@@ -1,8 +1,8 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var counter = 0;
 
-function getClientID() {
+function getClientID(): string {
   counter += 1;
   return 'ClientID-' + counter;
 }

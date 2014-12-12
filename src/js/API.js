@@ -93,14 +93,14 @@ var inProgressAPICalls = {};
  */
 function wrap(
   getPromise: (options: Object) => Promise
-): (options: Object) => Promise {
+): (options?: Object) => Promise {
   return function(options) {
     var id = ClientID.get();
     inProgressAPICalls[id] = true;
     emitter.emit('start', id);
 
     var promise = promiseGoogleApiAvailable().then(() => {
-      return getPromise(options);
+      return getPromise(options || {});
     });
 
     promise.catch(error => console.log('API Error', error));

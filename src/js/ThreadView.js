@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var Button = require('./Button');
 var KeybindingMixin = require('./KeybindingMixin');
@@ -7,7 +7,7 @@ var MessageView = require('./MessageView');
 var ThreadActions = require('./ThreadActions');
 var React = require('react');
 var StoreToStateMixin = require('./StoreToStateMixin');
-var sx = require('./StyleSet');
+var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -60,7 +60,7 @@ var ThreadView = React.createClass({
     ThreadActions.unstar(this.props.thread.id);
   },
 
-  render() /*object*/ {
+  render(): ?Object {
     var messages = this.state.messages.result;
     if (!messages) {
       return null;

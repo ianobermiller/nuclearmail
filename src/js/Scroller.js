@@ -1,5 +1,5 @@
 /**
- * @jsx React.DOM
+ * @flow
  *
  * A fancy, Facebook-style scrollbar.
  *
@@ -14,7 +14,7 @@
 var Colors = require('./Colors');
 var InfiniteScroll = require('./InfiniteScroll');
 var React = require('react');
-var sx = require('./StyleSet');
+var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -22,6 +22,10 @@ var PureRenderMixin = React.addons.PureRenderMixin;
 var scrollBarWidth = '15px';
 
 var Scroller = React.createClass({
+  _previousUserSelect: '',
+  _isMouseDown: false,
+  _lastPageY: 0,
+
   propTypes: InfiniteScroll.propTypes,
 
   mixins: [PureRenderMixin],
@@ -39,7 +43,7 @@ var Scroller = React.createClass({
     this._onScroll();
   },
 
-  componentDidUpdate() {
+  componentDidUpdate(previousProps: Object, previousState: any) {
     this._onScroll();
   },
 
@@ -73,24 +77,24 @@ var Scroller = React.createClass({
     });
   },
 
-  _onDocumentSelectStart(event) {
+  _onDocumentSelectStart(event: Object) {
     event.preventDefault();
   },
 
-  _onScrollbarMouseDown(event) {
+  _onScrollbarMouseDown(event: Object) {
     this._attachBodyListeners();
     this._isMouseDown = true;
     this._lastPageY = event.pageY;
     this.setState({isMouseDown: true});
   },
 
-  _onDocumentMouseUp(event) {
+  _onDocumentMouseUp(event: Object) {
     this._detachBodyListeners();
     this._isMouseDown = false;
     this.setState({isMouseDown: false});
   },
 
-  _onDocumentMouseMove(event) {
+  _onDocumentMouseMove(event: Object) {
     if (this._isMouseDown) {
       var scale = this._getScale();
       var diff = event.pageY - this._lastPageY;
@@ -110,11 +114,11 @@ var Scroller = React.createClass({
     this.setState({isHover: false});
   },
 
-  _getScale() {
+  _getScale(): number {
     return this.state.offsetHeight / this.state.scrollHeight;
   },
 
-  render() /*object*/ {
+  render(): any {
     var scale = this._getScale();
     var thumbHeight = this.state.offsetHeight * scale;
     var thumbTop = this.state.scrollTop * scale;

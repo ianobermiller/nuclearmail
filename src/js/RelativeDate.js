@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var React = require('react');
 var moment = require('moment');
@@ -10,7 +10,7 @@ var RelativeDate = React.createClass({
     date: PropTypes.instanceOf(Date).isRequired,
   },
 
-  render() /*object*/ {
+  render(): any {
     return (
       <div
         style={this.props.style}

@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var Button = require('./Button');
 var Colors = require('./Colors');
@@ -13,13 +13,13 @@ var SearchBox = React.createClass({
     query: PropTypes.string.isRequired,
   },
 
-  _onQueryKeyDown(e) {
+  _onQueryKeyDown(e: Object) {
     if (e.key === 'Enter') {
       this.props.onQuerySubmit(this.props.query);
     }
   },
 
-  _onQueryChange(e) {
+  _onQueryChange(e: Object) {
     this.props.onQueryChange(e.target.value);
   },
 
@@ -27,7 +27,7 @@ var SearchBox = React.createClass({
     this.props.onQuerySubmit(this.props.query);
   },
 
-  render() /*object*/ {
+  render(): any {
     return (
       <span style={this.props.style}>
         <input

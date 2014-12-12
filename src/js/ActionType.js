@@ -22,6 +22,8 @@ var ActionType = {
     MARK_AS_UNREAD_COMPLETED: '',
     MARK_AS_UNREAD_FAILED: '',
 
+    REFRESH: '',
+
     STAR_STARTED: '',
     STAR_COMPLETED: '',
     STAR_FAILED: '',

@@ -1,9 +1,9 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var keyboardjs = require('keyboardjs');
 
 var KeybindingMixin = {
-  bindKey(keyCombo, fn) {
+  bindKey(keyCombo: string, fn: () => void) {
     this._keyBindings = this._keyBindings || [];
     this._keyBindings.push(keyboardjs.on(keyCombo, e => {
       if (['INPUT', 'TEXTAREA'].indexOf(e.target.tagName) >= 0) {

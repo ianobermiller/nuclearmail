@@ -58,7 +58,7 @@ var BlockMessageListItem = React.createClass({
     this.props.onClick(this.props.index, this.props.message);
   },
 
-  render() {
+  render(): any {
     var msg = this.props.message;
     return (
       <li

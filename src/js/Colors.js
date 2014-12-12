@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var Color = require('./Color');
 var _ = require('lodash');

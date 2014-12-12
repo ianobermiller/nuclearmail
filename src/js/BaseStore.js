@@ -14,8 +14,8 @@ class BaseStore {
     this.handleDispatch && Dispatcher.subscribe(this.handleDispatch);
   }
 
-  emitChange(data: Object) {
-    this._emitter.emit(CHANGE_EVENT, Object.assign({store: this}, data));
+  emitChange(data?: Object) {
+    this._emitter.emit(CHANGE_EVENT, Object.assign({store: this}, data || {}));
   }
 
   subscribe(

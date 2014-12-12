@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 /* global gapi */
 
 var ActionType = require('./ActionType.js');
