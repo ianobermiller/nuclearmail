@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 require('es6-shim');
 
@@ -72,6 +72,8 @@ var App = React.createClass({
       logo: ['matchMedia'],
     }),
   ],
+
+  _subscriptions: [],
 
   componentDidMount() {
     this._subscriptions = [];
@@ -195,7 +197,7 @@ var App = React.createClass({
     window.location.reload();
   },
 
-  render() {
+  render(): any {
     var selectedThread = this.state.selectedThreadID && _.find(
       this.state.threads.result.items,
       {id: this.state.selectedThreadID}
@@ -337,7 +339,7 @@ var styles = {
   },
 
   spinnerInner: {
-    '-webkit-animation': pulseAnimation + ' 3s ease 0s infinite',
+    WebkitAnimation: pulseAnimation + ' 3s ease 0s infinite',
     background: Colors.accent,
     height: '4px',
     margin: '0 auto',

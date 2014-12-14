@@ -1,9 +1,9 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var Colors = require('./Colors');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var React = require('react');
-var sx = require('./StyleSet');
+var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -16,7 +16,7 @@ var Nav = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  render() {
+  render(): any {
     return (
       <nav style={this.props.style}>
         <ul>

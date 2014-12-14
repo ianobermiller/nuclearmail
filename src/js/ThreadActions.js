@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var ActionType = require('./ActionType');
 var Dispatcher = require('./Dispatcher');
@@ -10,7 +10,7 @@ function refresh() {
   Dispatcher.dispatch({type: ActionType.Thread.REFRESH});
 }
 
-function markAsRead(threadID) {
+function markAsRead(threadID: String) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MARK_AS_READ_STARTED,
     threadID,
@@ -30,7 +30,7 @@ function markAsRead(threadID) {
   );
 }
 
-function markAsUnread(threadID) {
+function markAsUnread(threadID: String) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MARK_AS_UNREAD_STARTED,
     threadID,
@@ -50,7 +50,7 @@ function markAsUnread(threadID) {
   );
 }
 
-function archive(threadID) {
+function archive(threadID: String) {
   Dispatcher.dispatch({
     type: ActionType.Thread.ARCHIVE_STARTED,
     threadID,
@@ -70,7 +70,7 @@ function archive(threadID) {
   );
 }
 
-function moveToInbox(threadID) {
+function moveToInbox(threadID: String) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MOVE_TO_INBOX_STARTED,
     threadID,
@@ -90,7 +90,7 @@ function moveToInbox(threadID) {
   );
 }
 
-function star(threadID) {
+function star(threadID: String) {
   Dispatcher.dispatch({
     type: ActionType.Thread.STAR_STARTED,
     threadID,
@@ -110,7 +110,7 @@ function star(threadID) {
   );
 }
 
-function unstar(threadID) {
+function unstar(threadID: String) {
   Dispatcher.dispatch({
     type: ActionType.Thread.UNSTAR_STARTED,
     threadID,

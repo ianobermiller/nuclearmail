@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 // TODO: use tinytinycolor?
 var Colr = require('colr');
@@ -11,15 +11,15 @@ class Color {
       stringOrColr;
   }
 
-  toString() {
+  toString(): string {
     return this._colr.toHex();
   }
 
-  darken(val) {
+  darken(val: number): Color {
     return new Color(this._colr.clone().darken(val));
   }
 
-  lighten(val) {
+  lighten(val: number): Color {
     return new Color(this._colr.clone().lighten(val));
   }
 }

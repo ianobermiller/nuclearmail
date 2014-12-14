@@ -1,16 +1,18 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var ClientID = require('./ClientID');
 var PrefixFree = require('./PrefixFree');
 var _ = require('lodash');
 var hyphenateStyleName = require('react/lib/hyphenateStyleName');
 
-var style = document.createElement('style');
+var style: any = document.createElement('style');
 style.type = 'text/css';
 document.head.appendChild(style);
 
 class CSSAnimation {
-  constructor(keyframes) {
+  _name: string;
+
+  constructor(keyframes: Object) {
     this._name = 'Anim-' + ClientID.get();
 
     var rule = '@keyframes ' + this._name + ' {\n' +
@@ -23,12 +25,10 @@ class CSSAnimation {
       '\n}\n';
 
     var prefixed = PrefixFree.prefixCSS(rule, /*raw*/ true);
-    console.log(prefixed)
-
     style.sheet.insertRule(prefixed, style.sheet.cssRules.length);
   }
 
-  toString() {
+  toString(): string {
     return this._name;
   }
 }

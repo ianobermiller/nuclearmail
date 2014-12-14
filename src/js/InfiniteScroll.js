@@ -1,11 +1,11 @@
 /**
- * @jsx React.DOM
+ * @flow
  *
  * Based off https://github.com/guillaumervls/react-infinite-scroll
  */
 
 var React = require('react');
-var sx = require('./StyleSet');
+var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 
@@ -17,15 +17,15 @@ var InfiniteScroll = React.createClass({
 
     // Called when page is within `threshold` of the bottom.
     onRequestMoreItems: PropTypes.func.isRequired,
-    onScroll: PropTypes.func,
-    threshold: PropTypes.number,
+    onScroll: PropTypes.func.isRequired,
+    threshold: PropTypes.number.isRequired,
   },
 
   getDefaultProps() {
     return {
       hasMore: false,
       isScrollContainer: false,
-      onRequestMoreItems: null,
+      onRequestMoreItems: () => {},
       threshold: 250,
     };
   },
@@ -34,7 +34,7 @@ var InfiniteScroll = React.createClass({
     this._attachListeners();
   },
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     if (!nextProps.hasMore) {
       this._detachListeners();
     }
@@ -53,11 +53,12 @@ var InfiniteScroll = React.createClass({
     window.removeEventListener('resize', this._update);
   },
 
-  _onScroll(event) {
-    this.props.onScroll && this.props.onScroll(event);
-
+  _onScroll(event: Event) {
+    this.props.onScroll(event);
     this._update();
   },
+
+  _lastHeight: 0,
 
   _update() {
     var el = this.getDOMNode();
@@ -68,15 +69,15 @@ var InfiniteScroll = React.createClass({
       el.scrollTop
     ) < Number(this.props.threshold);
 
-    if ((!this.lastHeight || this.lastHeight < height) && isPastThreshold) {
+    if ((!this._lastHeight || this._lastHeight < height) && isPastThreshold) {
       // call loadMore after _detachListeners to allow
       // for non-async loadMore functions
-      this.props.onRequestMoreItems && this.props.onRequestMoreItems();
-      this.lastHeight = height;
+      this.props.onRequestMoreItems();
+      this._lastHeight = height;
     }
   },
 
-  render() {
+  render(): any {
     var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
     return (
       <div

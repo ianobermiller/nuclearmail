@@ -1,11 +1,13 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var React = require('react');
 var PropTypes = React.PropTypes;
 var _ = require('lodash');
 
 var StylePropTypes = {
-  including(...names) {
+  including(
+    ...names: Array<string>
+  ): (props: Object, propName: string, componentName: string) => ?Error {
     return function(props, propName, componentName) {
       var style = props[propName];
       if (!style) {

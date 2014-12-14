@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var React = require('react/addons');
 var clamp = require('./clamp');
@@ -17,7 +17,7 @@ var ThreadView = React.createClass({
     clamp(this.refs.content.getDOMNode(), {clamp: this.props.lines});
   },
 
-  render() /*object*/ {
+  render(): any {
     return (
       <div className={this.props.className} ref="content">
         {this.props.children}

@@ -1,11 +1,13 @@
 /**
- * @jsx React.DOM
+ * @flow
  */
 
 var _ = require('lodash');
 var classToMixinFunction = require('./classToMixinFunction');
 
 class StoreToStateMixin {
+  _subscriptions: Array<{remove: () => void;}>;
+
   constructor(component, config) {
     this._component = component;
     this._config = _.mapValues(config, stateConfig => {

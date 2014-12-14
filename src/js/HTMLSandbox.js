@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var React = require('react');
 var sanitizer = require('google-caja');
@@ -19,7 +19,7 @@ var HTMLSandbox = React.createClass({
     };
   },
 
-  _onWindowMessageReceived(event) {
+  _onWindowMessageReceived(event: any) {
     if (!event.data.height) {
       return;
     }
@@ -86,7 +86,7 @@ var HTMLSandbox = React.createClass({
     this._setIframeContents();
   },
 
-  componentDidUpdate() {
+  componentDidUpdate(previousProps: any, previousState: any) {
     this._setIframeContents();
   },
 
@@ -94,7 +94,7 @@ var HTMLSandbox = React.createClass({
     window.removeEventListener('message', this._onWindowMessageReceived);
   },
 
-  render: function() {
+  render(): any {
     return (
       <iframe
         border="none"

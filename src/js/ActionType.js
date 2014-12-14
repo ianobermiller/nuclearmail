@@ -1,34 +1,36 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var ActionType = {
   Message: {
-    ADD_MANY: null,
+    ADD_MANY: '',
   },
 
   Thread: {
-    ARCHIVE_STARTED: null,
-    ARCHIVE_COMPLETED: null,
-    ARCHIVE_FAILED: null,
+    ARCHIVE_STARTED: '',
+    ARCHIVE_COMPLETED: '',
+    ARCHIVE_FAILED: '',
 
-    MOVE_TO_INBOX_STARTED: null,
-    MOVE_TO_INBOX_COMPLETED: null,
-    MOVE_TO_INBOX_FAILED: null,
+    MOVE_TO_INBOX_STARTED: '',
+    MOVE_TO_INBOX_COMPLETED: '',
+    MOVE_TO_INBOX_FAILED: '',
 
-    MARK_AS_READ_STARTED: null,
-    MARK_AS_READ_COMPLETED: null,
-    MARK_AS_READ_FAILED: null,
+    MARK_AS_READ_STARTED: '',
+    MARK_AS_READ_COMPLETED: '',
+    MARK_AS_READ_FAILED: '',
 
-    MARK_AS_UNREAD_STARTED: null,
-    MARK_AS_UNREAD_COMPLETED: null,
-    MARK_AS_UNREAD_FAILED: null,
+    MARK_AS_UNREAD_STARTED: '',
+    MARK_AS_UNREAD_COMPLETED: '',
+    MARK_AS_UNREAD_FAILED: '',
 
-    STAR_STARTED: null,
-    STAR_COMPLETED: null,
-    STAR_FAILED: null,
+    REFRESH: '',
 
-    UNSTAR_STARTED: null,
-    UNSTAR_COMPLETED: null,
-    UNSTAR_FAILED: null,
+    STAR_STARTED: '',
+    STAR_COMPLETED: '',
+    STAR_FAILED: '',
+
+    UNSTAR_STARTED: '',
+    UNSTAR_COMPLETED: '',
+    UNSTAR_FAILED: '',
   }
 };
 

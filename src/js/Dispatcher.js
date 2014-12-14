@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var EventEmitter = require('events').EventEmitter;
 
@@ -6,16 +6,16 @@ var EVENT = 'dispatch';
 var emitter = new EventEmitter();
 
 var Dispatcher = {
-  dispatch(event) {
+  dispatch(event: any) {
     emitter.emit(EVENT, event);
   },
 
-  subscribe(fn) {
+  subscribe(fn: (data: any) => void): {remove: () => void;} {
     var handler
     emitter.on(EVENT, fn);
     return {
       remove() {
-        emitter.removeListern(EVENT, fn);
+        emitter.removeListener(EVENT, fn);
       }
     };
   }

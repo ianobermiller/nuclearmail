@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var ActionType = require('./ActionType.js');
 var BaseStore = require('./BaseStore.js');
@@ -6,13 +6,15 @@ var ThreadAPI = require('./ThreadAPI.js');
 var _ = require('lodash');
 
 class ThreadStore extends BaseStore {
+  _pagingInfoByQuery: {[query: string]: Object};
+
   constructor() {
     super();
 
     this._pagingInfoByQuery = {};
   }
 
-  handleDispatch(action) {
+  handleDispatch(action: Object) {
     var shouldEmitChange = false;
     switch (action.type) {
       case ActionType.Thread.REFRESH:
@@ -36,7 +38,7 @@ class ThreadStore extends BaseStore {
     shouldEmitChange && this.emitChange();
   }
 
-  _invalidateCache(queryRegex) {
+  _invalidateCache(queryRegex: RegExp) {
     var shouldEmitChange = false;
 
     _.each(this._pagingInfoByQuery, (pagingInfo, query) => {
@@ -49,7 +51,7 @@ class ThreadStore extends BaseStore {
     shouldEmitChange && this.emitChange();
   }
 
-  _removeThreadFromCache(threadID, queryRegex) {
+  _removeThreadFromCache(threadID: string, queryRegex: RegExp) {
     var shouldEmitChange = false;
 
     _.each(this._pagingInfoByQuery, (pagingInfo, query) => {
@@ -68,7 +70,7 @@ class ThreadStore extends BaseStore {
     shouldEmitChange && this.emitChange();
   }
 
-  list(options) {
+  list(options: Object) {
     var query = options.query || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pageToken = null;

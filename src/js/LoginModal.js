@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var API = require('./API');
 var Button = require('./Button');
@@ -14,7 +14,7 @@ var LoginModal = React.createClass({
     API.login();
   },
 
-  render() {
+  render(): any {
     return (
       <div style={styles.overlay}>
         <div style={styles.dialog}>

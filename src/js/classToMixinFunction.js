@@ -1,5 +1,5 @@
 /**
- * @jsx React.DOM
+ * @flow
  *
  * A helper for making mixins that can take arguments and have
  * per-component state.
@@ -42,7 +42,7 @@
 
 var ClientID = require('./ClientID');
 
-function classToMixinFunction(constructor) {
+function classToMixinFunction(constructor: any): Function {
   return function() {
     var mixinArgs = arguments;
     var mixinID = '_mixin_' + ClientID.get();
@@ -53,7 +53,7 @@ function classToMixinFunction(constructor) {
         // Create a new instance of the mixin with the component and the
         // passed-in args and stash it on the component
         var instance = Object.create(constructor.prototype);
-        var args = [component].concat(Array.prototype.slice.apply(mixinArgs));
+        var args = [component].concat(Array.prototype.slice.call(mixinArgs));
         constructor.apply(instance, args);
         component[mixinID] = instance;
 

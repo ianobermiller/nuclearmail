@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/** @flow */
 
 var Colors = require('./Colors');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
@@ -35,7 +35,7 @@ var Button = React.createClass({
     this.interactions.button.props.onClick();
   },
 
-  render() /*object*/ {
+  render(): any {
     var interaction = this.interactions.button;
     return (
       <button
