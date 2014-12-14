@@ -1,7 +1,9 @@
 [ignore]
 
 [include]
+src/js
 
 [libs]
+src/lib
 
 [options]
