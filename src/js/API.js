@@ -59,7 +59,7 @@ function wrap(
   getPromise: (options: Object) => Promise
 ): (options: Object) => Promise {
   return function(options: Object) {
-    return call(getPromise, options);
+    return call(getPromise.bind(null, options));
   };
 }
 
@@ -67,15 +67,14 @@ function wrap(
  * Calls a function with API in-progress reporting and error logging.
  */
 function call(
-  getPromise: (options: Object) => Promise,
-  options: Object
+  getPromise: () => Promise
 ): Promise {
   var id = ClientID.get();
   inProgressAPICalls[id] = true;
   emitter.emit('start', id);
 
   var promise = promiseGoogleApiAvailable().then(() => {
-    return getPromise(options || {});
+    return getPromise();
   });
 
   promise.catch(error => console.log('API Error', error));
