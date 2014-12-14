@@ -6,42 +6,6 @@ var Dispatcher = require('./Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var RSVP = require('rsvp');
 
-declare class GoogleAPIClient {
-  load(
-    name: string,
-    version: string,
-    callback: () => void
-  ): void;
-}
-
-type GoogleAPIExecutable = {
-  execute: (callback: (response: GoogleAPIResponse) => void) => void;
-};
-
-type GoogleAPIResponse = {
-  error: Object;
-};
-
-type GoogleAPIAuthorizeConfig = {
-  client_id: string;
-  scope: string;
-  immediate: boolean;
-};
-
-declare class GoogleAPIAuth {
-  authorize(
-    config: GoogleAPIAuthorizeConfig,
-    callback: (result: GoogleAPIResponse) => void
-  ): void;
-}
-
-declare class GoogleAPIStatic {
-  auth: GoogleAPIAuth;
-  client: GoogleAPIClient;
-}
-
-declare var gapi: GoogleAPIStatic;
-
 var emitter = new EventEmitter();
 var isAvailable = false;
 var pendingRequests = [];
@@ -93,26 +57,36 @@ var inProgressAPICalls = {};
  */
 function wrap(
   getPromise: (options: Object) => Promise
-): (options?: Object) => Promise {
-  return function(options) {
-    var id = ClientID.get();
-    inProgressAPICalls[id] = true;
-    emitter.emit('start', id);
-
-    var promise = promiseGoogleApiAvailable().then(() => {
-      return getPromise(options || {});
-    });
-
-    promise.catch(error => console.log('API Error', error));
-
-    return promise.finally(() => {
-      delete inProgressAPICalls[id];
-      emitter.emit('stop', id);
-      if (!Object.keys(inProgressAPICalls).length) {
-        emitter.emit('allStopped');
-      }
-    });
+): (options: Object) => Promise {
+  return function(options: Object) {
+    return call(getPromise, options);
   };
+}
+
+/**
+ * Calls a function with API in-progress reporting and error logging.
+ */
+function call(
+  getPromise: (options: Object) => Promise,
+  options: Object
+): Promise {
+  var id = ClientID.get();
+  inProgressAPICalls[id] = true;
+  emitter.emit('start', id);
+
+  var promise = promiseGoogleApiAvailable().then(() => {
+    return getPromise(options || {});
+  });
+
+  promise.catch(error => console.log('API Error', error));
+
+  return promise.finally(() => {
+    delete inProgressAPICalls[id];
+    emitter.emit('stop', id);
+    if (!Object.keys(inProgressAPICalls).length) {
+      emitter.emit('allStopped');
+    }
+  });
 }
 
 function isInProgress(): boolean {
@@ -151,6 +125,7 @@ function execute(request: GoogleAPIExecutable) {
 }
 
 module.exports = {
+  call,
   execute,
   isInProgress,
   login: tryAuthorize.bind(null, /*immediate*/ false),
