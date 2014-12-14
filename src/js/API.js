@@ -56,17 +56,6 @@ var inProgressAPICalls = {};
  * Wraps a function with API in-progress reporting and error logging.
  */
 function wrap(
-  getPromise: (options: Object) => Promise
-): (options: Object) => Promise {
-  return function(options: Object) {
-    return call(getPromise.bind(null, options));
-  };
-}
-
-/**
- * Calls a function with API in-progress reporting and error logging.
- */
-function call(
   getPromise: () => Promise
 ): Promise {
   var id = ClientID.get();
@@ -124,7 +113,6 @@ function execute(request: GoogleAPIExecutable) {
 }
 
 module.exports = {
-  call,
   execute,
   isInProgress,
   login: tryAuthorize.bind(null, /*immediate*/ false),
