@@ -25,8 +25,6 @@ class CSSAnimation {
       '\n}\n';
 
     var prefixed = PrefixFree.prefixCSS(rule, /*raw*/ true);
-    console.log(prefixed)
-
     style.sheet.insertRule(prefixed, style.sheet.cssRules.length);
   }
 

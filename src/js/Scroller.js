@@ -26,7 +26,11 @@ var Scroller = React.createClass({
   _isMouseDown: false,
   _lastPageY: 0,
 
-  propTypes: InfiniteScroll.propTypes,
+  propTypes: {
+    hasMore: PropTypes.bool.isRequired,
+    onRequestMoreItems: PropTypes.func.isRequired,
+    threshold: PropTypes.number,
+  },
 
   mixins: [PureRenderMixin],
 

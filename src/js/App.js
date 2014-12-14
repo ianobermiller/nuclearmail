@@ -339,7 +339,7 @@ var styles = {
   },
 
   spinnerInner: {
-    '-webkit-animation': pulseAnimation + ' 3s ease 0s infinite',
+    WebkitAnimation: pulseAnimation + ' 3s ease 0s infinite',
     background: Colors.accent,
     height: '4px',
     margin: '0 auto',
