@@ -28,7 +28,7 @@
     "browser-sync": "^1.6.3",
     "mkdirp": "^0.5.0",
     "nodemon": "^1.2.1",
-    "reactify": "^0.14.0",
+    "reactify": "^0.17.1",
     "rimraf": "^2.2.8",
     "watchify": "^1.0.2"
   },
