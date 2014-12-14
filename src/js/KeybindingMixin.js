@@ -2,7 +2,7 @@
 
 var keyboardjs = require('keyboardjs');
 
-var KeybindingMixin = {
+var KeybindingMixin: any = {
   bindKey(keyCombo: string, fn: () => void) {
     this._keyBindings = this._keyBindings || [];
     this._keyBindings.push(keyboardjs.on(keyCombo, e => {

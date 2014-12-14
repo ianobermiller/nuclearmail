@@ -139,10 +139,12 @@ var Scroller = React.createClass({
           />
         </div>
         <InfiniteScroll
-          {...this.props}
-          style={styles.viewport}
+          hasMore={this.props.hasMore}
+          onRequestMoreItems={this.props.onRequestMoreItems}
           onScroll={this._onScroll}
-          ref="viewport">
+          ref="viewport"
+          style={styles.viewport}
+          threshold={this.props.threshold}>
           <div style={styles.content}>
             {this.props.children}
           </div>

@@ -19,7 +19,7 @@ var MessageView = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  getInitialState() {
+  getInitialState(): {isExpanded: boolean;} {
     return {
       isExpanded: null,
     };

@@ -53,7 +53,7 @@ function classToMixinFunction(constructor: any): Function {
         // Create a new instance of the mixin with the component and the
         // passed-in args and stash it on the component
         var instance = Object.create(constructor.prototype);
-        var args = [component].concat(Array.prototype.slice.apply(mixinArgs));
+        var args = [component].concat(Array.prototype.slice.call(mixinArgs));
         constructor.apply(instance, args);
         component[mixinID] = instance;
 
