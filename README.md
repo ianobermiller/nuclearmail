@@ -7,6 +7,8 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 1. `npm start` will start watchify and browser-sync and open a browser window. Changing any file will build and refresh the window.
 
+2. `flow` to run the typechecker
+
 ## Keyboard shortcuts
 - `y` - archive
 
