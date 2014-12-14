@@ -8,7 +8,9 @@ var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
 var _ = require('lodash');
 
-function list(options: Object) {
+function list(
+  options: {maxResults: number; query: ?string; pageToken: ?string}
+) {
   return API.wrap(() => {
     return API.execute(gapi.client.gmail.users.threads.list({
       userId: 'me',
@@ -61,7 +63,7 @@ function list(options: Object) {
   });
 }
 
-function markAsRead(options: Object) {
+function markAsRead(options: {threadID: String}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -71,7 +73,7 @@ function markAsRead(options: Object) {
   );
 }
 
-function archive(options: Object) {
+function archive(options: {threadID: String}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -81,7 +83,7 @@ function archive(options: Object) {
   );
 }
 
-function moveToInbox(options: Object) {
+function moveToInbox(options: {threadID: String}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -91,7 +93,7 @@ function moveToInbox(options: Object) {
   );
 }
 
-function markAsUnread(options: Object) {
+function markAsUnread(options: {threadID: String}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -101,7 +103,7 @@ function markAsUnread(options: Object) {
   );
 }
 
-function unstar(options: Object) {
+function unstar(options: {threadID: String}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -111,7 +113,7 @@ function unstar(options: Object) {
   );
 }
 
-function star(options: Object) {
+function star(options: {threadID: String}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
