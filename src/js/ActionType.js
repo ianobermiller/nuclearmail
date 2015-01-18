@@ -3,6 +3,7 @@
 var ActionType = {
   Message: {
     ADD_MANY: '',
+    SELECT: '',
   },
 
   Thread: {

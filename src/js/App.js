@@ -5,17 +5,19 @@ require('es6-shim');
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
-var Colors = require('./Colors');
 var CSSAnimation = require('./CSSAnimation');
+var Colors = require('./Colors');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var KeybindingMixin = require('./KeybindingMixin');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');
+var MessageActions = require('./MessageActions');
 var MessageStore = require('./MessageStore');
 var Nav = require('./Nav');
 var React = require('react');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
+var SelectedIDStore = require('./SelectedIDStore');
 var StoreToStateMixin = require('./StoreToStateMixin');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
@@ -67,6 +69,18 @@ var App = React.createClass({
         },
         shouldFetch: options => !!options.ids,
       },
+      selectedMessageID: {
+        method: SelectedIDStore.get,
+        getOptions: (props, state) => {
+          return {type: 'message'};
+        },
+      },
+      selectedThreadID: {
+        method: SelectedIDStore.get,
+        getOptions: (props, state) => {
+          return {type: 'thread'};
+        },
+      },
     }),
     InteractiveStyleMixin({
       logo: ['matchMedia'],
@@ -106,8 +120,6 @@ var App = React.createClass({
       maxResultCount: PAGE_SIZE,
       query: 'in:inbox',
       queryProgress: 'in:inbox',
-      selectedMessageID: null,
-      selectedThreadID: null,
     };
   },
 
@@ -116,20 +128,10 @@ var App = React.createClass({
   },
 
   _onMessageSelected(message) {
-    if (!message) {
-      this.setState({
-        selectedMessageID: null,
-        selectedThreadID: null,
-      });
-      return;
+    if (message) {
+      ThreadActions.markAsRead(message.threadID);
     }
-
-    ThreadActions.markAsRead(message.threadID);
-
-    this.setState({
-      selectedMessageID: message.id,
-      selectedThreadID: message.threadID,
-    });
+    MessageActions.select(message);
   },
 
   _onQueryChange(query) {
@@ -157,14 +159,15 @@ var App = React.createClass({
       return;
     }
 
-    var selectedMessageIndex = this.state.selectedMessageID && messages.findIndex(
-      msg => msg.id === this.state.selectedMessageID
-    );
+    var selectedMessageIndex = this.state.selectedMessageID.result &&
+      messages.findIndex(
+        msg => msg.id === this.state.selectedMessageID.result
+      );
 
-    if (!this.state.selectedMessageID) {
+    if (!this.state.selectedMessageID.result) {
       this._onMessageSelected(messages[0]);
     } else if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
-      this.setState({selectedMessageID: null, selectedThreadID: null});
+      this._onMessageSelected(null);
     } else {
       this._onMessageSelected(messages[selectedMessageIndex + 1]);
     }
@@ -177,13 +180,13 @@ var App = React.createClass({
     }
 
     var selectedMessageIndex = messages.findIndex(
-      msg => msg.id === this.state.selectedMessageID
+      msg => msg.id === this.state.selectedMessageID.result
     );
 
-    if (!this.state.selectedMessageID) {
+    if (!this.state.selectedMessageID.result) {
       this._onMessageSelected(messages[0]);
     } else if (selectedMessageIndex < 0 || selectedMessageIndex === 0) {
-      this.setState({selectedMessageID: null, selectedThreadID: null});
+      this._onMessageSelected(null);
     } else {
       this._onMessageSelected(messages[selectedMessageIndex - 1]);
     }
@@ -198,9 +201,9 @@ var App = React.createClass({
   },
 
   render(): any {
-    var selectedThread = this.state.selectedThreadID && _.find(
+    var selectedThread = this.state.selectedThreadID.result && _.find(
       this.state.threads.result.items,
-      {id: this.state.selectedThreadID}
+      {id: this.state.selectedThreadID.result}
     );
     return (
       <div style={styles.app}>
@@ -241,7 +244,7 @@ var App = React.createClass({
                 labels={this.state.labels.result}
                 messages={this.state.lastMessages.result}
                 onMessageSelected={this._onMessageSelected}
-                selectedMessageID={this.state.selectedMessageID}
+                selectedMessageID={this.state.selectedMessageID.result}
               />
               {this.state.threads.result.hasMore ? (
                 <div style={styles.messageLoading}>
@@ -260,7 +263,7 @@ var App = React.createClass({
             {selectedThread ? (
               <ThreadView
                 thread={selectedThread}
-                selectedMessageID={this.state.selectedMessageID}
+                selectedMessageID={this.state.selectedMessageID.result}
                 onThreadClosed={this._onThreadClosed}
               />
             ) : null}

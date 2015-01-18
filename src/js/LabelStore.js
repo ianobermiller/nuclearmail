@@ -1,7 +1,7 @@
 /** @flow */
 
-var LabelAPI = require('./LabelAPI.js');
-var BaseStore = require('./BaseStore.js');
+var LabelAPI = require('./LabelAPI');
+var BaseStore = require('./BaseStore');
 
 class LabelStore extends BaseStore {
   _labels: ?Array<Object>;
