@@ -67,11 +67,7 @@ class MessageStore extends BaseStore {
       where
     ).forEach(msg => {
       didChange = true;
-      this._messagesByID[msg.id] = Object.assign(
-        {},
-        msg,
-        updates
-      );
+      this._messagesByID[msg.id] = {...msg, ...updates};
     });
     didChange && this.emitChange();
   }

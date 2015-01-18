@@ -11,7 +11,7 @@ class StoreToStateMixin {
   constructor(component, config) {
     this._component = component;
     this._config = _.mapValues(config, stateConfig => {
-      return Object.assign({getOptions: defaultGetOptions}, stateConfig);
+      return {getOptions: defaultGetOptions, ...stateConfig};
     });
     this._optionsByStateFieldName = {};
     this._onStoreChange = this._onStoreChange.bind(this);
