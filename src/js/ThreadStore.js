@@ -5,13 +5,21 @@ var BaseStore = require('./BaseStore.js');
 var ThreadAPI = require('./ThreadAPI.js');
 var _ = require('lodash');
 
+declare class ListResult {
+  hasMore: boolean;
+  resultSizeEstimate: number;
+  items: Array<Object>;
+}
+
 class ThreadStore extends BaseStore {
   _pagingInfoByQuery: {[query: string]: Object};
+  _threadsByID: {[id: string]: Object};
 
   constructor() {
     super();
 
     this._pagingInfoByQuery = {};
+    this._threadsByID = {};
   }
 
   handleDispatch(action: Object) {
@@ -70,7 +78,20 @@ class ThreadStore extends BaseStore {
     shouldEmitChange && this.emitChange();
   }
 
-  list(options: Object) {
+  getByID(
+    options: {id: string}
+  ): Promise<Object> {
+    if (this._threadsByID[options.id]) {
+      return Promise.resolve(this._threadsByID[options.id]);
+    }
+
+    return ThreadAPI.getByID(options).then(item => {
+      this._threadsByID[item.id] = item;
+      return item;
+    });
+  }
+
+  list(options: Object): Promise<ListResult> {
     var query = options.query || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pageToken = null;
@@ -97,18 +118,23 @@ class ThreadStore extends BaseStore {
     };
 
     return ThreadAPI.list(apiOptions).then(result => {
-      var previousResults = pageToken ? pagingInfo.fetchedResults : [];
+      // Add to byID cache
+      result.items.forEach(item => this._threadsByID[item.id] = item);
 
-      var newPagingInfo = this._pagingInfoByQuery[query] = {};
-      newPagingInfo.fetchedResults = previousResults.concat(result.items);
-      newPagingInfo.fetchedResultCount = newPagingInfo.fetchedResults.length;
-      newPagingInfo.nextPageToken = result.nextPageToken;
-      newPagingInfo.resultSizeEstimate = result.resultSizeEstimate;
+      // Update cache with concatenated results
+      var previousResults = pageToken ? pagingInfo.fetchedResults : [];
+      var allItems = previousResults.concat(result.items);
+      this._pagingInfoByQuery[query] = {
+        fetchedResults: allItems,
+        fetchedResultCount: allItems.length,
+        nextPageToken: result.nextPageToken,
+        resultSizeEstimate: result.resultSizeEstimate,
+      };
 
       return {
         hasMore: !!result.nextPageToken,
         resultSizeEstimate: result.resultSizeEstimate,
-        items: newPagingInfo.fetchedResults,
+        items: allItems,
       };
     });
   }

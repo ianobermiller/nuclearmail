@@ -8,9 +8,25 @@ var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
 var _ = require('lodash');
 
+function getByID(
+  options: {id: string}
+): Promise<Object> {
+  return API.wrap(() => {
+    return API.execute(
+      gapi.client.gmail.users.threads.get({userId: 'me', id: options.id})
+    ).then(response => response.result);
+  });
+}
+
+declare class ListResult {
+  nextPageToken: ?string;
+  resultSizeEstimate: number;
+  items: Array<Object>;
+}
+
 function list(
   options: {maxResults: number; query: ?string; pageToken: ?string}
-) {
+): Promise<ListResult> {
   return API.wrap(() => {
     return API.execute(gapi.client.gmail.users.threads.list({
       userId: 'me',
@@ -125,6 +141,7 @@ function star(options: {threadID: String}) {
 
 module.exports = {
   archive,
+  getByID,
   list,
   markAsRead,
   markAsUnread,

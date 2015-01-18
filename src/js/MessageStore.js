@@ -6,7 +6,7 @@ var BaseStore = require('./BaseStore.js');
 var _ = require('lodash');
 
 class MessageStore extends BaseStore {
-  _messagesByID: Object;
+  _messagesByID: {[id: string]: Object};
 
   constructor() {
     super();
@@ -72,7 +72,7 @@ class MessageStore extends BaseStore {
     didChange && this.emitChange();
   }
 
-  getByIDs({ids}: {ids: Array<String>}): Promise<Array<Object>> {
+  getByIDs({ids}: {ids: Array<string>}): Promise<Array<Object>> {
     var messages = ids.map(id => this._messagesByID[id]);
     return Promise.resolve(messages);
   }

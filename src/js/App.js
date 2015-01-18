@@ -81,6 +81,13 @@ var App = React.createClass({
           return {type: 'thread'};
         },
       },
+      selectedThread: {
+        method: ThreadStore.getByID,
+        getOptions: (props, state) => {
+          return {id: state.selectedThreadID.result};
+        },
+        shouldFetch: options => !!options.id,
+      },
     }),
     InteractiveStyleMixin({
       logo: ['matchMedia'],
@@ -201,10 +208,7 @@ var App = React.createClass({
   },
 
   render(): any {
-    var selectedThread = this.state.selectedThreadID.result && _.find(
-      this.state.threads.result.items,
-      {id: this.state.selectedThreadID.result}
-    );
+    var selectedThread = this.state.selectedThread.result;
     return (
       <div style={styles.app}>
         {this.state.isLoading && (
