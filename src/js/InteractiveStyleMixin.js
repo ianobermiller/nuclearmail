@@ -133,7 +133,8 @@ class Interaction {
 
     interactionState = {...interactionState, ...newInteractionState};
     state[this._id] = interactionState;
-    this._component.setState(state);
+
+    this._component.isMounted() && this._component.setState(state);
   }
 
   _getState(name) {
