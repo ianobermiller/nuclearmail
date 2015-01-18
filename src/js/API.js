@@ -10,6 +10,10 @@ var emitter = new EventEmitter();
 var isAvailable = false;
 var pendingRequests = [];
 
+RSVP.on('error', function(error) {
+  console.error(error, error.stack);
+});
+
 window.handleGoogleClientLoad = function() {
   tryAuthorize(/*immediate*/ true);
 };

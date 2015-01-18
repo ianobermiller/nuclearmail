@@ -61,9 +61,7 @@ class StoreToStateMixin {
       return;
     }
 
-    stateConfig.method(options)
-      .then(this._onResult.bind(this, stateFieldName))
-      ['catch'](error => console.error(error, error.getStack()));
+    stateConfig.method(options).then(this._onResult.bind(this, stateFieldName));
   }
 
   componentWillMount() {
