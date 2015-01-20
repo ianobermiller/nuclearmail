@@ -59,10 +59,10 @@ var App = React.createClass({
           maxResultCount: state.maxResultCount,
         }),
       },
-      lastMessages: {
+      lastMessageInEachThread: {
         method: MessageStore.getByIDs,
         getOptions: (props, state) => {
-          var messageIDs = state.threads.result && state.threads.result.items.map(
+          var messageIDs = state.threads && state.threads.items.map(
             thread => _.last(thread.messageIDs)
           );
           return {ids: messageIDs};
@@ -84,7 +84,7 @@ var App = React.createClass({
       selectedThread: {
         method: ThreadStore.getByID,
         getOptions: (props, state) => {
-          return {id: state.selectedThreadID.result};
+          return {id: state.selectedThreadID};
         },
         shouldFetch: options => !!options.id,
       },
@@ -114,6 +114,12 @@ var App = React.createClass({
     this.bindKey('k', this._selectNextMessage);
     this.bindKey('j', this._selectPreviousMessage);
   },
+
+  // componentWillUpdate(nextProps, nextState) {
+  //   if (nextState.lastMessageInEachThread && !nextState.threads) {
+  //     debugger;
+  //   }
+  // },
 
   componentWillUnmount() {
     this._subscriptions.forEach(s => s.remove());
@@ -161,17 +167,17 @@ var App = React.createClass({
   },
 
   _selectNextMessage() {
-    var messages = this.state.lastMessages.result;
+    var messages = this.state.lastMessageInEachThread;
     if (!messages) {
       return;
     }
 
-    var selectedMessageIndex = this.state.selectedMessageID.result &&
+    var selectedMessageIndex = this.state.selectedMessageID &&
       messages.findIndex(
-        msg => msg.id === this.state.selectedMessageID.result
+        msg => msg.id === this.state.selectedMessageID
       );
 
-    if (!this.state.selectedMessageID.result) {
+    if (!this.state.selectedMessageID) {
       this._onMessageSelected(messages[0]);
     } else if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
       this._onMessageSelected(null);
@@ -181,16 +187,16 @@ var App = React.createClass({
   },
 
   _selectPreviousMessage() {
-    var messages = this.state.lastMessages.result;
+    var messages = this.state.lastMessageInEachThread;
     if (!messages) {
       return;
     }
 
     var selectedMessageIndex = messages.findIndex(
-      msg => msg.id === this.state.selectedMessageID.result
+      msg => msg.id === this.state.selectedMessageID
     );
 
-    if (!this.state.selectedMessageID.result) {
+    if (!this.state.selectedMessageID) {
       this._onMessageSelected(messages[0]);
     } else if (selectedMessageIndex < 0 || selectedMessageIndex === 0) {
       this._onMessageSelected(null);
@@ -208,7 +214,7 @@ var App = React.createClass({
   },
 
   render(): any {
-    var selectedThread = this.state.selectedThread.result;
+    var selectedThread = this.state.selectedThread;
     return (
       <div style={styles.app}>
         {this.state.isLoading && (
@@ -238,22 +244,23 @@ var App = React.createClass({
           query={this.state.query}
         />
         <div style={styles.messages}>
-          {this.state.lastMessages.result ? (
+          {this.state.threads &&
+            this.state.lastMessageInEachThread ? (
             <Scroller
               style={styles.messagesList}
-              hasMore={this.state.threads.result.hasMore}
+              hasMore={this.state.threads.hasMore}
               isScrollContainer={true}
               onRequestMoreItems={this._onRequestMoreItems}>
               <BlockMessageList
-                labels={this.state.labels.result}
-                messages={this.state.lastMessages.result}
+                labels={this.state.labels}
+                messages={this.state.lastMessageInEachThread}
                 onMessageSelected={this._onMessageSelected}
-                selectedMessageID={this.state.selectedMessageID.result}
+                selectedMessageID={this.state.selectedMessageID}
               />
-              {this.state.threads.result.hasMore ? (
+              {this.state.threads.hasMore ? (
                 <div style={styles.messageLoading}>
-                  You{"'"}ve seen {this.state.threads.result.items.length}.
-                  {this.state.threads.result.items.length >= 100 ? (
+                  You{"'"}ve seen {this.state.threads.items.length}.
+                  {this.state.threads.items.length >= 100 ? (
                     ' ' + _.sample(pagingMessages)
                   ) : null}
                   {' '}Loading more...
@@ -267,7 +274,7 @@ var App = React.createClass({
             {selectedThread ? (
               <ThreadView
                 thread={selectedThread}
-                selectedMessageID={this.state.selectedMessageID.result}
+                selectedMessageID={this.state.selectedMessageID}
                 onThreadClosed={this._onThreadClosed}
               />
             ) : null}

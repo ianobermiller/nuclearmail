@@ -61,7 +61,7 @@ var ThreadView = React.createClass({
   },
 
   render(): ?Object {
-    var messages = this.state.messages.result;
+    var messages = this.state.messages;
     if (!messages) {
       return null;
     }

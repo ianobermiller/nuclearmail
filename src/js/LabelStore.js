@@ -14,13 +14,15 @@ class LabelStore extends BaseStore {
 
   getLabels() {
     if (this._labels) {
-      return Promise.resolve(this._labels);
+      return this._labels;
     }
 
-    return LabelAPI.list().then(labels => {
+    LabelAPI.list().then(labels => {
       this._labels = labels;
-      return labels;
+      this.emitChange();
     });
+
+    return null;
   }
 }
 

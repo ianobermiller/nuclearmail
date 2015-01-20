@@ -82,13 +82,15 @@ class ThreadStore extends BaseStore {
     options: {id: string}
   ): Promise<Object> {
     if (this._threadsByID[options.id]) {
-      return Promise.resolve(this._threadsByID[options.id]);
+      return this._threadsByID[options.id];
     }
 
-    return ThreadAPI.getByID(options).then(item => {
+    ThreadAPI.getByID(options).then(item => {
       this._threadsByID[item.id] = item;
-      return item;
+      this.emitChange();
     });
+
+    return null;
   }
 
   list(options: Object): Promise<ListResult> {
@@ -103,11 +105,11 @@ class ThreadStore extends BaseStore {
       pageToken = pagingInfo.nextPageToken;
 
       if (maxResults <= 0) {
-        return Promise.resolve({
+        return {
           hasMore: !!pageToken,
           resultSizeEstimate: pagingInfo.resultSizeEstimate,
           items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
-        })
+        };
       }
     }
 
@@ -117,7 +119,7 @@ class ThreadStore extends BaseStore {
       pageToken,
     };
 
-    return ThreadAPI.list(apiOptions).then(result => {
+    ThreadAPI.list(apiOptions).then(result => {
       // Add to byID cache
       result.items.forEach(item => this._threadsByID[item.id] = item);
 
@@ -131,12 +133,10 @@ class ThreadStore extends BaseStore {
         resultSizeEstimate: result.resultSizeEstimate,
       };
 
-      return {
-        hasMore: !!result.nextPageToken,
-        resultSizeEstimate: result.resultSizeEstimate,
-        items: allItems,
-      };
+      this.emitChange();
     });
+
+    return null;
   }
 }
 

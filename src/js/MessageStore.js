@@ -72,9 +72,8 @@ class MessageStore extends BaseStore {
     didChange && this.emitChange();
   }
 
-  getByIDs({ids}: {ids: Array<string>}): Promise<Array<Object>> {
-    var messages = ids.map(id => this._messagesByID[id]);
-    return Promise.resolve(messages);
+  getByIDs({ids}: {ids: Array<string>}): Array<Object> {
+    return _.chain(ids).map(id => this._messagesByID[id]).compact().value();
   }
 }
 

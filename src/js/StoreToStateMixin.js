@@ -2,6 +2,8 @@
  * @flow
  */
 
+var RSVP = require('rsvp');
+var React = require('react/addons');
 var _ = require('lodash');
 var classToMixinFunction = require('./classToMixinFunction');
 
@@ -15,42 +17,40 @@ class StoreToStateMixin {
     });
     this._optionsByStateFieldName = {};
     this._onStoreChange = this._onStoreChange.bind(this);
-  }
-
-  _onResult(stateFieldName, result) {
-    var state = {};
-    var fieldState = state[stateFieldName] =
-      _.clone(this._component.state[stateFieldName]) || {};
-    fieldState.isLoading = false;
-    fieldState.result = result;
-    this._component.setState(state);
+    this._pendingState = {};
   }
 
   _createSubscriptions(props, state) {
     var stores = _.chain(this._config).map(
       (stateConfig, stateFieldName) => stateConfig.method.store
-    ).uniq().value();
+    ).compact().uniq().value();
 
-    _.forEach(this._config, (stateConfig, stateFieldName) => {
-      var options = stateConfig.getOptions(props, state);
-      this._callMethod(stateConfig, stateFieldName, options);
+    this._batchStateUpdates(() => {
+      _.forEach(this._config, (stateConfig, stateFieldName) => {
+        var options = stateConfig.getOptions(props, state);
+        this._callMethod(stateConfig, stateFieldName, options);
+      });
     });
 
-    this._subscriptions = _.uniq(stores)
-      .map(store => store.subscribe(this._onStoreChange));
+    this._subscriptions = stores.map(
+      store => store.subscribe(this._onStoreChange)
+    );
   }
 
   _onStoreChange(data) {
-    _.forEach(this._config, (stateConfig, stateFieldName) => {
-      if (stateConfig.method.store !== data.store) {
-        return;
-      }
+    this._batchStateUpdates(() => {
+      _.forEach(this._config, (stateConfig, stateFieldName) => {
+        if (stateConfig.method.store !== data.store) {
+          return;
+        }
 
-      var options = stateConfig.getOptions(
-        this._component.props,
-        this._component.state
-      );
-      this._callMethod(stateConfig, stateFieldName, options);
+        var options = stateConfig.getOptions(
+          this._component.props,
+          this._component.state
+        );
+
+        this._callMethod(stateConfig, stateFieldName, options);
+      });
     });
   }
 
@@ -58,10 +58,23 @@ class StoreToStateMixin {
     this._optionsByStateFieldName[stateFieldName] = options;
 
     if (stateConfig.shouldFetch && !stateConfig.shouldFetch(options)) {
-      return;
+      return null;
     }
 
-    stateConfig.method(options).then(this._onResult.bind(this, stateFieldName));
+    var result = stateConfig.method(options);
+    if (result instanceof Promise || result instanceof RSVP.Promise) {
+      console.assert(false, 'Stores should not return promises anymore.');
+    }
+
+    this._pendingState[stateFieldName] = result;
+  }
+
+  _batchStateUpdates(updateFunc) {
+    updateFunc();
+
+    if (!_.isEmpty(this._pendingState)) {
+      this._component.setState(this._pendingState);
+    }
   }
 
   componentWillMount() {
@@ -76,21 +89,28 @@ class StoreToStateMixin {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    _.forEach(this._config, (stateConfig, stateFieldName) => {
-      var newOptions = stateConfig.getOptions(nextProps, nextState);
-      var oldOptions = this._optionsByStateFieldName[stateFieldName];
+    this._batchStateUpdates(() => {
+      _.forEach(this._config, (stateConfig, stateFieldName) => {
+        var newOptions = stateConfig.getOptions(nextProps, nextState);
+        var oldOptions = this._optionsByStateFieldName[stateFieldName];
 
-      if (!_.isEqual(newOptions, oldOptions)) {
-        this._callMethod(stateConfig, stateFieldName, newOptions);
-      }
+        if (!_.isEqual(newOptions, oldOptions)) {
+          this._callMethod(stateConfig, stateFieldName, newOptions);
+        }
+      });
     });
   }
 
+  componentDidMount() {
+    this._pendingState = {};
+  }
+
+  componentDidUpdate() {
+    this._pendingState = {};
+  }
+
   getInitialState() {
-    return _.mapValues(this._config, (stateConfig, stateFieldName) => ({
-      isLoading: true,
-      result: null,
-    }));
+    return _.mapValues(this._config, (stateConfig, stateFieldName) => null);
   }
 }
 
