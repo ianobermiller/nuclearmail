@@ -18,7 +18,7 @@ var React = require('react');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
 var SelectedIDStore = require('./SelectedIDStore');
-var StoreToStateMixin = require('./StoreToStateMixin');
+var DependentStateMixin = require('./DependentStateMixin');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
@@ -48,7 +48,7 @@ var App = React.createClass({
   mixins: [
     PureRenderMixin,
     KeybindingMixin,
-    StoreToStateMixin({
+    DependentStateMixin({
       labels: {
         method: LabelStore.getLabels,
       },

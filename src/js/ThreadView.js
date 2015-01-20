@@ -6,7 +6,7 @@ var MessageStore = require('./MessageStore');
 var MessageView = require('./MessageView');
 var ThreadActions = require('./ThreadActions');
 var React = require('react');
-var StoreToStateMixin = require('./StoreToStateMixin');
+var DependentStateMixin = require('./DependentStateMixin');
 var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
@@ -24,7 +24,7 @@ var ThreadView = React.createClass({
   mixins: [
     PureRenderMixin,
     KeybindingMixin,
-    StoreToStateMixin({
+    DependentStateMixin({
       messages: {
         method: MessageStore.getByIDs,
         getOptions: (props, state) => ({

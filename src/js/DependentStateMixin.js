@@ -7,7 +7,7 @@ var React = require('react/addons');
 var _ = require('lodash');
 var classToMixinFunction = require('./classToMixinFunction');
 
-class StoreToStateMixin {
+class DependentStateMixin {
   _subscriptions: Array<{remove: () => void;}>;
 
   constructor(component, config) {
@@ -118,4 +118,4 @@ function defaultGetOptions() {
   return {};
 }
 
-module.exports = classToMixinFunction(StoreToStateMixin);
+module.exports = classToMixinFunction(DependentStateMixin);
