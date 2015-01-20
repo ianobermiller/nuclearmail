@@ -31,7 +31,11 @@ var MessageView = React.createClass({
 
   componentDidMount() {
     if (this._isExpanded()) {
-      asap(() => this.getDOMNode().scrollIntoView(true));
+      asap(() => {
+        if (this.isMounted()) {
+          this.getDOMNode().scrollIntoView(true);
+        }
+      });
     }
   },
 
