@@ -12,8 +12,8 @@ class SelectedIDStore extends BaseStore {
     this._selectedIDByType = {};
   }
 
-  get({type}: {type: string}): Promise<?string> {
-    return Promise.resolve(this._selectedIDByType[type] || null);
+  get({type}: {type: string}): ?string {
+    return this._selectedIDByType[type] || null;
   }
 
   handleDispatch(action: Object) {

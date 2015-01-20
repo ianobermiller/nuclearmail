@@ -20,6 +20,10 @@ var HTMLSandbox = React.createClass({
   },
 
   _onWindowMessageReceived(event: any) {
+    if (!this.isMounted()) {
+      return;
+    }
+
     if (!event.data.height) {
       return;
     }
@@ -28,6 +32,10 @@ var HTMLSandbox = React.createClass({
   },
 
   _setIframeContents() {
+    if (!this.isMounted()) {
+      return;
+    }
+
     var iframe = this.getDOMNode();
 
     var iframeBodyStyle = iframe.contentDocument.body.style;
