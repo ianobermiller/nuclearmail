@@ -32,6 +32,14 @@ var ThreadView = React.createClass({
         }),
         shouldFetch: options => !!options.ids,
       },
+      unsubscribeUrl: {
+        method: getUnsubscribeUrl,
+        getOptions: (props, state) => ({
+          messages: state.messages,
+          selectedMessageID: props.selectedMessageID,
+        }),
+        shouldFetch: options => options.messages && options.selectedMessageID
+      }
     }),
   ],
 
@@ -58,6 +66,10 @@ var ThreadView = React.createClass({
 
   _unstar() {
     ThreadActions.unstar(this.props.thread.id);
+  },
+
+  _unsubscribe() {
+    window.open(this.state.unsubscribeUrl);
   },
 
   render(): ?Object {
@@ -93,13 +105,18 @@ var ThreadView = React.createClass({
               <Button onClick={this._star}>Star</Button>
             </li>
           )}
+          {this.state.unsubscribeUrl ? (
+            <li style={styles.actionBarItem}>
+              <Button onClick={this._unsubscribe}>Unsubscribe</Button>
+            </li>
+          ) : null}
         </ul>
         <div style={styles.messages}>
           {messages.map(message => (
             <MessageView
               key={message.id}
-              message={message}
               isExpandedInitially={message.id === this.props.selectedMessageID}
+              message={message}
             />
           ))}
         </div>
@@ -107,6 +124,61 @@ var ThreadView = React.createClass({
     );
   }
 });
+
+function getUnsubscribeUrl({messages, selectedMessageID}) {
+  var message = messages.find(
+    m => m.id === selectedMessageID
+  );
+
+  if (!message) {
+    return null;
+  }
+
+  var body = message.body['text/html'] || message.body['text/plain'];
+  var bodyLower = body.toLowerCase();
+
+  var match = bodyLower.match(/unsubscribe/) || bodyLower.match(/preferences/);
+  if (!match) {
+    return null;
+  }
+  var unsubscrieIndices = [
+    match.index,
+    match.index + 11
+  ];
+
+  var urlRegex = /href=['"]([^'"]+)['"]/g;
+  var urls = [];
+  while (match = urlRegex.exec(bodyLower)) {
+    var url = match[1];
+    var index = bodyLower.indexOf("</a>", match.index);
+    var urlIndices = [
+      match.index,
+      bodyLower.indexOf("</a>", match.index),
+      bodyLower.lastIndexOf("<a ", match.index)
+    ];
+
+    var score = _.min(_.flatten(
+      urlIndices.map(urlIndex =>
+        unsubscrieIndices.map(unsubIndex =>
+          Math.abs(urlIndex - unsubIndex)
+        )
+      )
+    ));
+
+    urls.push({
+      url: body.substring(match.index + 6, match.index + 6 + url.length),
+      score
+    });
+  }
+
+  var closestUrl = _.min(urls, url => url.score);
+
+  if (closestUrl.score > 100) {
+    return null;
+  }
+
+  return closestUrl.url;
+}
 
 var styles = {
   root: {
