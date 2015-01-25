@@ -12,7 +12,7 @@ class LabelStore extends BaseStore {
     this._labels = null;
   }
 
-  getLabels() {
+  getLabels(): ?Array<Object> {
     if (this._labels) {
       return this._labels;
     }

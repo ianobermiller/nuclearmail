@@ -80,7 +80,7 @@ class ThreadStore extends BaseStore {
 
   getByID(
     options: {id: string}
-  ): Promise<Object> {
+  ): ?Object {
     if (this._threadsByID[options.id]) {
       return this._threadsByID[options.id];
     }
@@ -93,7 +93,7 @@ class ThreadStore extends BaseStore {
     return null;
   }
 
-  list(options: Object): Promise<ListResult> {
+  list(options: Object): ?ListResult {
     var query = options.query || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pageToken = null;
@@ -104,13 +104,11 @@ class ThreadStore extends BaseStore {
       maxResults = requestedResultCount - pagingInfo.fetchedResultCount;
       pageToken = pagingInfo.nextPageToken;
 
-      if (maxResults <= 0) {
-        return {
-          hasMore: !!pageToken,
-          resultSizeEstimate: pagingInfo.resultSizeEstimate,
-          items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
-        };
-      }
+      return {
+        hasMore: !!pageToken,
+        resultSizeEstimate: pagingInfo.resultSizeEstimate,
+        items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
+      };
     }
 
     var apiOptions = {
