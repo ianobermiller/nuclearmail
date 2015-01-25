@@ -92,16 +92,16 @@ class DependentStateMixin {
     // TODO: this breaks pretty much everything
     // You aren't allowed to setState in componentWillUpdate. :(
     // http://facebook.github.io/react/docs/component-specs.html#updating-componentwillupdate
-    this._batchStateUpdates(() => {
-      _.forEach(this._config, (stateConfig, stateFieldName) => {
-        var newOptions = stateConfig.getOptions(nextProps, nextState);
-        var oldOptions = this._optionsByStateFieldName[stateFieldName];
+    // this._batchStateUpdates(() => {
+    //   _.forEach(this._config, (stateConfig, stateFieldName) => {
+    //     var newOptions = stateConfig.getOptions(nextProps, nextState);
+    //     var oldOptions = this._optionsByStateFieldName[stateFieldName];
 
-        if (!_.isEqual(newOptions, oldOptions)) {
-          this._callMethod(stateConfig, stateFieldName, newOptions);
-        }
-      });
-    });
+    //     if (!_.isEqual(newOptions, oldOptions)) {
+    //       this._callMethod(stateConfig, stateFieldName, newOptions);
+    //     }
+    //   });
+    // });
   }
 
   componentDidMount() {
