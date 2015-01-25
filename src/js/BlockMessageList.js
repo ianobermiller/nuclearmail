@@ -70,7 +70,7 @@ var BlockMessageListItem = React.createClass({
           msg.isUnread && styles.item.innerIsUnread,
           this.props.isSelected && styles.item.innerIsSelected
         )}>
-          <div style={styles.top}>
+          <div style={styles.item.top}>
             <div style={sx(
               styles.item.sender,
               this.props.isSelected && styles.item.senderIsSelected
