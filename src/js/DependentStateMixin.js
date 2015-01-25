@@ -89,6 +89,9 @@ class DependentStateMixin {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    // TODO: this breaks pretty much everything
+    // You aren't allowed to setState in componentWillUpdate. :(
+    // http://facebook.github.io/react/docs/component-specs.html#updating-componentwillupdate
     this._batchStateUpdates(() => {
       _.forEach(this._config, (stateConfig, stateFieldName) => {
         var newOptions = stateConfig.getOptions(nextProps, nextState);
