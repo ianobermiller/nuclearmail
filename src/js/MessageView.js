@@ -80,11 +80,20 @@ var MessageView = React.createClass({
               <div style={styles.subject}>
                 {msg.subject}
               </div>
+              <div style={styles.meta}>
+                <div>
+                  From: {' ' + msg.from.name + ' <' + msg.from.email + '>'}
+                </div>
+                <div>
+                  To: {' ' + msg.to.name + ' <' + msg.to.email + '>'}
+                </div>
+              </div>
               <HTMLSandbox
                 style={styles.sandbox}
                 html={body}
                 iframeBodyStyle={{
-                  'fontFamily': window.getComputedStyle(document.body).fontFamily,
+                  fontFamily: window.getComputedStyle(document.body).fontFamily,
+                  fontSize: '12px',
                   padding: '12px',
                 }}
                 showImages={true}
@@ -135,6 +144,11 @@ var styles = {
   subject: {
     fontSize: '14px',
     margin: '0 12px',
+  },
+
+  meta: {
+    fontSize: '12px',
+    margin: '6px 12px 12px 12px',
   },
 
   sandbox: {

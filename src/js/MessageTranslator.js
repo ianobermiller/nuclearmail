@@ -8,7 +8,8 @@ function translateMessage(rawMessage: Object): Object {
   return {
     body: decodeBody(rawMessage),
     date: new Date(pluckHeader(msg.headers, 'Date')),
-    from: parseFrom(pluckHeader(msg.headers, 'From') || ''),
+    from: parseNameAndEmail(pluckHeader(msg.headers, 'From') || ''),
+    to: parseNameAndEmail(pluckHeader(msg.headers, 'To') || ''),
     hasAttachment: !!msg.body.data,
     id: rawMessage.id,
     isDraft: hasLabel(rawMessage, 'DRAFT'),
@@ -30,12 +31,12 @@ function hasLabel(rawMessage: Object, label: string): boolean {
   return rawMessage.labelIds && rawMessage.labelIds.indexOf(label) >= 0;
 }
 
-function parseFrom(from: string): {name: string; email: string;} {
-  var i = from.indexOf('<');
+function parseNameAndEmail(input: string): {name: string; email: string;} {
+  var i = input.indexOf('<');
   return {
     // remove surrounding quotes from name
-    name: from.substring(0, i).trim().replace(/(^")|("$)/g, ''),
-    email: from.substring(i + 1, from.length - 1)
+    name: input.substring(0, i).trim().replace(/(^")|("$)/g, ''),
+    email: i >= 0 ? input.substring(i + 1, input.length - 1) : input,
   };
 }
 
