@@ -7,6 +7,8 @@ var MessageView = require('./MessageView');
 var ThreadActions = require('./ThreadActions');
 var React = require('react');
 var DependentStateMixin = require('./DependentStateMixin');
+var RouteStore = require('./RouteStore');
+var ThreadStore = require('./ThreadStore');
 var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
@@ -14,21 +16,27 @@ var PureRenderMixin = React.addons.PureRenderMixin;
 var _ = require('lodash');
 
 var ThreadView = React.createClass({
-  propTypes: {
-    thread: PropTypes.object.isRequired,
-    onThreadClosed: PropTypes.func.isRequired,
-
-    selectedMessageID: PropTypes.string,
-  },
-
   mixins: [
     PureRenderMixin,
     KeybindingMixin,
     DependentStateMixin({
+      threadID: {
+        method: RouteStore.getThreadID,
+      },
+      thread: {
+        method: ThreadStore.getByID,
+        getOptions: (props, state) => ({
+          id: state.threadID,
+        }),
+        shouldFetch: options => !!options.id
+      },
+      selectedMessageID: {
+        method: RouteStore.getMessageID,
+      },
       messages: {
         method: MessageStore.getByIDs,
         getOptions: (props, state) => ({
-          ids: props.thread.messageIDs
+          ids: state.thread && state.thread.messageIDs
         }),
         shouldFetch: options => !!options.ids,
       },
@@ -36,7 +44,7 @@ var ThreadView = React.createClass({
         method: getUnsubscribeUrl,
         getOptions: (props, state) => ({
           messages: state.messages,
-          selectedMessageID: props.selectedMessageID,
+          selectedMessageID: state.selectedMessageID,
         }),
         shouldFetch: options => options.messages && options.selectedMessageID
       }
@@ -115,7 +123,7 @@ var ThreadView = React.createClass({
           {messages.map(message => (
             <MessageView
               key={message.id}
-              isExpandedInitially={message.id === this.props.selectedMessageID}
+              isExpandedInitially={message.id === this.state.selectedMessageID}
               message={message}
             />
           ))}

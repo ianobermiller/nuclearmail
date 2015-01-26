@@ -1,6 +1,10 @@
 /** @flow */
 
 var ActionType = {
+  App: {
+    ROUTE_CHANGED: '',
+  },
+
   Message: {
     ADD_MANY: '',
     SELECT: '',

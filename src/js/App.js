@@ -15,7 +15,7 @@ var Nav = require('./Nav');
 var React = require('react');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
-var SelectedIDStore = require('./SelectedIDStore');
+var RouteStore = require('./RouteStore');
 var DependentStateMixin = require('./DependentStateMixin');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
@@ -23,8 +23,10 @@ var ThreadView = require('./ThreadView');
 var _ = require('lodash');
 var asap = require('asap');
 var moment = require('moment');
+var Router = require('react-router');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
+var RouteHandler = Router.RouteHandler;
 
 var PAGE_SIZE = 20;
 
@@ -54,16 +56,10 @@ var App = React.createClass({
         shouldFetch: options => !!options.ids,
       },
       selectedMessageID: {
-        method: SelectedIDStore.get,
-        getOptions: (props, state) => {
-          return {type: 'message'};
-        },
+        method: RouteStore.getMessageID,
       },
       selectedThreadID: {
-        method: SelectedIDStore.get,
-        getOptions: (props, state) => {
-          return {type: 'thread'};
-        },
+        method: RouteStore.getThreadID,
       },
       selectedThread: {
         method: ThreadStore.getByID,
@@ -249,13 +245,7 @@ var App = React.createClass({
             <div style={styles.messagesList} />
           )}
           <div style={styles.threadView}>
-            {selectedThread ? (
-              <ThreadView
-                thread={selectedThread}
-                selectedMessageID={this.state.selectedMessageID}
-                onThreadClosed={this._onThreadClosed}
-              />
-            ) : null}
+            <RouteHandler />
           </div>
         </div>
         {(!this.state.isAuthorizing && !this.state.isAuthorized) ? (
