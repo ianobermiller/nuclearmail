@@ -1,7 +1,5 @@
 /** @flow */
 
-require('es6-shim');
-
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
@@ -29,20 +27,6 @@ var moment = require('moment');
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 var PAGE_SIZE = 20;
-
-moment.locale('en', {
-  calendar : {
-    lastDay : 'MMM D',
-    sameDay : 'LT',
-    nextDay : 'MMM D',
-    lastWeek : 'MMM D',
-    nextWeek : 'MMM D',
-    sameElse : 'L'
-  }
-});
-
-// Expose React for the dev tools
-window.React = React;
 
 var App = React.createClass({
   mixins: [
@@ -376,5 +360,4 @@ var pagingMessages = [
   'Dig dig dig!'
 ];
 
-React.render(<App />, document.body);
-
+module.exports = App;

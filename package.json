@@ -36,7 +36,7 @@
   "scripts": {
     "clean": "rimraf build",
     "watch-html": "mkdirp build && nodemon --watch src/index.html --exec 'cp src/index.html build/'",
-    "watch-js": "mkdirp build && watchify src/js/App.js --debug -o build/app.js -t [6to5ify --experimental] -t [reactify --es6 --strip-types] -v",
+    "watch-js": "mkdirp build && watchify src/js/Bootstrap.js --debug -o build/app.js -t [6to5ify --experimental] -t [reactify --es6 --strip-types] -v",
     "serve": "cd build && browser-sync start --no-notify --index=index.html --port=8000 --server --files=*",
     "publish": "git checkout gh-pages && cp build/* . && git commit -am 'Code update' && git push && git checkout master",
     "start": "npm run watch-html & npm run watch-js & npm run serve"
