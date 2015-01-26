@@ -1,8 +1,9 @@
 /** @flow */
 
-var API = require('./API.js');
-var ActionType = require('./ActionType.js');
-var BaseStore = require('./BaseStore.js');
+var API = require('./API');
+var ActionType = require('./ActionType');
+var BaseStore = require('./BaseStore');
+var MessageAPI = require('./MessageAPI');
 var _ = require('lodash');
 
 class MessageStore extends BaseStore {
@@ -73,7 +74,21 @@ class MessageStore extends BaseStore {
   }
 
   getByIDs({ids}: {ids: Array<string>}): Array<Object> {
-    return _.chain(ids).map(id => this._messagesByID[id]).compact().value();
+    var existing = _.chain(ids)
+      .map(id => this._messagesByID[id])
+      .compact()
+      .value();
+
+    if (existing.length === ids.length) {
+      return existing;
+    }
+
+    MessageAPI.getByIDs(ids).then(messages => {
+      messages.forEach(message => this._messagesByID[message.id] = message);
+      this.emitChange();
+    });
+
+    return null;
   }
 }
 
