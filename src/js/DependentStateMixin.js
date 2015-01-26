@@ -64,7 +64,6 @@ class DependentStateMixin {
     }
 
     if (!_.isEmpty(newState)) {
-      console.log('setState', newState);
       this._component.setState(newState);
     }
   }
