@@ -5,6 +5,7 @@
 var RSVP = require('rsvp');
 var React = require('react/addons');
 var _ = require('lodash');
+var asap = require('asap');
 var classToMixinFunction = require('./classToMixinFunction');
 
 class DependentStateMixin {
@@ -17,7 +18,6 @@ class DependentStateMixin {
     });
     this._optionsByStateFieldName = {};
     this._onStoreChange = this._onStoreChange.bind(this);
-    this._pendingState = {};
   }
 
   _createSubscriptions(props, state) {
@@ -25,12 +25,7 @@ class DependentStateMixin {
       (stateConfig, stateFieldName) => stateConfig.method.store
     ).compact().uniq().value();
 
-    this._batchStateUpdates(() => {
-      _.forEach(this._config, (stateConfig, stateFieldName) => {
-        var options = stateConfig.getOptions(props, state);
-        this._callMethod(stateConfig, stateFieldName, options);
-      });
-    });
+    this._update(props, state);
 
     this._subscriptions = stores.map(
       store => store.subscribe(this._onStoreChange)
@@ -38,23 +33,43 @@ class DependentStateMixin {
   }
 
   _onStoreChange(data) {
-    this._batchStateUpdates(() => {
-      _.forEach(this._config, (stateConfig, stateFieldName) => {
-        if (stateConfig.method.store !== data.store) {
-          return;
-        }
-
-        var options = stateConfig.getOptions(
-          this._component.props,
-          this._component.state
-        );
-
-        this._callMethod(stateConfig, stateFieldName, options);
-      });
-    });
+    this._update(
+      this._component.props,
+      this._component.state,
+      data.store
+    );
   }
 
-  _callMethod(stateConfig, stateFieldName, options) {
+  _update(props, state, store) {
+    var newState = {};
+
+    var isFirstRound = true;
+    var didOptionsChange = true;
+    while (didOptionsChange) {
+      didOptionsChange = false;
+      _.forEach(this._config, (stateConfig, stateFieldName) => {
+        var newOptions = stateConfig.getOptions(props, {...state, ...newState});
+        var oldOptions = this._optionsByStateFieldName[stateFieldName];
+
+        if (
+          !_.isEqual(newOptions, oldOptions) ||
+          (isFirstRound && store && stateConfig.method.store === store)
+        ) {
+          didOptionsChange = true;
+          var result = this._callMethod(stateConfig, stateFieldName, newOptions);
+          newState[stateFieldName] = result;
+        }
+      });
+      isFirstRound = false;
+    }
+
+    if (!_.isEmpty(newState)) {
+      console.log('setState', newState);
+      this._component.setState(newState);
+    }
+  }
+
+  _callMethod(stateConfig, stateFieldName, options): any {
     this._optionsByStateFieldName[stateFieldName] = options;
 
     if (stateConfig.shouldFetch && !stateConfig.shouldFetch(options)) {
@@ -66,15 +81,7 @@ class DependentStateMixin {
       console.assert(false, 'Stores should not return promises anymore.');
     }
 
-    this._pendingState[stateFieldName] = result;
-  }
-
-  _batchStateUpdates(updateFunc) {
-    updateFunc();
-
-    if (!_.isEmpty(this._pendingState)) {
-      this._component.setState(this._pendingState);
-    }
+    return result;
   }
 
   componentWillMount() {
@@ -89,27 +96,9 @@ class DependentStateMixin {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // TODO: this breaks pretty much everything
-    // You aren't allowed to setState in componentWillUpdate. :(
-    // http://facebook.github.io/react/docs/component-specs.html#updating-componentwillupdate
-    // this._batchStateUpdates(() => {
-    //   _.forEach(this._config, (stateConfig, stateFieldName) => {
-    //     var newOptions = stateConfig.getOptions(nextProps, nextState);
-    //     var oldOptions = this._optionsByStateFieldName[stateFieldName];
-
-    //     if (!_.isEqual(newOptions, oldOptions)) {
-    //       this._callMethod(stateConfig, stateFieldName, newOptions);
-    //     }
-    //   });
-    // });
-  }
-
-  componentDidMount() {
-    this._pendingState = {};
-  }
-
-  componentDidUpdate() {
-    this._pendingState = {};
+    asap(() => {
+      this._update(nextProps, nextState);
+    });
   }
 
   getInitialState() {

@@ -98,17 +98,22 @@ class ThreadStore extends BaseStore {
     var requestedResultCount = options.maxResultCount || 10;
     var pageToken = null;
     var maxResults = requestedResultCount;
+    var result = null;
 
     var pagingInfo = this._pagingInfoByQuery[query];
     if (pagingInfo) {
       maxResults = requestedResultCount - pagingInfo.fetchedResultCount;
       pageToken = pagingInfo.nextPageToken;
 
-      return {
+      result = {
         hasMore: !!pageToken,
         resultSizeEstimate: pagingInfo.resultSizeEstimate,
         items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
       };
+
+      if (maxResults <= 0) {
+        return result;
+      }
     }
 
     var apiOptions = {
@@ -134,7 +139,7 @@ class ThreadStore extends BaseStore {
       this.emitChange();
     });
 
-    return null;
+    return result;
   }
 }
 

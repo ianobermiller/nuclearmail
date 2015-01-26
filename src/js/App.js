@@ -115,12 +115,6 @@ var App = React.createClass({
     this.bindKey('j', this._selectPreviousMessage);
   },
 
-  // componentWillUpdate(nextProps, nextState) {
-  //   if (nextState.lastMessageInEachThread && !nextState.threads) {
-  //     debugger;
-  //   }
-  // },
-
   componentWillUnmount() {
     this._subscriptions.forEach(s => s.remove());
   },
