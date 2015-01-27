@@ -23,7 +23,7 @@ class RouteStore extends BaseStore {
   handleDispatch(action: Object) {
     switch (action.type) {
       case ActionType.App.ROUTE_CHANGED:
-        this._messageID = action.state.params.messageID;
+        this._messageID = action.state.params.threadID;
         this._threadID = action.state.params.threadID;
         this.emitChange();
         break;

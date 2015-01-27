@@ -12,7 +12,7 @@ var RouteHandler = Router.RouteHandler;
 
 var routes = (
   <Route name="app" path="/" handler={App}>
-    <Route name="thread" path="/thread/:threadID/message/:messageID" handler={ThreadView} />
+    <Route name="thread" path="/thread/:threadID" handler={ThreadView} />
   </Route>
 );
 
