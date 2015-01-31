@@ -19,25 +19,27 @@
     "md5": "^1.0.1",
     "moment": "^2.8.3",
     "react": "^0.12.0",
-    "react-css": "0.0.2",
     "react-router": "^0.11.6",
     "rsvp": "^3.0.13",
     "tinytinycolor": "0.0.3",
     "utf8": "^2.0.0"
   },
   "devDependencies": {
-    "6to5ify": "^3.1.2",
-    "browser-sync": "^1.6.3",
+    "6to5-core": "^3.2.0",
+    "6to5-loader": "^3.0.0",
     "mkdirp": "^0.5.0",
     "nodemon": "^1.2.1",
+    "react-hot-loader": "^1.1.4",
     "rimraf": "^2.2.8",
-    "watchify": "^1.0.2"
+    "watchify": "^1.0.2",
+    "webpack": "^1.5.3",
+    "webpack-dev-server": "^1.7.0"
   },
   "scripts": {
     "clean": "rimraf build",
-    "watch-html": "mkdirp build && nodemon --watch src/index.html --exec 'cp src/index.html build/'",
-    "watch-js": "mkdirp build && watchify src/js/main.js --debug -o build/app.js -t [6to5ify --experimental] -v",
-    "serve": "cd build && browser-sync start --no-notify --index=index.html --port=8000 --server --files=*",
+    "watch-html": "mkdirp build && nodemon --watch src/index.html --exec 'cp src/index.html build/index.html'",
+    "watch-js": "mkdirp build",
+    "serve": "node server.js",
     "publish": "git checkout gh-pages && cp build/* . && git commit -am 'Code update' && git push && git checkout master",
     "start": "npm run watch-html & npm run watch-js & npm run serve"
   },
