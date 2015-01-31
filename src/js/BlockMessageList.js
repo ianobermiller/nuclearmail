@@ -143,10 +143,10 @@ var styles = {
     },
 
     date: {
-      flex: 1,
       fontSize: '14px',
       opacity: 0.5,
       textAlign: 'right',
+      whiteSpace: 'nowrap',
     },
 
     text: {
@@ -163,6 +163,7 @@ var styles = {
     },
 
     sender: {
+      flex: 1,
       color: Colors.accent,
       fontWeight: 'bold',
       overflow: 'hidden',
