@@ -63,7 +63,7 @@ class DependentStateMixin {
       isFirstRound = false;
     }
 
-    if (!_.isEmpty(newState)) {
+    if (this._component.isMounted() && !_.isEmpty(newState)) {
       this._component.setState(newState);
     }
   }
