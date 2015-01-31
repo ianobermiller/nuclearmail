@@ -115,7 +115,7 @@ var App = React.createClass({
   },
 
   _onMessageSelected(message) {
-    if (message) {
+    if (message && message.isUnread) {
       ThreadActions.markAsRead(message.threadID);
     }
     MessageActions.select(message);
@@ -136,14 +136,14 @@ var App = React.createClass({
     });
   },
 
-  _onThreadClosed() {
-    this._selectNextMessage();
+  _selectNextMessage() {
+    this._onMessageSelected(this._getNextMessage());
   },
 
-  _selectNextMessage() {
+  _getNextMessage() {
     var messages = this.state.lastMessageInEachThread;
     if (!messages) {
-      return;
+      return null;
     }
 
     var selectedMessageIndex = this.state.selectedMessageID &&
@@ -152,11 +152,11 @@ var App = React.createClass({
       );
 
     if (!this.state.selectedMessageID) {
-      this._onMessageSelected(messages[0]);
+      return messages[0];
     } else if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
-      this._onMessageSelected(null);
+      return null;
     } else {
-      this._onMessageSelected(messages[selectedMessageIndex + 1]);
+      return messages[selectedMessageIndex + 1];
     }
   },
 
@@ -245,7 +245,9 @@ var App = React.createClass({
             <div style={styles.messagesList} />
           )}
           <div style={styles.threadView}>
-            <RouteHandler />
+            <RouteHandler
+              onGoToNextMessage={this._selectNextMessage}
+            />
           </div>
         </div>
         {(!this.state.isAuthorizing && !this.state.isAuthorized) ? (

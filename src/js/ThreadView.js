@@ -16,6 +16,10 @@ var PureRenderMixin = React.addons.PureRenderMixin;
 var _ = require('lodash');
 
 var ThreadView = React.createClass({
+  propTypes: {
+    onGoToNextMessage: PropTypes.func.isRequired,
+  },
+
   mixins: [
     PureRenderMixin,
     KeybindingMixin,
@@ -56,24 +60,24 @@ var ThreadView = React.createClass({
   },
 
   _archive() {
-    ThreadActions.archive(this.props.thread.id);
-    this.props.onThreadClosed();
+    this.props.onGoToNextMessage();
+    ThreadActions.archive(this.state.threadID);
   },
 
   _moveToInbox() {
-    ThreadActions.moveToInbox(this.props.thread.id);
+    ThreadActions.moveToInbox(this.state.threadID);
   },
 
   _markAsUnread() {
-    ThreadActions.markAsUnread(this.props.thread.id);
+    ThreadActions.markAsUnread(this.state.threadID);
   },
 
   _star() {
-    ThreadActions.star(this.props.thread.id);
+    ThreadActions.star(this.state.threadID);
   },
 
   _unstar() {
-    ThreadActions.unstar(this.props.thread.id);
+    ThreadActions.unstar(this.state.threadID);
   },
 
   _unsubscribe() {
