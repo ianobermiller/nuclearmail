@@ -32,10 +32,14 @@ router.run((Handler, state) => {
 Dispatcher.subscribe((action) => {
   switch (action.type) {
     case ActionType.Message.SELECT:
-      router.transitionTo(
-        'thread',
-        {messageID: action.message.id, threadID: action.message.threadID}
-      );
+      if (action.message) {
+        router.transitionTo(
+          'thread',
+          {messageID: action.message.id, threadID: action.message.threadID}
+        );
+      } else {
+        router.transitionTo('app');
+      }
       break;
   }
 });
