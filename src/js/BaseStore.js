@@ -32,12 +32,16 @@ class BaseStore {
 }
 
 function autobind(object: {[functionName: string]: any;}) {
-  for (var prop in object) {
-    if (typeof object[prop] === 'function' && /^[A-Za-z]/.test(prop)) {
+  Object.getOwnPropertyNames(Object.getPrototypeOf(object)).forEach(prop => {
+    if (
+      typeof object[prop] === 'function' &&
+      /^[A-Za-z]/.test(prop) &&
+      prop !== 'constructor'
+    ) {
       object[prop] = object[prop].bind(object);
       object[prop].store = object;
     }
-  }
+  });
 }
 
 module.exports = BaseStore;

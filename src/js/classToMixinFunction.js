@@ -46,27 +46,36 @@ function classToMixinFunction(constructor: any): Function {
   return function() {
     var mixinArgs = arguments;
     var mixinID = '_mixin_' + ClientID.get();
+
+    var getInstance = function(component) {
+      if (component[mixinID]) {
+        return component[mixinID];
+      }
+
+      // Create a new instance of the mixin with the component and the
+      // passed-in args and stash it on the component
+      // We could just do this once in getInitialstate, but react-hot-loader
+      // will blow away the non-state props on a component, so it is safer to
+      // create a new instance whenever we can't find one.
+      var instance = Object.create(constructor.prototype);
+      var args = [component].concat(Array.prototype.slice.call(mixinArgs));
+      constructor.apply(instance, args);
+      component[mixinID] = instance;
+      return instance;
+    };
+
     var mixin = {
       getInitialState() {
-        var component = this;
-
-        // Create a new instance of the mixin with the component and the
-        // passed-in args and stash it on the component
-        var instance = Object.create(constructor.prototype);
-        var args = [component].concat(Array.prototype.slice.call(mixinArgs));
-        constructor.apply(instance, args);
-        component[mixinID] = instance;
+        var instance = getInstance(this);
 
         // Return mixin defined getInitialState if any
         return instance.getInitialState ? instance.getInitialState() : {};
       }
     };
 
-    for (var prop in constructor.prototype) {
-      // Note that we are purposefully not checking hasOwnProperty so that
-      // mixins can use inheritance.
-
+    Object.getOwnPropertyNames(constructor.prototype).forEach(prop => {
       if (
+        prop === 'constructor' ||
         // getInitialState is handled above
         prop === 'getInitialState' ||
         // ignore "private" functions, or anything not starting with a letter
@@ -74,17 +83,16 @@ function classToMixinFunction(constructor: any): Function {
         // ignore anything that isn't a function
         typeof constructor.prototype[prop] !== 'function'
       ) {
-        continue;
+        return;
       }
 
       // For each function defined in the prototype, create a function
       // to proxy the call to the mixin instance.
       mixin[prop] = (function(prop) { return function() {
-        var component = this;
-        var mixinInstance = component[mixinID];
+        var mixinInstance = getInstance(this);
         return mixinInstance[prop].apply(mixinInstance, arguments);
       }})(prop);
-    }
+    });
 
     return mixin;
   };
