@@ -6,20 +6,7 @@ var AppActions = require('./AppActions');
 var ActionType = require('./ActionType');
 var Dispatcher = require('./Dispatcher');
 var React = require('react');
-var moment = require('moment');
 var router = require('./router');
-
-// Configure moment
-moment.locale('en', {
-  calendar : {
-    lastDay : 'MMM D',
-    sameDay : 'LT',
-    nextDay : 'MMM D',
-    lastWeek : 'MMM D',
-    nextWeek : 'MMM D',
-    sameElse : 'L'
-  }
-});
 
 // Expose React for the dev tools
 window.React = React;

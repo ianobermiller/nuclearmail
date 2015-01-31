@@ -9,6 +9,13 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 2. `flow` to run the typechecker
 
+## Technologies used
+- React Intl
+- react-router
+- webpack
+- react-hot-loader
+- Google Caja
+
 ## Keyboard shortcuts
 - `y` - archive
 

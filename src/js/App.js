@@ -22,7 +22,6 @@ var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
 var _ = require('lodash');
 var asap = require('asap');
-var moment = require('moment');
 var Router = require('react-router');
 
 var PureRenderMixin = React.addons.PureRenderMixin;

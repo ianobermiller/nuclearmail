@@ -4,7 +4,6 @@ var HTMLSandbox = require('./HTMLSandbox');
 var React = require('react');
 var RelativeDate = require('./RelativeDate');
 var asap = require('asap');
-var moment = require('moment');
 var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
