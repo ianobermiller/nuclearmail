@@ -66,13 +66,13 @@ var HTMLSandbox = React.createClass({
     script.innerHTML = `
       var lastHeight = null;
       function notifyHeightChanged() {
-        var newHeight = document.documentElement.offsetHeight;
+        var newHeight = document.body.scrollHeight;
         if (newHeight > lastHeight + 1) {
           console.log('newHeight', newHeight);
           lastHeight = newHeight;
           window.parent.postMessage({
             id: '${this._id}',
-            height: document.documentElement.offsetHeight,
+            height: newHeight,
           }, window.parent.location.href);
         }
       }
@@ -115,6 +115,7 @@ var HTMLSandbox = React.createClass({
         border="none"
         className={this.props.className}
         height={this.props.setHeightToContent ? 0 : null}
+        scrolling="no"
         width="100%"
       />
     );
