@@ -19,6 +19,12 @@ var MessageView = React.createClass({
 
   mixins: [PureRenderMixin],
 
+  getInitialState() {
+    return {
+      isExpandedManually: null,
+    };
+  },
+
   componentDidMount() {
     if (this.props.isExpandedInitially) {
       asap(() => {
@@ -27,6 +33,16 @@ var MessageView = React.createClass({
         }
       });
     }
+  },
+
+  _onClick() {
+    this.setState({isExpandedManually: !this._isExpanded()});
+  },
+
+  _isExpanded() {
+    return this.state.isExpandedManually !== null ?
+      this.state.isExpandedManually :
+      this.props.isExpandedInitially;
   },
 
   render(): any {
@@ -43,8 +59,11 @@ var MessageView = React.createClass({
       '</div>';
 
     return (
-      <div style={sx(this.props.style, styles.root)}>
-        <div style={styles.inner}>
+      <div style={sx(this.props.style, styles.root)} onClick={this._onClick}>
+        <div style={sx(
+          styles.inner,
+          !this._isExpanded() && styles.innerCollapsed
+        )}>
           <div style={styles.header}>
             <div style={styles.headerSender}>
               <div>
@@ -63,15 +82,20 @@ var MessageView = React.createClass({
               date={msg.date}
             />
           </div>
-          <HTMLSandbox
-            style={styles.sandbox}
-            html={body}
-            iframeBodyStyle={{
-              fontFamily: window.getComputedStyle(document.body).fontFamily,
-              padding: '12px',
-            }}
-            showImages={true}
-          />
+          {this._isExpanded() ? (
+            <HTMLSandbox
+              style={styles.sandbox}
+              html={body}
+              iframeBodyStyle={{
+                fontFamily: window.getComputedStyle(document.body).fontFamily,
+                fontSize: '14px',
+                padding: '12px',
+              }}
+              showImages={true}
+            />
+          ) : (
+            <div style={styles.snippet}>{this.props.message.snippet}</div>
+          )}
         </div>
       </div>
     );
@@ -88,6 +112,10 @@ var styles = {
     borderRadius: '4px',
     boxShadow: '0px 1px 2px 1px #ddd',
     padding: 12,
+  },
+
+  innerCollapsed: {
+    background: Colors.gray1,
   },
 
   header: {
@@ -130,6 +158,11 @@ var styles = {
     fontSize: 14,
     marginTop: 12,
     width: 'calc(100% - 24px)',
+  },
+
+  snippet: {
+    fontSize: 14,
+    marginTop: 12,
   },
 };
 
