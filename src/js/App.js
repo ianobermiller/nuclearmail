@@ -15,7 +15,6 @@ var Nav = require('./Nav');
 var React = require('react');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
-var RouteStore = require('./RouteStore');
 var DependentStateMixin = require('./DependentStateMixin');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
@@ -24,12 +23,17 @@ var _ = require('lodash');
 var asap = require('asap');
 var Router = require('react-router');
 
+var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
 var RouteHandler = Router.RouteHandler;
 
 var PAGE_SIZE = 20;
 
 var App = React.createClass({
+  propTypes: {
+    params: PropTypes.object.isRequired,
+  },
+
   mixins: [
     PureRenderMixin,
     KeybindingMixin,
@@ -54,16 +58,10 @@ var App = React.createClass({
         },
         shouldFetch: options => !!options.ids,
       },
-      selectedMessageID: {
-        method: RouteStore.getMessageID,
-      },
-      selectedThreadID: {
-        method: RouteStore.getThreadID,
-      },
       selectedThread: {
         method: ThreadStore.getByID,
         getOptions: (props, state) => {
-          return {id: state.selectedThreadID};
+          return {id: props.params.threadID};
         },
         shouldFetch: options => !!options.id,
       },
@@ -145,12 +143,12 @@ var App = React.createClass({
       return null;
     }
 
-    var selectedMessageIndex = this.state.selectedMessageID &&
+    var selectedMessageIndex = this.props.params.messageID &&
       messages.findIndex(
-        msg => msg.id === this.state.selectedMessageID
+        msg => msg.id === this.props.params.messageID
       );
 
-    if (!this.state.selectedMessageID) {
+    if (!this.props.params.messageID) {
       return messages[0];
     } else if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
       return null;
@@ -166,10 +164,10 @@ var App = React.createClass({
     }
 
     var selectedMessageIndex = messages.findIndex(
-      msg => msg.id === this.state.selectedMessageID
+      msg => msg.id === this.props.params.messageID
     );
 
-    if (!this.state.selectedMessageID) {
+    if (!this.props.params.messageID) {
       this._onMessageSelected(messages[0]);
     } else if (selectedMessageIndex < 0 || selectedMessageIndex === 0) {
       this._onMessageSelected(null);
@@ -228,7 +226,7 @@ var App = React.createClass({
                 labels={this.state.labels}
                 messages={this.state.lastMessageInEachThread}
                 onMessageSelected={this._onMessageSelected}
-                selectedMessageID={this.state.selectedMessageID}
+                selectedMessageID={this.props.params.messageID}
               />
               {this.state.threads.hasMore ? (
                 <div style={styles.messageLoading}>
@@ -246,6 +244,7 @@ var App = React.createClass({
           <div style={styles.threadView}>
             <RouteHandler
               onGoToNextMessage={this._selectNextMessage}
+              params={this.props.params}
             />
           </div>
         </div>

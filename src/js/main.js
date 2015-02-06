@@ -2,7 +2,6 @@
 
 require('es6-shim');
 
-var AppActions = require('./AppActions');
 var ActionType = require('./ActionType');
 var Dispatcher = require('./Dispatcher');
 var React = require('react');
@@ -12,8 +11,7 @@ var router = require('./router');
 window.React = React;
 
 router.run((Handler, state) => {
-  AppActions.routeChanged(state);
-  React.render(<Handler />, document.body);
+  React.render(<Handler params={state.params} />, document.body);
 });
 
 Dispatcher.subscribe((action) => {

@@ -7,7 +7,6 @@ var MessageView = require('./MessageView');
 var ThreadActions = require('./ThreadActions');
 var React = require('react');
 var DependentStateMixin = require('./DependentStateMixin');
-var RouteStore = require('./RouteStore');
 var ThreadStore = require('./ThreadStore');
 var getUnsubscribeUrl = require('./getUnsubscribeUrl');
 var sx = require('./styleSet');
@@ -19,24 +18,19 @@ var _ = require('lodash');
 var ThreadView = React.createClass({
   propTypes: {
     onGoToNextMessage: PropTypes.func.isRequired,
+    params: PropTypes.object.isRequired,
   },
 
   mixins: [
     PureRenderMixin,
     KeybindingMixin,
     DependentStateMixin({
-      threadID: {
-        method: RouteStore.getThreadID,
-      },
       thread: {
         method: ThreadStore.getByID,
         getOptions: (props, state) => ({
-          id: state.threadID,
+          id: props.params.threadID,
         }),
         shouldFetch: options => !!options.id
-      },
-      selectedMessageID: {
-        method: RouteStore.getMessageID,
       },
       messages: {
         method: MessageStore.getByIDs,
@@ -54,7 +48,7 @@ var ThreadView = React.createClass({
         },
         getOptions: (props, state) => ({
           messages: state.messages,
-          selectedMessageID: state.selectedMessageID,
+          selectedMessageID: props.params.messageID,
         }),
         shouldFetch: options => options.messages && options.selectedMessageID
       }
@@ -67,23 +61,23 @@ var ThreadView = React.createClass({
 
   _archive() {
     this.props.onGoToNextMessage();
-    ThreadActions.archive(this.state.threadID);
+    ThreadActions.archive(this.props.params.threadID);
   },
 
   _moveToInbox() {
-    ThreadActions.moveToInbox(this.state.threadID);
+    ThreadActions.moveToInbox(this.props.params.threadID);
   },
 
   _markAsUnread() {
-    ThreadActions.markAsUnread(this.state.threadID);
+    ThreadActions.markAsUnread(this.props.params.threadID);
   },
 
   _star() {
-    ThreadActions.star(this.state.threadID);
+    ThreadActions.star(this.props.params.threadID);
   },
 
   _unstar() {
-    ThreadActions.unstar(this.state.threadID);
+    ThreadActions.unstar(this.props.params.threadID);
   },
 
   _unsubscribe() {
@@ -137,7 +131,7 @@ var ThreadView = React.createClass({
           {messages.map(message => (
             <MessageView
               key={message.id}
-              isExpandedInitially={message.id === this.state.selectedMessageID}
+              isExpandedInitially={message.id === this.props.params.messageID}
               message={message}
             />
           ))}
