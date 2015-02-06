@@ -51,6 +51,14 @@ var HTMLSandbox = React.createClass({
 
     Object.assign(iframeBodyStyle, this.props.iframeBodyStyle);
 
+    var style = document.createElement('style');
+    style.appendChild(document.createTextNode(`
+      .gmail_extra {
+        display: none;
+      }
+    `));
+    iframe.contentDocument.head.appendChild(style);
+
     var sanitizedHtml = sanitizer.sanitizeWithPolicy(
       this.props.html,
       this.props.showImages ? defaultTagPolicy : tagPolicyNoImages

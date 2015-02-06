@@ -6,7 +6,6 @@ var _ = require('lodash');
 var hyphenateStyleName = require('react/lib/hyphenateStyleName');
 
 var style: any = document.createElement('style');
-style.type = 'text/css';
 document.head.appendChild(style);
 
 class CSSAnimation {
