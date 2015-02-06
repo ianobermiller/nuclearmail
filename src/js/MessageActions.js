@@ -1,12 +1,18 @@
 /** @flow */
 
-var ActionType = require('./ActionType');
-var Dispatcher = require('./Dispatcher');
-
 'use strict';
 
+var router = require('./router');
+
 function select(message: ?Object) {
-  Dispatcher.dispatch({type: ActionType.Message.SELECT, message});
+  if (message) {
+    router.transitionTo(
+      'thread',
+      {messageID: message.id, threadID: message.threadID}
+    );
+  } else {
+    router.transitionTo('app');
+  }
 }
 
 module.exports = {
