@@ -1,5 +1,6 @@
 /** @flow */
 
+var ClientID = require('./ClientID');
 var React = require('react');
 var sanitizer = require('google-caja');
 
@@ -13,6 +14,10 @@ var HTMLSandbox = React.createClass({
     showImages: PropTypes.bool,
   },
 
+  componentWillMount() {
+    this._id = ClientID.get();
+  },
+
   getDefaultProps() {
     return {
       setHeightToContent: true,
@@ -24,7 +29,7 @@ var HTMLSandbox = React.createClass({
       return;
     }
 
-    if (!event.data.height) {
+    if (event.data.id !== this._id || !event.data.height) {
       return;
     }
 
@@ -59,13 +64,15 @@ var HTMLSandbox = React.createClass({
 
     var script = document.createElement('script');
     script.innerHTML = `
-      var lastWidth = null;
+      var lastHeight = null;
       function notifyHeightChanged() {
-        var newWidth = document.documentElement.offsetWidth;
-        if (newWidth !== lastWidth) {
-          lastWidth = newWidth;
+        var newHeight = document.documentElement.offsetHeight;
+        if (newHeight > lastHeight + 1) {
+          console.log('newHeight', newHeight);
+          lastHeight = newHeight;
           window.parent.postMessage({
-            height: document.documentElement.offsetHeight
+            id: '${this._id}',
+            height: document.documentElement.offsetHeight,
           }, window.parent.location.href);
         }
       }
