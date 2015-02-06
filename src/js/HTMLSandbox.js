@@ -76,7 +76,6 @@ var HTMLSandbox = React.createClass({
       function notifyHeightChanged() {
         var newHeight = document.body.scrollHeight;
         if (newHeight > lastHeight + 1) {
-          console.log('newHeight', newHeight);
           lastHeight = newHeight;
           window.parent.postMessage({
             id: '${this._id}',
