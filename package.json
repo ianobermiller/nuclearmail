@@ -37,7 +37,7 @@
   },
   "scripts": {
     "clean": "rimraf build",
-    "watch-html": "mkdirp build && nodemon --watch src/index.html --exec 'cp src/index.html build/index.html'",
+    "watch-html": "mkdirp build && nodemon --watch src/index.html --exec 'echo `cp src/index.html build/index.html`'",
     "watch-js": "mkdirp build",
     "serve": "node server.js",
     "publish": "git checkout gh-pages && cp build/* . && git commit -am 'Code update' && git push && git checkout master",
