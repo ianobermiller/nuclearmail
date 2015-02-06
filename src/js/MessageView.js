@@ -1,5 +1,6 @@
 /** @flow */
 
+var Colors = require('./Colors');
 var HTMLSandbox = require('./HTMLSandbox');
 var React = require('react');
 var RelativeDate = require('./RelativeDate');
@@ -18,29 +19,14 @@ var MessageView = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  getInitialState(): {isExpanded: boolean;} {
-    return {
-      isExpanded: null,
-    };
-  },
-
-  _onHeaderClick() {
-    this.setState({isExpanded: !this.state.isExpanded});
-  },
-
   componentDidMount() {
-    if (this._isExpanded()) {
+    if (this.props.isExpandedInitially) {
       asap(() => {
         if (this.isMounted()) {
           this.getDOMNode().scrollIntoView(true);
         }
       });
     }
-  },
-
-  _isExpanded(): boolean {
-    return this.state.isExpanded ||
-      (this.state.isExpanded === null && this.props.isExpandedInitially);
   },
 
   render(): any {
@@ -51,54 +37,41 @@ var MessageView = React.createClass({
     }
 
     var msg = this.props.message;
-    var isExpanded = this._isExpanded();
-    var body = isExpanded && msg.body['text/html'] ||
+    var body = msg.body['text/html'] ||
       '<div style="white-space:pre">' +
         _.escape(msg.body['text/plain']) +
       '</div>';
 
     return (
       <div style={sx(this.props.style, styles.root)}>
-        <div style={sx(
-          styles.inner,
-          isExpanded && styles.innerIsExpanded
-        )}>
-          <div
-            style={styles.header}
-            onClick={this._onHeaderClick}>
-              <div style={styles.headerSender}>
-                {msg.from.name || msg.from.email}
+        <div style={styles.inner}>
+          <div style={styles.header}>
+            <div style={styles.headerSender}>
+              <div>
+                <span style={styles.partyType}>From:</span>
+                {' '}
+                <span style={styles.fromName}>{msg.from.name}</span>
+                {' <' + msg.from.email + '>'}
               </div>
-              <RelativeDate
-                style={styles.headerDate}
-                date={msg.date}
-              />
-          </div>
-          {isExpanded ? (
-            <div>
-              <div style={styles.subject}>
-                {msg.subject}
+              <div>
+                <span style={styles.partyType}>To:</span>
+                {' ' + msg.to.name + ' <' + msg.to.email + '>'}
               </div>
-              <div style={styles.meta}>
-                <div>
-                  From: {' ' + msg.from.name + ' <' + msg.from.email + '>'}
-                </div>
-                <div>
-                  To: {' ' + msg.to.name + ' <' + msg.to.email + '>'}
-                </div>
-              </div>
-              <HTMLSandbox
-                style={styles.sandbox}
-                html={body}
-                iframeBodyStyle={{
-                  fontFamily: window.getComputedStyle(document.body).fontFamily,
-                  fontSize: '12px',
-                  padding: '12px',
-                }}
-                showImages={true}
-              />
             </div>
-          ) : null}
+            <RelativeDate
+              style={styles.headerDate}
+              date={msg.date}
+            />
+          </div>
+          <HTMLSandbox
+            style={styles.sandbox}
+            html={body}
+            iframeBodyStyle={{
+              fontFamily: window.getComputedStyle(document.body).fontFamily,
+              padding: '12px',
+            }}
+            showImages={true}
+          />
         </div>
       </div>
     );
@@ -107,52 +80,55 @@ var MessageView = React.createClass({
 
 var styles = {
   root: {
-    padding: '12px 12px 0 12px',
+    margin: '4px 12px 12px 12px',
   },
 
   inner: {
-    background: '#f9f9f9',
+    background: 'white',
     borderRadius: '4px',
     boxShadow: '0px 1px 2px 1px #ddd',
-  },
-
-  innerIsExpanded: {
-    background: 'white',
+    padding: 12,
   },
 
   header: {
-    cursor: 'pointer',
+    borderBottom: '1px solid ' + Colors.gray2,
     display: 'flex',
-    padding: '12px',
+    fontSize: '13px',
+    paddingBottom: 12,
   },
 
   headerSender: {
-    fontWeight: 'bold',
+    flex: 1,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },
 
+  fromName: {
+    fontWeight: 'bold',
+  },
+
   headerDate: {
-    color: '#666',
-    flex: 1,
-    fontSize: '14px',
+    color: Colors.gray3,
     textAlign: 'right',
   },
 
   subject: {
-    fontSize: '14px',
+    fontSize: 14,
     margin: '0 12px',
   },
 
-  meta: {
-    fontSize: '12px',
-    margin: '6px 12px 12px 12px',
+  partyType: {
+    color: Colors.gray3,
+    display: 'inline-block',
+    marginRight: 4,
+    textAlign: 'right',
+    width: 35,
   },
 
   sandbox: {
-    borderTop: '1px solid #eee',
-    margin: '12px',
+    fontSize: 14,
+    marginTop: 12,
     width: 'calc(100% - 24px)',
   },
 };

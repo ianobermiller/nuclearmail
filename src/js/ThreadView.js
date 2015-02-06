@@ -9,6 +9,7 @@ var React = require('react');
 var DependentStateMixin = require('./DependentStateMixin');
 var RouteStore = require('./RouteStore');
 var ThreadStore = require('./ThreadStore');
+var getUnsubscribeUrl = require('./getUnsubscribeUrl');
 var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
@@ -45,7 +46,12 @@ var ThreadView = React.createClass({
         shouldFetch: options => !!options.ids,
       },
       unsubscribeUrl: {
-        method: getUnsubscribeUrl,
+        method: (options) => {
+          var message = options.messages.find(
+            m => m.id === options.selectedMessageID
+          );
+          return getUnsubscribeUrl(message);
+        },
         getOptions: (props, state) => ({
           messages: state.messages,
           selectedMessageID: state.selectedMessageID,
@@ -90,6 +96,7 @@ var ThreadView = React.createClass({
       return null;
     }
 
+    var subject = messages[0].subject;
     var isStarred = messages.some(m => m.isStarred);
     var isInInbox = messages.some(m => m.isInInbox);
 
@@ -123,6 +130,9 @@ var ThreadView = React.createClass({
             </li>
           ) : null}
         </ul>
+        <div style={styles.subject}>
+          {subject}
+        </div>
         <div style={styles.messages}>
           {messages.map(message => (
             <MessageView
@@ -137,68 +147,15 @@ var ThreadView = React.createClass({
   }
 });
 
-function getUnsubscribeUrl({messages, selectedMessageID}) {
-  var message = messages.find(
-    m => m.id === selectedMessageID
-  );
-
-  if (!message) {
-    return null;
-  }
-
-  var body = message.body['text/html'] || message.body['text/plain'];
-  var bodyLower = body.toLowerCase();
-
-  var match = bodyLower.match(/unsubscribe/) || bodyLower.match(/preferences/);
-  if (!match) {
-    return null;
-  }
-  var unsubscrieIndices = [
-    match.index,
-    match.index + 11
-  ];
-
-  var urlRegex = /href=['"]([^'"]+)['"]/g;
-  var urls = [];
-  while (match = urlRegex.exec(bodyLower)) {
-    var url = match[1];
-    var index = bodyLower.indexOf("</a>", match.index);
-    var urlIndices = [
-      match.index,
-      bodyLower.indexOf("</a>", match.index),
-      bodyLower.lastIndexOf("<a ", match.index)
-    ];
-
-    var score = _.min(_.flatten(
-      urlIndices.map(urlIndex =>
-        unsubscrieIndices.map(unsubIndex =>
-          Math.abs(urlIndex - unsubIndex)
-        )
-      )
-    ));
-
-    urls.push({
-      url: body.substring(match.index + 6, match.index + 6 + url.length),
-      score
-    });
-  }
-
-  var closestUrl = _.min(urls, url => url.score);
-
-  if (closestUrl.score > 100) {
-    return null;
-  }
-
-  return closestUrl.url;
-}
-
 var styles = {
   root: {
+    display: 'flex',
+    flexDirection: 'column',
     height: '100%',
   },
 
   actionBar: {
-    padding: '0 12px 12px 12px'
+    margin: '0 12px'
   },
 
   actionBarItem: {
@@ -206,9 +163,13 @@ var styles = {
     marginRight: '12px',
   },
 
+  subject: {
+    fontWeight: 'bold',
+    margin: '12px',
+  },
+
   messages: {
-    boxSizing: 'border-box',
-    height: 'calc(100% - 57px)',
+    flex: 1,
     overflow: 'auto',
     paddingBottom: '12px',
   },

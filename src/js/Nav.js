@@ -102,7 +102,7 @@ var styles = {
     },
 
     link: {
-      color: Colors.gray3,
+      color: Colors.gray4,
       display: 'block',
       padding: '16px',
       textDecoration: 'none',
