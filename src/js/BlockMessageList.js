@@ -54,6 +54,22 @@ var BlockMessageListItem = React.createClass({
 
   mixins: [PureRenderMixin],
 
+  componentDidMount() {
+    this._scrollIntoView();
+  },
+
+  componentDidUpdate() {
+    this._scrollIntoView();
+  },
+
+  _scrollIntoView() {
+    if (this.props.isSelected) {
+      this.getDOMNode().scrollIntoViewIfNeeded ?
+        this.getDOMNode().scrollIntoViewIfNeeded(false) :
+        this.getDOMNode().scrollIntoView(false);
+    }
+  },
+
   _onClick() {
     this.props.onClick(this.props.index, this.props.message);
   },
