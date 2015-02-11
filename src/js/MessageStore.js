@@ -73,17 +73,17 @@ class MessageStore extends BaseStore {
     didChange && this.emitChange();
   }
 
-  getByIDs({ids}: {ids: Array<string>}): Array<Object> {
-    var existing = _.chain(ids)
+  getByIDs(options: {ids: Array<string>}): ?Array<Object> {
+    var existing = _.chain(options.ids)
       .map(id => this._messagesByID[id])
       .compact()
       .value();
 
-    if (existing.length === ids.length) {
+    if (existing.length === options.ids.length) {
       return existing;
     }
 
-    MessageAPI.getByIDs(ids).then(messages => {
+    MessageAPI.getByIDs(options).then(messages => {
       messages.forEach(message => this._messagesByID[message.id] = message);
       this.emitChange();
     });

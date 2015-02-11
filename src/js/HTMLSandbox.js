@@ -7,6 +7,8 @@ var sanitizer = require('google-caja');
 var PropTypes = React.PropTypes;
 
 var HTMLSandbox = React.createClass({
+  _id: '',
+
   propTypes: {
     html: PropTypes.string,
     iframeBodyStyle: PropTypes.object,

@@ -40,7 +40,7 @@ class DependentStateMixin {
     );
   }
 
-  _update(props, state, store) {
+  _update(props, state, store?) {
     var newState = {};
 
     var isFirstRound = true;

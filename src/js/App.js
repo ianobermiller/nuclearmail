@@ -111,21 +111,21 @@ var App = React.createClass({
     this.setState({maxResultCount: this.state.maxResultCount + PAGE_SIZE});
   },
 
-  _onMessageSelected(message) {
+  _onMessageSelected(message: ?Object) {
     if (message && message.isUnread) {
       ThreadActions.markAsRead(message.threadID);
     }
     MessageActions.select(message);
   },
 
-  _onQueryChange(query) {
+  _onQueryChange(query: string) {
     this.setState({
       queryProgress: query,
       maxResultCount: PAGE_SIZE,
     });
   },
 
-  _onQuerySubmit(query) {
+  _onQuerySubmit(query: string) {
     this.setState({
       query: query,
       queryProgress: query,
@@ -137,7 +137,7 @@ var App = React.createClass({
     this._onMessageSelected(this._getNextMessage());
   },
 
-  _getNextMessage() {
+  _getNextMessage(): ?Object {
     var messages = this.state.lastMessageInEachThread;
     if (!messages) {
       return null;

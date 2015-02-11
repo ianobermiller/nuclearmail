@@ -1,6 +1,8 @@
 /** @flow */
 
-function getUnsubscribeUrl(message) {
+var _ = require('lodash');
+
+function getUnsubscribeUrl(message: ?Object): ?string {
   if (!message) {
     return null;
   }

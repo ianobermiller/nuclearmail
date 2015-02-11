@@ -19,7 +19,7 @@ var MessageView = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  getInitialState() {
+  getInitialState(): {isExpandedManually: ?bool;} {
     return {
       isExpandedManually: null,
     };
@@ -39,7 +39,7 @@ var MessageView = React.createClass({
     this.setState({isExpandedManually: !this._isExpanded()});
   },
 
-  _isExpanded() {
+  _isExpanded(): bool {
     return this.state.isExpandedManually !== null ?
       this.state.isExpandedManually :
       this.props.isExpandedInitially;

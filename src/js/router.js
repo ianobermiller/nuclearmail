@@ -2,26 +2,26 @@
 
 // Proxy calls to router to avoid circular dependencies
 // https://github.com/rackt/react-router/blob/master/docs/guides/flux.md#circular-dependencies-in-actions
-var router;
+var router: any;
 
 module.exports = {
-  getCurrentPath() {
+  getCurrentPath(): string {
     return router.getCurrentPath();
   },
 
-  makePath(to, params, query) {
+  makePath(to: string, params?: Object, query?: Object): string {
     return router.makePath(to, params, query);
   },
 
-  makeHref(to, params, query) {
+  makeHref(to: string, params?: Object, query?: Object): string {
     return router.makeHref(to, params, query);
   },
 
-  transitionTo(to, params, query) {
+  transitionTo(to: string, params?: Object, query?: Object) {
     router.transitionTo(to, params, query);
   },
 
-  replaceWith(to, params, query) {
+  replaceWith(to: string, params?: Object, query?: Object) {
     router.replaceWith(to, params, query);
   },
 
@@ -29,7 +29,7 @@ module.exports = {
     router.goBack();
   },
 
-  run(render) {
+  run(render: Function) {
     router.run(render);
   }
 };

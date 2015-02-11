@@ -58,7 +58,7 @@ var BlockMessageListItem = React.createClass({
     this._scrollIntoView();
   },
 
-  componentDidUpdate() {
+  componentDidUpdate(previousProps: any, previousState: any) {
     this._scrollIntoView();
   },
 

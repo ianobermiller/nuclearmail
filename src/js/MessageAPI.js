@@ -9,18 +9,18 @@ var RSVP = require('rsvp');
 var _ = require('lodash');
 
 function getByIDs(
-  options: {ids: array<string>}
-): Promise<array<Object>> {
+  options: {ids: Array<string>}
+): Promise<Array<Object>> {
   return API.wrap(() => {
     var batch = gapi.client.newHttpBatch();
-    ids.forEach(id => {
+    options.ids.forEach(id => {
       batch.add(
         gapi.client.gmail.users.messages.get({userId: 'me', id}),
         {id}
       );
     });
     return API.execute(batch).then(
-      response => ids.map(messageID => batchResponse[messageID].result)
+      response => options.ids.map(messageID => response[messageID].result)
     );
   });
 }

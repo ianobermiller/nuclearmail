@@ -31,15 +31,15 @@ class BaseStore {
   }
 }
 
-function autobind(object: {[functionName: string]: any;}) {
-  Object.getOwnPropertyNames(Object.getPrototypeOf(object)).forEach(prop => {
+function autobind(instance: {[functionName: string]: any;}) {
+  Object.getOwnPropertyNames(Object.getPrototypeOf(instance)).forEach(prop => {
     if (
-      typeof object[prop] === 'function' &&
+      typeof instance[prop] === 'function' &&
       /^[A-Za-z]/.test(prop) &&
       prop !== 'constructor'
     ) {
-      object[prop] = object[prop].bind(object);
-      object[prop].store = object;
+      instance[prop] = instance[prop].bind(instance);
+      instance[prop].store = instance;
     }
   });
 }

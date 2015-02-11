@@ -32,6 +32,11 @@ declare class GmailClient {
       modify: (options: Object) => GoogleAPIExecutable;
       get: (options: Object) => GoogleAPIExecutable;
     };
+    messages: {
+      list: (options: Object) => GoogleAPIExecutable;
+      modify: (options: Object) => GoogleAPIExecutable;
+      get: (options: Object) => GoogleAPIExecutable;
+    };
   };
 }
 
