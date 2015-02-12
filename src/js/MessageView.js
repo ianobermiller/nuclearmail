@@ -2,7 +2,7 @@
 
 var Colors = require('./Colors');
 var HTMLSandbox = require('./HTMLSandbox');
-var React = require('react');
+var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
 var asap = require('asap');
 var sx = require('./styleSet');

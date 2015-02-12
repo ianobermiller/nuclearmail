@@ -3,7 +3,7 @@
 var API = require('./API');
 var Button = require('./Button');
 var Colors = require('./Colors');
-var React = require('react');
+var React = require('react/addons');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 

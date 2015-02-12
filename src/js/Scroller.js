@@ -13,7 +13,7 @@
 
 var Colors = require('./Colors');
 var InfiniteScroll = require('./InfiniteScroll');
-var React = require('react');
+var React = require('react/addons');
 var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;

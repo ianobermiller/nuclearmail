@@ -31,7 +31,7 @@ class BaseStore {
   }
 }
 
-function autobind(instance: {[functionName: string]: any;}) {
+function autobind(instance: Object) {
   Object.getOwnPropertyNames(Object.getPrototypeOf(instance)).forEach(prop => {
     if (
       typeof instance[prop] === 'function' &&

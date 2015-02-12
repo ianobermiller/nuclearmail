@@ -12,7 +12,7 @@ var LoginModal = require('./LoginModal');
 var MessageActions = require('./MessageActions');
 var MessageStore = require('./MessageStore');
 var Nav = require('./Nav');
-var React = require('react');
+var React = require('react/addons');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
 var DependentStateMixin = require('./DependentStateMixin');
@@ -28,6 +28,8 @@ var PureRenderMixin = React.addons.PureRenderMixin;
 var RouteHandler = Router.RouteHandler;
 
 var PAGE_SIZE = 20;
+
+var dummySubscription = {remove() {}};
 
 var App = React.createClass({
   propTypes: {
@@ -71,7 +73,7 @@ var App = React.createClass({
     }),
   ],
 
-  _subscriptions: [],
+  _subscriptions: [dummySubscription],
 
   componentDidMount() {
     this._subscriptions = [];

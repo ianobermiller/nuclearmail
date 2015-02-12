@@ -2,7 +2,7 @@
 
 var Colors = require('./Colors');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
-var React = require('react');
+var React = require('react/addons');
 var StylePropTypes = require('./StylePropTypes');
 var sx = require('./styleSet');
 
