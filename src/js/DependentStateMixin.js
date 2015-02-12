@@ -9,6 +9,7 @@ var asap = require('asap');
 var classToMixinFunction = require('./classToMixinFunction');
 
 class DependentStateMixin {
+  _isSafeToSetState: bool;
   _subscriptions: Array<{remove: () => void;}>;
 
   constructor(component, config) {
@@ -63,7 +64,7 @@ class DependentStateMixin {
       isFirstRound = false;
     }
 
-    if (this._component.isMounted() && !_.isEmpty(newState)) {
+    if (this._isSafeToSetState && !_.isEmpty(newState)) {
       this._component.setState(newState);
     }
   }
@@ -84,6 +85,7 @@ class DependentStateMixin {
   }
 
   componentWillMount() {
+    this._isSafeToSetState = true;
     this._createSubscriptions(
       this._component.props,
       this._component.state
@@ -91,6 +93,7 @@ class DependentStateMixin {
   }
 
   componentWillUnmount() {
+    this._isSafeToSetState = false;
     this._subscriptions.forEach(subscription => subscription.remove());
   }
 
