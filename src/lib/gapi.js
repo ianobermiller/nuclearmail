@@ -22,20 +22,39 @@ declare class GoogleAPIClient {
   newHttpBatch: () => GoogleAPIBatch;
 }
 
+type GmailGetOptions = {
+  userId: string;
+  id: string;
+};
+
+type GmailThreadModifyOptions = {
+  userId: string;
+  id: string;
+  addLabelIds?: Array<string>;
+  removeLabelIds?: Array<string>;
+};
+
+type GmailListOptions = {
+  userId: string;
+  maxResults?: number;
+  q?: ?string;
+  pageToken?: ?string;
+};
+
 declare class GmailClient {
   users: {
     labels: {
-      list: (options: Object) => GoogleAPIExecutable;
+      list: (options: GmailListOptions) => GoogleAPIExecutable;
     };
     threads: {
-      list: (options: Object) => GoogleAPIExecutable;
-      modify: (options: Object) => GoogleAPIExecutable;
-      get: (options: Object) => GoogleAPIExecutable;
+      list: (options: GmailListOptions) => GoogleAPIExecutable;
+      modify: (options: GmailThreadModifyOptions) => GoogleAPIExecutable;
+      get: (options: GmailGetOptions) => GoogleAPIExecutable;
     };
     messages: {
-      list: (options: Object) => GoogleAPIExecutable;
-      modify: (options: Object) => GoogleAPIExecutable;
-      get: (options: Object) => GoogleAPIExecutable;
+      list: (options: GmailListOptions) => GoogleAPIExecutable;
+      modify: (options: GmailGetOptions) => GoogleAPIExecutable;
+      get: (options: GmailGetOptions) => GoogleAPIExecutable;
     };
   };
 }

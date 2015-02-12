@@ -85,7 +85,7 @@ function _getThreads(results) {
   return threads;
 }
 
-function markAsRead(options: {threadID: String}) {
+function markAsRead(options: {threadID: string}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -95,7 +95,7 @@ function markAsRead(options: {threadID: String}) {
   );
 }
 
-function archive(options: {threadID: String}) {
+function archive(options: {threadID: string}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -105,7 +105,7 @@ function archive(options: {threadID: String}) {
   );
 }
 
-function moveToInbox(options: {threadID: String}) {
+function moveToInbox(options: {threadID: string}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -115,7 +115,7 @@ function moveToInbox(options: {threadID: String}) {
   );
 }
 
-function markAsUnread(options: {threadID: String}) {
+function markAsUnread(options: {threadID: string}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -125,7 +125,7 @@ function markAsUnread(options: {threadID: String}) {
   );
 }
 
-function unstar(options: {threadID: String}) {
+function unstar(options: {threadID: string}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',
@@ -135,7 +135,7 @@ function unstar(options: {threadID: String}) {
   );
 }
 
-function star(options: {threadID: String}) {
+function star(options: {threadID: string}) {
   return API.wrap(() =>
     API.execute(gapi.client.gmail.users.threads.modify({
       userId: 'me',

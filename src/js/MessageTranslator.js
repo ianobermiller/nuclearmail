@@ -1,9 +1,10 @@
 /** @flow */
 
+var Message = require('./Message');
 var _ = require('lodash');
 var utf8 = require('utf8');
 
-function translateMessage(rawMessage: Object): Object {
+function translateMessage(rawMessage: Object): Message {
   var msg = rawMessage.payload;
   return {
     body: decodeBody(rawMessage),

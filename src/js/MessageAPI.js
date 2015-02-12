@@ -4,13 +4,14 @@
 var ActionType = require('./ActionType.js');
 var API = require('./API.js');
 var Dispatcher = require('./Dispatcher.js');
+var Message = require('./Message');
 var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
 var _ = require('lodash');
 
 function getByIDs(
   options: {ids: Array<string>}
-): Promise<Array<Object>> {
+): Promise<Array<Message>> {
   return API.wrap(() => {
     var batch = gapi.client.newHttpBatch();
     options.ids.forEach(id => {
