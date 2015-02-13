@@ -3,11 +3,12 @@
 var API = require('./API');
 var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
+var Message = require('./Message');
 var MessageAPI = require('./MessageAPI');
 var _ = require('lodash');
 
 class MessageStore extends BaseStore {
-  _messagesByID: {[id: string]: Object};
+  _messagesByID: {[id: string]: Message};
 
   constructor() {
     super();
@@ -15,9 +16,16 @@ class MessageStore extends BaseStore {
     this._messagesByID = {};
   }
 
-  handleDispatch(action: any) {
+  handleDispatch(
+    action: {
+      type: string;
+      messages?: Array<Message>;
+      threadID?: string;
+    }
+  ): void {
     switch (action.type) {
       case ActionType.Message.ADD_MANY:
+        if (!action.messages) throw new Error('messages null');
         action.messages.forEach(message => {
           this._messagesByID[message.id] = message;
         });
@@ -25,6 +33,7 @@ class MessageStore extends BaseStore {
         break;
 
       case ActionType.Thread.MARK_AS_READ_STARTED:
+        if (!action.threadID) throw new Error('threadID null');
         this._updateMessagesWhere(
           {threadID: action.threadID, isUnread: true},
           {isUnread: false}
@@ -32,6 +41,7 @@ class MessageStore extends BaseStore {
         break;
 
       case ActionType.Thread.MARK_AS_UNREAD_STARTED:
+        if (!action.threadID) throw new Error('threadID null');
         this._updateMessagesWhere(
           {threadID: action.threadID, isUnread: false},
           {isUnread: true}
@@ -39,6 +49,7 @@ class MessageStore extends BaseStore {
         break;
 
       case ActionType.Thread.ARCHIVE_STARTED:
+        if (!action.threadID) throw new Error('threadID null');
         this._updateMessagesWhere(
           {threadID: action.threadID, isInInbox: true},
           {isInInbox: false}
@@ -46,6 +57,7 @@ class MessageStore extends BaseStore {
         break;
 
       case ActionType.Thread.STAR_STARTED:
+        if (!action.threadID) throw new Error('threadID null');
         this._updateMessagesWhere(
           {threadID: action.threadID, isStarred: false},
           {isStarred: true}
@@ -53,6 +65,7 @@ class MessageStore extends BaseStore {
         break;
 
       case ActionType.Thread.UNSTAR_STARTED:
+        if (!action.threadID) throw new Error('threadID null');
         this._updateMessagesWhere(
           {threadID: action.threadID, isStarred: true},
           {isStarred: false}
@@ -73,7 +86,7 @@ class MessageStore extends BaseStore {
     didChange && this.emitChange();
   }
 
-  getByIDs(options: {ids: Array<string>}): ?Array<Object> {
+  getByIDs(options: {ids: Array<string>}): ?Array<Message> {
     var existing = _.chain(options.ids)
       .map(id => this._messagesByID[id])
       .compact()
