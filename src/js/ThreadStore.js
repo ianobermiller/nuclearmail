@@ -2,18 +2,26 @@
 
 var ActionType = require('./ActionType.js');
 var BaseStore = require('./BaseStore.js');
+var Thread = require('./Thread.js');
 var ThreadAPI = require('./ThreadAPI.js');
 var _ = require('lodash');
 
-declare class ListResult {
-  hasMore: boolean;
+type ListResult = {
+  hasMore: bool;
   resultSizeEstimate: number;
-  items: Array<Object>;
-}
+  items: Array<Thread>;
+};
+
+type PagingInfo = {
+  fetchedResults: Array<Thread>;
+  fetchedResultCount: number;
+  nextPageToken: string;
+  resultSizeEstimate: number;
+};
 
 class ThreadStore extends BaseStore {
-  _pagingInfoByQuery: {[query: string]: Object};
-  _threadsByID: {[id: string]: Object};
+  _pagingInfoByQuery: {[query: string]: PagingInfo};
+  _threadsByID: {[id: string]: Thread};
 
   constructor() {
     super();
@@ -22,7 +30,7 @@ class ThreadStore extends BaseStore {
     this._threadsByID = {};
   }
 
-  handleDispatch(action: Object) {
+  handleDispatch(action: {type: string; threadID?: string;}): void {
     var shouldEmitChange = false;
     switch (action.type) {
       case ActionType.Thread.REFRESH:
@@ -31,6 +39,7 @@ class ThreadStore extends BaseStore {
         break;
 
       case ActionType.Thread.ARCHIVE_STARTED:
+        if (!action.threadID) throw new Error('threadID null');
         this._removeThreadFromCache(action.threadID, /in\:\s*inbox/);
         break;
 
@@ -39,6 +48,7 @@ class ThreadStore extends BaseStore {
         break;
 
       case ActionType.Thread.UNSTAR_STARTED:
+        if (!action.threadID) throw new Error('threadID null');
         this._removeThreadFromCache(action.threadID, /is\:\s*starred/);
         break;
     }
@@ -93,7 +103,7 @@ class ThreadStore extends BaseStore {
     return null;
   }
 
-  list(options: Object): ?ListResult {
+  list(options: {query: string; maxResultCount: number;}): ?ListResult {
     var query = options.query || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pageToken = null;
