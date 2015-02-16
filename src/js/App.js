@@ -3,7 +3,6 @@
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
-var CSSAnimation = require('./CSSAnimation');
 var Colors = require('./Colors');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var KeybindingMixin = require('./KeybindingMixin');
@@ -15,6 +14,7 @@ var Nav = require('./Nav');
 var React = require('react/addons');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
+var Spinner = require('./Spinner');
 var DependentStateMixin = require('./DependentStateMixin');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
@@ -190,11 +190,7 @@ var App = React.createClass({
     var selectedThread = this.state.selectedThread;
     return (
       <div style={styles.app}>
-        {this.state.isLoading && (
-          <div style={styles.spinner}>
-            <div style={styles.spinnerInner} />
-          </div>
-        )}
+        {this.state.isLoading ? <Spinner /> : null}
         <div style={styles.header}>
           <span style={styles.logo} onClick={this._onLogoClick}>
             ☢
@@ -258,12 +254,6 @@ var App = React.createClass({
   }
 });
 
-var pulseAnimation = new CSSAnimation({
-  '0%':   {width: '10%'},
-  '50%':  {width: '50%'},
-  '100%': {width: '10%'},
-});
-
 var styles = {
   app: {
     paddingTop: '20px',
@@ -312,21 +302,6 @@ var styles = {
   threadView: {
     flex: 2,
     height: '100%',
-  },
-
-  spinner: {
-    left: 0,
-    position: 'fixed',
-    top: 0,
-    width: '100%',
-    zIndex: 10000,
-  },
-
-  spinnerInner: {
-    WebkitAnimation: pulseAnimation + ' 3s ease 0s infinite',
-    background: Colors.accent,
-    height: '4px',
-    margin: '0 auto',
   },
 
   messageLoading: {
