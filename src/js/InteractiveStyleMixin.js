@@ -1,6 +1,5 @@
 /** @flow */
 
-var ClientID = require('./ClientID');
 var EventEmitter = require('events').EventEmitter;
 var _ = require('lodash');
 var classToMixinFunction = require('./classToMixinFunction');
