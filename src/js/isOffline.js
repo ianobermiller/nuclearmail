@@ -1,7 +1,7 @@
 /** @flow */
 
 function isOffline() {
-  return location.search.contains('offline=1');
+  return localStorage.getItem('isOffline');
 }
 
 module.exports = isOffline;
