@@ -21,17 +21,7 @@ class BaseStore {
   }
 
   loadCachedData() {
-    if (!isOffline()) {
-      return;
-    }
-
-    Object.keys(this).forEach(key => {
-      var value = localStorage.getItem(this.constructor.name + '.' + key);
-      if (value) {
-        console.log('loaded', this.constructor.name + '.' + key, JSON.parse(value));
-        this[key] = JSON.parse(value);
-      }
-    });
+    loadCachedData(this);
   }
 
   subscribe(
@@ -45,6 +35,20 @@ class BaseStore {
       }
     };
   }
+}
+
+function loadCachedData(instance: Object) {
+  if (!isOffline()) {
+    return;
+  }
+
+  Object.keys(instance).forEach(key => {
+    var ctor: any = instance.constructor;
+    var value = localStorage.getItem(ctor.name + '.' + key);
+    if (value) {
+      instance[key] = JSON.parse(value);
+    }
+  });
 }
 
 function autobind(instance: Object) {
