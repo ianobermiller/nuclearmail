@@ -1,7 +1,7 @@
 /** @flow */
 
-function isOffline() {
-  return localStorage.getItem('isOffline');
+function isOffline(): bool {
+  return !!localStorage.getItem('isOffline');
 }
 
 module.exports = isOffline;
