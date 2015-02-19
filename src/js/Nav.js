@@ -19,7 +19,7 @@ var Nav = React.createClass({
   render(): any {
     return (
       <nav style={this.props.style}>
-        <ul>
+        <ul style={styles.list}>
           {[{
             label: 'INBOX',
             query: 'in:inbox',
@@ -67,7 +67,7 @@ var NavItem = React.createClass({
   mixins: [
     PureRenderMixin,
     InteractiveStyleMixin({
-      link: ['hover'],
+      link: ['active', 'hover'],
     }),
   ],
 
@@ -78,16 +78,16 @@ var NavItem = React.createClass({
 
   render() /*object*/ {
     return (
-      <li style={styles.item.root}>
+      <li>
         <a
-          {...this.interactions.link.props}
+          {...this.interactions.link.getProps({onClick: this._onClick})}
           style={sx(
             styles.item.link,
             this.interactions.link.isHovering() && styles.item.linkHover,
+            this.interactions.link.isActive() && styles.item.linkActive,
             this.props.isSelected && styles.item.linkSelected
           )}
-          href="#"
-          onClick={this._onClick}>
+          href="#">
           {this.props.label}
         </a>
       </li>
@@ -96,25 +96,31 @@ var NavItem = React.createClass({
 });
 
 var styles = {
-  item: {
-    root: {
-      display: 'inline-block',
-    },
+  list: {
+    display: 'flex',
+  },
 
+  item: {
     link: {
       color: Colors.gray4,
       display: 'block',
       padding: '16px',
       textDecoration: 'none',
+      verticalAlign: 'bottom',
     },
 
     linkHover: {
       color: Colors.black,
     },
 
+    linkActive: {
+      padding: '18px 14px 14px 18px',
+    },
+
     linkSelected: {
       color: Colors.accent,
       cursor: 'default',
+      padding: '16px',
     },
   }
 };

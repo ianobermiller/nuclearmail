@@ -14,7 +14,7 @@ class Interaction {
   constructor(id, component, requestedInteractions) {
     this._id = id;
     this._component = component;
-    this.props = {};
+    this._props = {};
     this._mediaQueries = {};
     this._teardownFunctions = [];
     this._requestedInteractions = requestedInteractions;
@@ -23,19 +23,39 @@ class Interaction {
       _.contains(requestedInteractions, 'hover') ||
       _.contains(requestedInteractions, 'active')
     ) {
-      this.props.onMouseEnter = this._onMouseEnter.bind(this);
-      this.props.onMouseLeave = this._onMouseLeave.bind(this);
+      this._props.onMouseEnter = this._onMouseEnter.bind(this);
+      this._props.onMouseLeave = this._onMouseLeave.bind(this);
     }
 
     if (_.contains(requestedInteractions, 'active')) {
-      this.props.onMouseUp = this._onMouseUp.bind(this);
-      this.props.onMouseDown = this._onMouseDown.bind(this);
-      this.props.onClick = this._onClick.bind(this);
-      emitter.addListener('mouseup', this.props.onMouseUp);
+      this._props.onMouseUp = this._onMouseUp.bind(this);
+      this._props.onMouseDown = this._onMouseDown.bind(this);
+      this._props.onClick = this._onClick.bind(this);
+      emitter.addListener('mouseup', this._props.onMouseUp);
       this._teardownFunctions.push(() => {
-        emitter.removeListener('mouseup', this.props.onMouseUp);
+        emitter.removeListener('mouseup', this._props.onMouseUp);
       });
     }
+  }
+
+  getProps(handlersByEventName) {
+    if (!handlersByEventName) {
+      return this._props;
+    }
+
+    var props = {...this._props};
+    Object.keys(handlersByEventName).forEach(eventName => {
+      var existingHandler = props[eventName];
+      if (existingHandler) {
+        props[eventName] = e => {
+          existingHandler(e);
+          handlersByEventName[eventName](e);
+        };
+      } else {
+        props[eventName] = handlersByEventName[eventName];
+      }
+    });
+    return props;
   }
 
   teardown() {
