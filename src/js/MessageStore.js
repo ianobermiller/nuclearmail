@@ -14,6 +14,8 @@ class MessageStore extends BaseStore {
     super();
 
     this._messagesByID = {};
+
+    this.loadCachedData();
   }
 
   handleDispatch(

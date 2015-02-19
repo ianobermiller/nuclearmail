@@ -28,6 +28,8 @@ class ThreadStore extends BaseStore {
 
     this._pagingInfoByQuery = {};
     this._threadsByID = {};
+
+    this.loadCachedData();
   }
 
   handleDispatch(action: {type: string; threadID?: string;}): void {

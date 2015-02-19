@@ -2,6 +2,7 @@
 
 var LabelAPI = require('./LabelAPI');
 var BaseStore = require('./BaseStore');
+var isOffline = require('./isOffline');
 
 class LabelStore extends BaseStore {
   _labels: ?Array<Object>;
@@ -9,7 +10,7 @@ class LabelStore extends BaseStore {
   constructor() {
     super();
 
-    this._labels = null;
+    this._labels = isOffline() ? [] : null;
   }
 
   getLabels(): ?Array<Object> {

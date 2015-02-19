@@ -4,6 +4,7 @@ var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
 var Colors = require('./Colors');
+var DependentStateMixin = require('./DependentStateMixin');
 var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var KeybindingMixin = require('./KeybindingMixin');
 var LabelStore = require('./LabelStore');
@@ -12,16 +13,16 @@ var MessageActions = require('./MessageActions');
 var MessageStore = require('./MessageStore');
 var Nav = require('./Nav');
 var React = require('react/addons');
+var Router = require('react-router');
 var Scroller = require('./Scroller');
 var SearchBox = require('./SearchBox');
 var Spinner = require('./Spinner');
-var DependentStateMixin = require('./DependentStateMixin');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var ThreadView = require('./ThreadView');
 var _ = require('lodash');
 var asap = require('asap');
-var Router = require('react-router');
+var isOffline = require('./isOffline');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -102,7 +103,7 @@ var App = React.createClass({
     return {
       isAuthorizing: true,
       isAuthorized: false,
-      isLoading: true,
+      isLoading: !isOffline(),
       maxResultCount: PAGE_SIZE,
       query: 'in:inbox',
       queryProgress: 'in:inbox',

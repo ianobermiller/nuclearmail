@@ -2,6 +2,8 @@
 
 var Dispatcher = require('./Dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
+var asap = require('asap');
+var isOffline = require('./isOffline');
 
 var CHANGE_EVENT = 'change';
 
@@ -16,6 +18,20 @@ class BaseStore {
 
   emitChange(data: Object = {}) {
     this._emitter.emit(CHANGE_EVENT, {store: this, ...data});
+  }
+
+  loadCachedData() {
+    if (!isOffline()) {
+      return;
+    }
+
+    Object.keys(this).forEach(key => {
+      var value = localStorage.getItem(this.constructor.name + '.' + key);
+      if (value) {
+        console.log('loaded', this.constructor.name + '.' + key, JSON.parse(value));
+        this[key] = JSON.parse(value);
+      }
+    });
   }
 
   subscribe(
