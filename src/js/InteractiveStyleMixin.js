@@ -164,6 +164,17 @@ class Interaction {
 class InteractiveStyleMixin {
   constructor(component, config) {
     this._component = component;
+
+    // Single interaction
+    if (Array.isArray(config)) {
+      this._component.interactions = new Interaction(
+        'root',
+        component,
+        /*requestedInteractions*/ config
+      );
+      return;
+    }
+
     this._component.interactions =
       _.mapValues(config, (requestedInteractions, interactionID) => {
         return new Interaction(interactionID, component, requestedInteractions);

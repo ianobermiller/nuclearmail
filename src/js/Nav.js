@@ -66,9 +66,7 @@ var NavItem = React.createClass({
 
   mixins: [
     PureRenderMixin,
-    InteractiveStyleMixin({
-      link: ['active', 'hover'],
-    }),
+    InteractiveStyleMixin(['active', 'hover']),
   ],
 
   _onClick(event) {
@@ -80,11 +78,11 @@ var NavItem = React.createClass({
     return (
       <li>
         <a
-          {...this.interactions.link.getProps({onClick: this._onClick})}
+          {...this.interactions.getProps({onClick: this._onClick})}
           style={sx(
             styles.item.link,
-            this.interactions.link.isHovering() && styles.item.linkHover,
-            this.interactions.link.isActive() && styles.item.linkActive,
+            this.interactions.isHovering() && styles.item.linkHover,
+            this.interactions.isActive() && styles.item.linkActive,
             this.props.isSelected && styles.item.linkSelected
           )}
           href="#">

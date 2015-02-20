@@ -18,9 +18,7 @@ var Button = React.createClass({
 
   mixins: [
     PureRenderMixin,
-    InteractiveStyleMixin({
-      button: ['hover', 'active'],
-    })
+    InteractiveStyleMixin(['hover', 'active'])
   ],
 
   getDefaultProps() {
@@ -31,24 +29,22 @@ var Button = React.createClass({
 
   _onClick() {
     this.props.onClick && this.props.onClick();
-    this.interactions.button.props.onClick();
   },
 
   render(): any {
-    var interaction = this.interactions.button;
     return (
       <button
         type="button"
-        {...this.interactions.button.getProps({onClick: this._onClick})}
+        {...this.interactions.getProps({onClick: this._onClick})}
         style={sx(
           styles.root,
           (this.props.use === 'default') && styles.default,
-          (this.props.use === 'default' && interaction.isHovering()) &&
+          (this.props.use === 'default' && this.interactions.isHovering()) &&
             styles.defaultHover,
           (this.props.use === 'special') && styles.special,
-          (this.props.use === 'special' && interaction.isHovering()) &&
+          (this.props.use === 'special' && this.interactions.isHovering()) &&
             styles.specialHover,
-          interaction.isActive() && styles.active,
+          this.interactions.isActive() && styles.active,
           this.props.style
         )}>
         {this.props.children}
