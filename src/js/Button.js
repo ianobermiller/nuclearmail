@@ -39,8 +39,7 @@ var Button = React.createClass({
     return (
       <button
         type="button"
-        {...this.interactions.button.props}
-        onClick={this._onClick}
+        {...this.interactions.button.getProps({onClick: this._onClick})}
         style={sx(
           styles.root,
           (this.props.use === 'default') && styles.default,
