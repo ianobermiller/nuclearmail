@@ -32,6 +32,7 @@ var Button = StylishReact.createClass({
     return (
       <button
         type="button"
+        key="button"
         style={sx(
           styles.root,
           (this.props.use === 'default') && styles.default,
