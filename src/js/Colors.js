@@ -1,21 +1,15 @@
 /** @flow */
 
 var Color = require('./Color');
-var _ = require('lodash');
 
-var Colors = _.mapValues(
-  {
-    accent: '#ff6817',
-    black: '#000',
-    gray1: '#eee',
-    gray2: '#ccc',
-    gray3: '#999',
-    gray4: '#666',
-    white: '#fff',
-  },
-  value => new Color(value)
-);
-
-window.Color = Color;
+var Colors = {
+  accent: new Color('#ff6817'),
+  black: new Color('#000'),
+  gray1: new Color('#eee'),
+  gray2: new Color('#ccc'),
+  gray3: new Color('#999'),
+  gray4: new Color('#666'),
+  white: new Color('#fff'),
+};
 
 module.exports = Colors;

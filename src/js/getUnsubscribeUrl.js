@@ -21,13 +21,12 @@ function getUnsubscribeUrl(message: ?Object): ?string {
 
   var urlRegex = /href=['"]([^'"]+)['"]/g;
   var urls = [];
-  while (match = urlRegex.exec(bodyLower)) {
+  while ((match = urlRegex.exec(bodyLower))) {
     var url = match[1];
-    var index = bodyLower.indexOf("</a>", match.index);
     var urlIndices = [
       match.index,
-      bodyLower.indexOf("</a>", match.index),
-      bodyLower.lastIndexOf("<a ", match.index)
+      bodyLower.indexOf('</a>', match.index),
+      bodyLower.lastIndexOf('<a ', match.index)
     ];
 
     var score = _.min(_.flatten(
@@ -44,7 +43,7 @@ function getUnsubscribeUrl(message: ?Object): ?string {
     });
   }
 
-  var closestUrl = _.min(urls, url => url.score);
+  var closestUrl = _.min(urls, u => u.score);
 
   if (closestUrl.score > 100) {
     return null;

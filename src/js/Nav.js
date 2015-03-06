@@ -1,9 +1,8 @@
 /** @flow */
 
 var Colors = require('./Colors');
-var InteractiveStyleMixin = require('./InteractiveStyleMixin');
+var Cesium = require('./Cesium');
 var React = require('react/addons');
-var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -64,10 +63,7 @@ var NavItem = React.createClass({
     isSelected: PropTypes.bool
   },
 
-  mixins: [
-    PureRenderMixin,
-    InteractiveStyleMixin(['active', 'hover']),
-  ],
+  mixins: [PureRenderMixin],
 
   _onClick(event) {
     this.props.onQueryChanged(this.props.query);
@@ -75,16 +71,15 @@ var NavItem = React.createClass({
   },
 
   render() /*object*/ {
-    return (
+    return Cesium.render(
+      this,
       <li>
         <a
-          {...this.interactions.getProps({onClick: this._onClick})}
-          style={sx(
+          onClick={this._onClick}
+          style={[
             styles.item.link,
-            this.interactions.isHovering() && styles.item.linkHover,
-            this.interactions.isActive() && styles.item.linkActive,
             this.props.isSelected && styles.item.linkSelected
-          )}
+          ]}
           href="#">
           {this.props.label}
         </a>
@@ -105,23 +100,26 @@ var styles = {
       padding: '16px',
       textDecoration: 'none',
       verticalAlign: 'bottom',
-    },
 
-    linkHover: {
-      color: Colors.black,
-    },
+      ':hover': {
+        color: Colors.black,
+      },
 
-    linkActive: {
-      padding: '18px 14px 14px 18px',
+      ':active': {
+        padding: '18px 14px 14px 18px',
+      },
     },
 
     linkSelected: {
       color: Colors.accent,
       cursor: 'default',
       padding: '16px',
+
+      ':hover': {
+        color: Colors.accent,
+      },
     },
   }
 };
 
 module.exports = Nav;
-

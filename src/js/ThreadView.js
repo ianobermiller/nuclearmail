@@ -13,7 +13,6 @@ var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
-var _ = require('lodash');
 
 var ThreadView = React.createClass({
   propTypes: {
@@ -27,7 +26,7 @@ var ThreadView = React.createClass({
     DependentStateMixin({
       thread: {
         method: ThreadStore.getByID,
-        getOptions: (props, state) => ({
+        getOptions: (props) => ({
           id: props.params.threadID,
         }),
         shouldFetch: options => !!options.id

@@ -1,10 +1,9 @@
 /** @flow */
 
+var Cesium = require('./Cesium');
 var Colors = require('./Colors');
-var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var React = require('react/addons');
 var StylePropTypes = require('./StylePropTypes');
-var sx = require('./styleSet');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
@@ -16,10 +15,7 @@ var Button = React.createClass({
     style: StylePropTypes.layout,
   },
 
-  mixins: [
-    PureRenderMixin,
-    InteractiveStyleMixin(['hover', 'active'])
-  ],
+  mixins: [PureRenderMixin],
 
   getDefaultProps() {
     return {
@@ -32,21 +28,17 @@ var Button = React.createClass({
   },
 
   render(): any {
-    return (
+    return Cesium.render(
+      this,
       <button
         type="button"
-        {...this.interactions.getProps({onClick: this._onClick})}
-        style={sx(
+        style={[
           styles.root,
           (this.props.use === 'default') && styles.default,
-          (this.props.use === 'default' && this.interactions.isHovering()) &&
-            styles.defaultHover,
           (this.props.use === 'special') && styles.special,
-          (this.props.use === 'special' && this.interactions.isHovering()) &&
-            styles.specialHover,
-          this.interactions.isActive() && styles.active,
           this.props.style
-        )}>
+        ]}
+        onClick={this._onClick}>
         {this.props.children}
       </button>
     );
@@ -62,28 +54,28 @@ var styles = {
     margin: 0,
     padding: '1px 16px',
     verticalAlign: 'top',
-  },
 
-  active: {
-    padding: '2px 15px 0 17px',
+    ':active': {
+      padding: '2px 15px 0 17px',
+    },
   },
 
   default: {
     background: Colors.gray1,
     color: Colors.black,
-  },
 
-  defaultHover: {
-    background: Colors.gray1.darken(5),
+    ':hover': {
+      background: Colors.gray1.darken(5),
+    },
   },
 
   special: {
     background: Colors.accent,
     color: Colors.white,
-  },
 
-  specialHover: {
-    background: Colors.accent.darken(5),
+    ':hover': {
+      background: Colors.accent.darken(5),
+    },
   },
 };
 
