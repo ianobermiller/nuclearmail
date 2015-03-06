@@ -107,6 +107,24 @@ function resolveStyles(
     }
   }
 
+  if (style[':focus']) {
+    var existingOnFocus = props.onFocus;
+    props.onFocus = (e) => {
+      existingOnFocus && existingOnFocus(e);
+      _setStyleState(component, key, {isFocused: true});
+    };
+
+    var existingOnBlur = props.onBlur;
+    props.onBlur = (e) => {
+      existingOnBlur && existingOnBlur(e);
+      _setStyleState(component, key, {isFocused: false});
+    };
+
+    if (_getStyleState(component, key, 'isFocused')) {
+      Object.assign(newStyle, style[':focus']);
+    }
+  }
+
   if (style[':active'] && components.indexOf(component) === -1) {
     components.push(component);
   }
