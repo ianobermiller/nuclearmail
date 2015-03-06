@@ -115,6 +115,10 @@ var styles = {
       color: Colors.accent,
       cursor: 'default',
       padding: '16px',
+
+      ':hover': {
+        color: Colors.accent,
+      },
     },
   }
 };
