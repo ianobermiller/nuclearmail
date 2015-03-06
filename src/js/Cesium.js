@@ -25,15 +25,47 @@ document.body.addEventListener('mouseup', () => {
   });
 });
 
-function resolveStyles(component: any, renderedElement: any) {
+function resolveStyles(
+  component: any,
+  renderedElement: any,
+  existingKeyMap?: {[key: string]: bool;}
+): any {
+  existingKeyMap = existingKeyMap || {};
+  if (renderedElement.props.children) {
+    React.Children.forEach(
+      renderedElement.props.children,
+      child => {
+        if (React.isValidElement(child)) {
+          resolveStyles(component, child, existingKeyMap);
+        }
+      }
+    );
+  }
+
   var props = renderedElement.props;
   var style = props.style;
-  if (!style && !Object.keys(style).some(key => key.indexOf(':') === 0)) {
+
+  if (Array.isArray(style)) {
+    props.style = style = styleSet(...style);
+  }
+
+  if (!style || !Object.keys(style).some(key => key.indexOf(':') === 0)) {
     return renderedElement;
   }
 
-  var key = renderedElement.key;
-  invariant(key, 'key is required');
+  var originalKey = renderedElement.ref || renderedElement.key;
+  var key = originalKey || 'main';
+
+  invariant(
+    !existingKeyMap[key],
+    'Cesium requires each element with interactive styles to have a unique ' +
+      'key, set using either the ref or key prop. ' +
+      (originalKey ?
+        'Key "' + originalKey + '" is a duplicate.' :
+        'Multiple elements have no key specified.')
+  );
+
+  existingKeyMap[key] = true;
 
   var newStyle = {...style};
   if (style[':hover'] || style[':active']) {
@@ -79,7 +111,7 @@ function resolveStyles(component: any, renderedElement: any) {
     components.push(component);
   }
 
-  renderedElement.props.style = newStyle;
+  props.style = newStyle;
 
   return renderedElement;
 }

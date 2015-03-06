@@ -32,13 +32,12 @@ var Button = React.createClass({
       this,
       <button
         type="button"
-        key="button"
-        style={Cesium.styleSet(
+        style={[
           styles.root,
           (this.props.use === 'default') && styles.default,
           (this.props.use === 'special') && styles.special,
           this.props.style
-        )}
+        ]}
         onClick={this._onClick}>
         {this.props.children}
       </button>
