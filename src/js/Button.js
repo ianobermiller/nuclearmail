@@ -28,7 +28,7 @@ var Button = React.createClass({
   },
 
   render(): any {
-    return Cesium.resolveStyles(
+    return Cesium(
       this,
       <button
         type="button"

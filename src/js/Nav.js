@@ -72,7 +72,7 @@ var NavItem = React.createClass({
   },
 
   render() /*object*/ {
-    return Cesium.resolveStyles(
+    return Cesium(
       this,
       <li>
         <a

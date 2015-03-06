@@ -46,7 +46,7 @@ function resolveStyles(
   var style = props.style;
 
   if (Array.isArray(style)) {
-    props.style = style = styleSet(...style);
+    props.style = style = _mergeStyles(...style);
   }
 
   if (!style || !Object.keys(style).some(key => key.indexOf(':') === 0)) {
@@ -149,7 +149,7 @@ function _setStyleState(component: any, key: string, newState: Object) {
   component.setState(state);
 }
 
-function styleSet(...styles: Array<Object|boolean>): any {
+function _mergeStyles(...styles: Array<Object|boolean>): any {
   var styleProp = {};
 
   styles.forEach(style => {
@@ -172,7 +172,4 @@ function styleSet(...styles: Array<Object|boolean>): any {
   return styleProp;
 }
 
-module.exports = {
-  resolveStyles,
-  styleSet,
-};
+module.exports = resolveStyles;

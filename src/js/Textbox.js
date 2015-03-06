@@ -16,7 +16,7 @@ var Textbox = React.createClass({
   mixins: [PureRenderMixin],
 
   render(): any {
-    return Cesium.resolveStyles(
+    return Cesium(
       this,
       <input
         {...this.props}
