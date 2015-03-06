@@ -15,6 +15,7 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 - webpack
 - react-hot-loader
 - Google Caja
+- Inline Styles :o
 
 ## Keyboard shortcuts
 - `y` - archive
@@ -24,13 +25,11 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 - Show search sign on hover over contact name, click to search by that
 - Scroll to top when navigating
 - Fetch more when archiving all of inbox
-- Routing
 - Simple compose
 - Compose with Markdown
 - WYSIWYG composer? http://neilj.github.io/Squire/
 - PGP encryption?
 - More keyboard shortcuts
 - Navigation for labels
-- Use lodash modules
 - Contribute RCSS changes upstream if applicable
 - https://github.com/gaearon/react-hot-loader
