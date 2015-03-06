@@ -1,15 +1,14 @@
 /** @flow */
 
+var Cesium = require('./Cesium');
 var Colors = require('./Colors');
-var StylishReact = require('./StylishReact');
 var React = require('react/addons');
 var StylePropTypes = require('./StylePropTypes');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
-var sx = StylishReact.styleSet;
 
-var Button = StylishReact.createClass({
+var Button = React.createClass({
   propTypes: {
     onClick: PropTypes.func,
     use: PropTypes.oneOf(['default', 'special']),
@@ -29,11 +28,12 @@ var Button = StylishReact.createClass({
   },
 
   render(): any {
-    return (
+    return Cesium.resolveStyles(
+      this,
       <button
         type="button"
         key="button"
-        style={sx(
+        style={Cesium.styleSet(
           styles.root,
           (this.props.use === 'default') && styles.default,
           (this.props.use === 'special') && styles.special,
