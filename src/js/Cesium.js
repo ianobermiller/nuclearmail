@@ -170,4 +170,6 @@ function _mergeStyles(...styles: Array<Object|boolean>): any {
   return styleProp;
 }
 
-module.exports = resolveStyles;
+module.exports = {
+  render: resolveStyles
+};

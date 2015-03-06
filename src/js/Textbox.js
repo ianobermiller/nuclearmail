@@ -5,7 +5,6 @@ var Colors = require('./Colors');
 var React = require('react/addons');
 var StylePropTypes = require('./StylePropTypes');
 
-var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
 var Textbox = React.createClass({
@@ -16,7 +15,7 @@ var Textbox = React.createClass({
   mixins: [PureRenderMixin],
 
   render(): any {
-    return Cesium(
+    return Cesium.render(
       this,
       <input
         {...this.props}
