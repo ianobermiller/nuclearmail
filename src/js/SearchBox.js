@@ -2,6 +2,7 @@
 
 var Button = require('./Button');
 var Colors = require('./Colors');
+var Textbox = require('./Textbox');
 var React = require('react');
 
 var PropTypes = React.PropTypes;
@@ -30,7 +31,7 @@ var SearchBox = React.createClass({
   render(): any {
     return (
       <span style={this.props.style}>
-        <input
+        <Textbox
           style={styles.input}
           value={this.props.query}
           onChange={this._onQueryChange}
