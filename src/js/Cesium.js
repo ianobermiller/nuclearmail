@@ -1,9 +1,7 @@
 /** @flow */
 
-var EventEmitter = require('events').EventEmitter;
 var React = require('react/addons');
 var invariant = require('react/lib/invariant');
-var _ = require('lodash');
 
 var components = [];
 document.body.addEventListener('mouseup', () => {
@@ -49,7 +47,7 @@ function resolveStyles(
     props.style = style = _mergeStyles(...style);
   }
 
-  if (!style || !Object.keys(style).some(key => key.indexOf(':') === 0)) {
+  if (!style || !Object.keys(style).some(k => k.indexOf(':') === 0)) {
     return renderedElement;
   }
 
