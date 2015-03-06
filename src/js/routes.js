@@ -6,9 +6,7 @@ var ThreadView = require('./ThreadView');
 var React = require('react');
 var Router = require('react-router');
 
-var DefaultRoute = Router.DefaultRoute;
 var Route = Router.Route;
-var RouteHandler = Router.RouteHandler;
 
 var routes = (
   <Route name="app" path="/" handler={App}>

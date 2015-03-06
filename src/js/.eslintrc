@@ -10,6 +10,8 @@
     "no-unused-expressions": 0,
     "no-underscore-dangle": 0,
     "no-use-before-define": 0,
-    "strict": 0
+    "strict": 0,
+    "no-loop-func": 0,
+    "new-cap": 0
   }
 }
