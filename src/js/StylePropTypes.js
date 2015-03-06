@@ -34,11 +34,13 @@ var StylePropTypes = {
     'display',
     'flex',
     'float',
+    'height',
     'margin',
     'marginBottom',
     'marginLeft',
     'marginRight',
-    'marginTop'
+    'marginTop',
+    'width'
   )
 };
 
