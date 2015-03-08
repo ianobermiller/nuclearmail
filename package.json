@@ -12,6 +12,7 @@
     "color-string": "^0.2.1",
     "colour.js": "^1.5.2",
     "colr": "^1.2.1",
+    "css-vendor": "^0.2.3",
     "es6-shim": "^0.18.0",
     "google-caja": "0.0.2",
     "keyboardjs": "^0.4.2",

@@ -1,6 +1,8 @@
 /** @flow */
 
+var CSSPropertyOperations = require('react/lib/CSSPropertyOperations');
 var React = require('react/addons');
+var cssVendor = require('css-vendor');
 var invariant = require('react/lib/invariant');
 
 var components = [];
@@ -48,6 +50,9 @@ function resolveStyles(
   }
 
   if (!style || !Object.keys(style).some(k => k.indexOf(':') === 0)) {
+    if (style) {
+      props.style = _prefix(props.style);
+    }
     return renderedElement;
   }
 
@@ -127,7 +132,7 @@ function resolveStyles(
     components.push(component);
   }
 
-  props.style = newStyle;
+  props.style = _prefix(newStyle);
 
   return renderedElement;
 }
@@ -180,7 +185,61 @@ function wrap(config: {render: () => any;}): any {
   };
 }
 
+function _prefix(style: Object) {
+  var newStyle = {};
+  Object.keys(style).filter(key => key.indexOf(':') !== 0).forEach(key => {
+    var value = style[key];
+    var newKey = cssVendor.supportedProperty(key);
+    if (newKey === false) {
+      console.warn('Unsupported CSS property ' + key);
+      return;
+    }
+    var newValue = cssVendor.supportedValue(newKey, value);
+    if (newValue === false) {
+      newValue = value;
+    }
+    newStyle[newKey] = newValue;
+  });
+  return newStyle;
+}
+
+//
+// Animations using keyframes
+//
+var animationIndex = 1;
+var animationStyleSheet: any = document.createElement('style');
+document.head.appendChild(animationStyleSheet);
+
+// Test if prefix needed for keyframes (copied from PrefixFree)
+var keyframesPrefixed = 'keyframes';
+animationStyleSheet.textContent = '@keyframes {}';
+if (!animationStyleSheet.sheet.cssRules.length) {
+  keyframesPrefixed = cssVendor.prefix.css + 'keyframes';
+}
+
+function animation(keyframes: Object): string {
+  var name = 'Animation' + animationIndex;
+  animationIndex += 1;
+
+  var rule = '@' + keyframesPrefixed + ' ' + name + ' {\n' +
+    Object.keys(keyframes).map((percentage) => {
+      var props = keyframes[percentage];
+      var serializedProps = CSSPropertyOperations.createMarkupForStyles(
+        _prefix(props)
+      );
+      return '  ' + percentage + ' {\n  ' + serializedProps + '\n  }';
+    }).join('\n') +
+    '\n}\n';
+
+  animationStyleSheet.sheet.insertRule(
+    rule,
+    animationStyleSheet.sheet.cssRules.length
+  );
+  return name;
+}
+
 module.exports = {
+  animation,
   resolveStyles,
   wrap
 };

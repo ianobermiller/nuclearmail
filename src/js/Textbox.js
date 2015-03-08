@@ -29,7 +29,7 @@ var Textbox = React.createClass(Cesium.wrap({
 
 var styles = {
   root: {
-    border: 'solid 1px' + Colors.gray2,
+    border: '1px solid ' + Colors.gray2,
     height: 32,
     padding: '0 4px',
 
