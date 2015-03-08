@@ -19,7 +19,6 @@ var SearchBox = require('./SearchBox');
 var Spinner = require('./Spinner');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
-var ThreadView = require('./ThreadView');
 var _ = require('lodash');
 var asap = require('asap');
 var isOffline = require('./isOffline');
@@ -60,13 +59,6 @@ var App = React.createClass({
           return {ids: messageIDs};
         },
         shouldFetch: options => !!options.ids,
-      },
-      selectedThread: {
-        method: ThreadStore.getByID,
-        getOptions: (props, state) => {
-          return {id: props.params.threadID};
-        },
-        shouldFetch: options => !!options.id,
       },
     }),
     InteractiveStyleMixin({
@@ -188,7 +180,6 @@ var App = React.createClass({
   },
 
   render(): any {
-    var selectedThread = this.state.selectedThread;
     return (
       <div style={styles.app}>
         {this.state.isLoading ? <Spinner /> : null}
