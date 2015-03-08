@@ -2,35 +2,32 @@
 
 var CSSPropertyOperations = require('react/lib/CSSPropertyOperations');
 var React = require('react/addons');
+var camelizeStyleName = require('react/lib/camelizeStyleName');
 var cssVendor = require('css-vendor');
+var hyphenateStyleName = require('react/lib/hyphenateStyleName');
 var invariant = require('react/lib/invariant');
 
 var components = [];
-document.body.addEventListener('mouseup', () => {
-  components.forEach((component, index) => {
-    if (!component.isMounted()) {
-      components.splice(index, 1);
-      return;
-    }
 
-    if (!component.state || !component.state._styleState) {
-      return;
-    }
-
-    Object.keys(component.state._styleState).forEach(key => {
-      if (component.state._styleState[key].isMouseDown) {
-        _setStyleState(component, key, {isActive: false, isMouseDown: false});
-      }
-    });
-  });
-});
-
+//
+// The nucleus of Cesium. resolveStyles is called on the rendered elements
+// before they are returned in render. It iterates over the elements and
+// children, rewriting props to add event handlers required to capture user
+// interactions (e.g. mouse over). It also replaces the style prop because it
+// adds in the various interaction styles (e.g. :hover) and performs vendor
+// prefixing.
+//
 function resolveStyles(
   component: any,
   renderedElement: any,
   existingKeyMap?: {[key: string]: bool;}
 ): any {
   existingKeyMap = existingKeyMap || {};
+
+  // Recurse over children first in case we bail early. Could be optimized to be
+  // iterative if needed. Note that children only include those rendered in
+  // `this` component. Child nodes in other components will not be here, so each
+  // component needs to use Cesium.
   if (renderedElement.props.children) {
     React.Children.forEach(
       renderedElement.props.children,
@@ -45,17 +42,26 @@ function resolveStyles(
   var props = renderedElement.props;
   var style = props.style;
 
+  // Convenient syntax for multiple styles: `style={[style1, style2, etc]}`
+  // Ignores non-objects, so you can do `this.state.isCool && styles.cool`.
   if (Array.isArray(style)) {
     props.style = style = _mergeStyles(...style);
   }
 
+  // Bail early if no interactive styles.
   if (!style || !Object.keys(style).some(k => k.indexOf(':') === 0)) {
     if (style) {
+      // Still perform vendor prefixing, though.
       props.style = _prefix(props.style);
     }
     return renderedElement;
   }
 
+  var newStyle = {...style};
+
+  // We need a unique key to correlate state changes due to user interaction
+  // with the rendered element, so we know to apply the proper interactive
+  // styles.
   var originalKey = renderedElement.ref || renderedElement.key;
   var key = originalKey || 'main';
 
@@ -70,8 +76,11 @@ function resolveStyles(
 
   existingKeyMap[key] = true;
 
-  var newStyle = {...style};
+  // Only add handlers if necessary
   if (style[':hover'] || style[':active']) {
+    // Always call the existing handler if one is already defined.
+    // This code, and the very similar ones below, could be abstracted a bit
+    // more, but it hurts readability IMO.
     var existingOnMouseEnter = props.onMouseEnter;
     props.onMouseEnter = (e) => {
       existingOnMouseEnter && existingOnMouseEnter(e);
@@ -101,6 +110,7 @@ function resolveStyles(
       _setStyleState(component, key, {isActive: false, isMouseDown: false});
     };
 
+    // Merge in the styles if needed
     if (_getStyleState(component, key, 'isHovering')) {
       Object.assign(newStyle, style[':hover']);
     }
@@ -152,6 +162,9 @@ function _setStyleState(component: any, key: string, newState: Object) {
   component.setState(state);
 }
 
+// Merge style objects. Special casing for props starting with ';'; the values
+// should be objects, and are merged with others of the same name (instead of
+// overwriting).
 function _mergeStyles(...styles: Array<Object|boolean>): any {
   var styleProp = {};
 
@@ -175,6 +188,33 @@ function _mergeStyles(...styles: Array<Object|boolean>): any {
   return styleProp;
 }
 
+function _prefix(style: Object) {
+  var newStyle = {};
+  Object.keys(style).filter(key => key.indexOf(':') !== 0).forEach(key => {
+    var value = style[key];
+
+    // Have to go back and forth because cssVendor only accepts hyphenated
+    var newKey = cssVendor.supportedProperty(hyphenateStyleName(key));
+    if (newKey === false) {
+      // Ignore unsupported properties
+      console.warn('Unsupported CSS property ' + key);
+      return;
+    }
+    newKey = camelizeStyleName(newKey);
+    var newValue = cssVendor.supportedValue(newKey, value);
+    if (newValue === false) {
+      // Allow unsupported values, since css-vendor will say something like:
+      // `solid 1px black` is not supported because the browser rewrites it to
+      // `1px solid black`. css-vendor should be smarter about this.
+      newValue = value;
+    }
+    newStyle[newKey] = newValue;
+  });
+  return newStyle;
+}
+
+// More convenient syntax than using resolveStyles at every return, particularly
+// if you use early returns to short-circuit, since you only have to wrap once.
 function wrap(config: {render: () => any;}): any {
   return {
     ...config,
@@ -183,24 +223,6 @@ function wrap(config: {render: () => any;}): any {
       return resolveStyles(this, renderedElement);
     }
   };
-}
-
-function _prefix(style: Object) {
-  var newStyle = {};
-  Object.keys(style).filter(key => key.indexOf(':') !== 0).forEach(key => {
-    var value = style[key];
-    var newKey = cssVendor.supportedProperty(key);
-    if (newKey === false) {
-      console.warn('Unsupported CSS property ' + key);
-      return;
-    }
-    var newValue = cssVendor.supportedValue(newKey, value);
-    if (newValue === false) {
-      newValue = value;
-    }
-    newStyle[newKey] = newValue;
-  });
-  return newStyle;
 }
 
 //
@@ -217,6 +239,8 @@ if (!animationStyleSheet.sheet.cssRules.length) {
   keyframesPrefixed = cssVendor.prefix.css + 'keyframes';
 }
 
+// Simple animation helper that injects CSS into a style object containing the
+// keyframes, and returns a string with the generated animation name.
 function animation(keyframes: Object): string {
   var name = 'Animation' + animationIndex;
   animationIndex += 1;
@@ -237,6 +261,31 @@ function animation(keyframes: Object): string {
   );
   return name;
 }
+
+// Listen for mouseup events on the body so we can disable active states when
+// you mouse down, move away, and mouse up.
+document.body.addEventListener('mouseup', () => {
+  components.forEach((component, index) => {
+
+    // Since we can't hook into React's lifecycle methods if you just use
+    // resolveStyles, we need some way to know when we should release the
+    // references to the components.
+    if (!component.isMounted()) {
+      components.splice(index, 1);
+      return;
+    }
+
+    if (!component.state || !component.state._styleState) {
+      return;
+    }
+
+    Object.keys(component.state._styleState).forEach(key => {
+      if (component.state._styleState[key].isMouseDown) {
+        _setStyleState(component, key, {isActive: false, isMouseDown: false});
+      }
+    });
+  });
+});
 
 module.exports = {
   animation,
