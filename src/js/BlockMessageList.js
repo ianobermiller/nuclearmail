@@ -1,5 +1,6 @@
 /** @flow */
 
+var Cesium = require('./Cesium');
 var Colors = require('./Colors');
 var LineClamp = require('./LineClamp');
 var React = require('react/addons');
@@ -10,7 +11,7 @@ var sx = require('./styleSet');
 var PureRenderMixin = React.addons.PureRenderMixin;
 var PropTypes = React.PropTypes;
 
-var BlockMessageList = React.createClass({
+var BlockMessageList = React.createClass(Cesium.wrap({
   propTypes: {
     messages: PropTypes.array.isRequired,
 
@@ -40,9 +41,9 @@ var BlockMessageList = React.createClass({
       </ul>
     );
   }
-});
+}));
 
-var BlockMessageListItem = React.createClass({
+var BlockMessageListItem = React.createClass(Cesium.wrap({
   propTypes: {
     index: PropTypes.number.isRequired,
     isSelected: PropTypes.bool.isRequired,
@@ -121,7 +122,7 @@ var BlockMessageListItem = React.createClass({
       </li>
     );
   }
-});
+}));
 
 var styles = {
   list: {
@@ -144,15 +145,27 @@ var styles = {
     inner: {
       borderRadius: '8px',
       padding: '8px 12px 12px 12px',
+
+      ':hover': {
+        background: Colors.accent.lighten(44),
+      }
     },
 
     innerIsUnread: {
       background: Colors.accent.lighten(40),
+
+      ':hover': {
+        background: Colors.accent.lighten(40),
+      }
     },
 
     innerIsSelected: {
       background: Colors.accent,
       color: 'white',
+
+      ':hover': {
+        background: Colors.accent,
+      }
     },
 
     top: {
