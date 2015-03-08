@@ -8,7 +8,7 @@ var StylePropTypes = require('./StylePropTypes');
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
-var Button = React.createClass({
+var Button = React.createClass(Cesium.wrap({
   propTypes: {
     onClick: PropTypes.func,
     use: PropTypes.oneOf(['default', 'special']),
@@ -28,8 +28,7 @@ var Button = React.createClass({
   },
 
   render(): any {
-    return Cesium.render(
-      this,
+    return (
       <button
         type="button"
         style={[
@@ -43,7 +42,7 @@ var Button = React.createClass({
       </button>
     );
   }
-});
+}));
 
 var styles = {
   root: {

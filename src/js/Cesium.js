@@ -170,6 +170,17 @@ function _mergeStyles(...styles: Array<Object|boolean>): any {
   return styleProp;
 }
 
+function wrap(config: {render: () => any;}): any {
+  return {
+    ...config,
+    render() {
+      var renderedElement = config.render.call(this);
+      return resolveStyles(this, renderedElement);
+    }
+  };
+}
+
 module.exports = {
-  render: resolveStyles
+  resolveStyles,
+  wrap
 };

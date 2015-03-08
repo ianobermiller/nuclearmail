@@ -7,7 +7,7 @@ var StylePropTypes = require('./StylePropTypes');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 
-var Textbox = React.createClass({
+var Textbox = React.createClass(Cesium.wrap({
   propTypes: {
     style: StylePropTypes.layout,
   },
@@ -15,8 +15,7 @@ var Textbox = React.createClass({
   mixins: [PureRenderMixin],
 
   render(): any {
-    return Cesium.render(
-      this,
+    return (
       <input
         {...this.props}
         style={[
@@ -26,7 +25,7 @@ var Textbox = React.createClass({
       />
     );
   }
-});
+}));
 
 var styles = {
   root: {

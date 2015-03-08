@@ -7,7 +7,7 @@ var React = require('react/addons');
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
-var Nav = React.createClass({
+var Nav = React.createClass(Cesium.wrap({
   propTypes: {
     onQueryChanged: PropTypes.func.isRequired,
     query: PropTypes.string,
@@ -53,9 +53,9 @@ var Nav = React.createClass({
       </nav>
     );
   }
-});
+}));
 
-var NavItem = React.createClass({
+var NavItem = React.createClass(Cesium.wrap({
   propTypes: {
     onQueryChanged: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
@@ -71,8 +71,7 @@ var NavItem = React.createClass({
   },
 
   render() /*object*/ {
-    return Cesium.render(
-      this,
+    return (
       <li>
         <a
           onClick={this._onClick}
@@ -86,7 +85,7 @@ var NavItem = React.createClass({
       </li>
     );
   }
-});
+}));
 
 var styles = {
   list: {
