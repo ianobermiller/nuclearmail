@@ -84,30 +84,20 @@ function resolveStyles(
     var existingOnMouseEnter = props.onMouseEnter;
     props.onMouseEnter = (e) => {
       existingOnMouseEnter && existingOnMouseEnter(e);
-      _setStyleState(component, key, {
-        isHovering: true,
-        isActive: _getStyleState(component, key, 'isMouseDown'),
-      });
+      _setStyleState(component, key, {isHovering: true});
     };
 
     var existingOnMouseLeave = props.onMouseLeave;
     props.onMouseLeave = (e) => {
       existingOnMouseLeave && existingOnMouseLeave(e);
-      _setStyleState(component, key, {isHovering: false, isActive: false});
+      _setStyleState(component, key, {isHovering: false});
     };
 
     var existingOnMouseDown = props.onMouseDown;
     props.onMouseDown = (e) => {
       existingOnMouseDown && existingOnMouseDown(e);
       component._lastMouseDown = Date.now();
-      _setStyleState(component, key, {isActive: true, isMouseDown: true});
-    };
-
-    var existingOnMouseUp = props.onMouseUp;
-    props.onMouseUp = (e) => {
-      existingOnMouseUp && existingOnMouseUp(e);
-      component._lastMouseUp = Date.now();
-      _setStyleState(component, key, {isActive: false, isMouseDown: false});
+      _setStyleState(component, key, {isActive: true});
     };
 
     // Merge in the styles if needed
@@ -280,8 +270,8 @@ document.body.addEventListener('mouseup', () => {
     }
 
     Object.keys(component.state._styleState).forEach(key => {
-      if (component.state._styleState[key].isMouseDown) {
-        _setStyleState(component, key, {isActive: false, isMouseDown: false});
+      if (component.state._styleState[key].isActive) {
+        _setStyleState(component, key, {isActive: false});
       }
     });
   });
