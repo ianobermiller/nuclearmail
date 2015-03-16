@@ -153,12 +153,12 @@ var styles = {
 
   actionBarItem: {
     display: 'inline-block',
-    marginRight: '12px',
+    margin: '0 12px 12px 0',
   },
 
   subject: {
     fontWeight: 'bold',
-    margin: '12px',
+    margin: '0 12px 12px 12px',
   },
 
   messages: {
