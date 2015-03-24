@@ -1,13 +1,14 @@
 [ignore]
-.*/node_modules/6to5-core/.*
-.*/node_modules/6to5-loader/.*
+.*/node_modules/.*/node_modules/.*
+.*/node_modules/babel-core/.*
+.*/node_modules/babel-loader/.*
 .*/node_modules/mkdirp/.*
 .*/node_modules/nodemon/.*
 .*/node_modules/react-hot-loader/.*
 .*/node_modules/rimraf/.*
 .*/node_modules/watchify/.*
-.*/node_modules/webpack/.*
 .*/node_modules/webpack-dev-server/.*
+.*/node_modules/webpack/.*
 
 [include]
 src/js
