@@ -94,7 +94,7 @@ var MessageView = React.createClass({
               showImages={true}
             />
           ) : (
-            <div style={styles.snippet}>{this.props.message.snippet}</div>
+            <div style={styles.snippet}>{msg.snippet}</div>
           )}
         </div>
       </div>

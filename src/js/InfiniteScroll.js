@@ -21,7 +21,12 @@ var InfiniteScroll = React.createClass({
     threshold: PropTypes.number.isRequired,
   },
 
-  getDefaultProps() {
+  getDefaultProps(): {
+    hasMore: boolean;
+    isScrollContainer: boolean;
+    onRequestMoreItems: () => void;
+    threshold: number;
+  } {
     return {
       hasMore: false,
       isScrollContainer: false,
@@ -97,11 +102,16 @@ function getAbsoluteOffsetTop(element) {
 }
 
 function getWindowScrollTop() {
-  return (window.pageYOffset !== undefined) ?
-    window.pageYOffset :
-    (document.documentElement ||
-      document.body.parentNode ||
-      document.body).scrollTop;
+  if (window.pageYOffset !== undefined) {
+    return window.pageYOffset;
+  }
+
+  var element: any =
+    document.documentElement ||
+    document.body.parentNode ||
+    document.body;
+
+  return element.scrollTop;
 }
 
 module.exports = InfiniteScroll;

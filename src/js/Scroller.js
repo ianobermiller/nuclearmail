@@ -60,8 +60,8 @@ var Scroller = React.createClass({
     document.addEventListener('mouseleave', this._onDocumentMouseUp);
     document.addEventListener('mousemove', this._onDocumentMouseMove);
     document.addEventListener('selectstart', this._onDocumentSelectStart);
-    this._previousUserSelect = document.body.style.userSelect;
-    document.body.style.userSelect = 'none';
+    this._previousUserSelect = (document.body.style: any).userSelect;
+    (document.body.style: any).userSelect = 'none';
   },
 
   _detachBodyListeners() {
@@ -69,7 +69,7 @@ var Scroller = React.createClass({
     document.removeEventListener('mouseleave', this._onDocumentMouseUp);
     document.removeEventListener('mousemove', this._onDocumentMouseMove);
     document.removeEventListener('selectstart', this._onDocumentSelectStart);
-    document.body.style.userSelect = this._previousUserSelect;
+    (document.body.style: any).userSelect = this._previousUserSelect;
   },
 
   _onScroll() {

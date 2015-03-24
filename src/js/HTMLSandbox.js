@@ -20,7 +20,9 @@ var HTMLSandbox = React.createClass({
     this._id = ClientID.get();
   },
 
-  getDefaultProps() {
+  getDefaultProps(): {
+    setHeightToContent: boolean;
+  } {
     return {
       setHeightToContent: true,
     };
