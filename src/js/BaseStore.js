@@ -1,6 +1,6 @@
 /** @flow */
 
-var Dispatcher = require('./Dispatcher.js');
+var Dispatcher = require('./Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var asap = require('asap');
 var isOffline = require('./isOffline');

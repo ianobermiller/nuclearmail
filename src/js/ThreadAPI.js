@@ -1,9 +1,9 @@
 /** @flow */
 /* global gapi */
 
-var ActionType = require('./ActionType.js');
-var API = require('./API.js');
-var Dispatcher = require('./Dispatcher.js');
+var ActionType = require('./ActionType');
+var API = require('./API');
+var Dispatcher = require('./Dispatcher');
 var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
 var _ = require('lodash');

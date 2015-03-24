@@ -1,8 +1,8 @@
 /** @flow */
 
-var ActionType = require('./ActionType.js');
-var BaseStore = require('./BaseStore.js');
-var ThreadAPI = require('./ThreadAPI.js');
+var ActionType = require('./ActionType');
+var BaseStore = require('./BaseStore');
+var ThreadAPI = require('./ThreadAPI');
 var _ = require('lodash');
 
 import type {TThread} from './Types';

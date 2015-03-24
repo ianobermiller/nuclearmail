@@ -1,8 +1,8 @@
 /** @flow */
 /* global gapi */
 
-var API = require('./API.js');
-var Dispatcher = require('./Dispatcher.js');
+var API = require('./API');
+var Dispatcher = require('./Dispatcher');
 
 function list() {
   return API.wrap(() =>
