@@ -5,9 +5,9 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 ## Getting started
 
-1. `npm start` will start watchify and browser-sync and open a browser window. Changing any file will build and refresh the window.
-
-2. `flow` to run the typechecker
+1. `npm start` will start webpack-dev-server and the watchers.
+2. Open http://localhost:8000 in your browser. Changing any file will build and refresh the window.
+3. `flow` to run the typechecker
 
 ## Technologies used
 - React Intl
