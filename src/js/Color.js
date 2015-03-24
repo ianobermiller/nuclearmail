@@ -1,26 +1,23 @@
 /** @flow */
 
-// TODO: use tinytinycolor?
-var Colr = require('colr');
+var tinytinycolor = require('tinytinycolor');
 var _ = require('lodash');
 
 class Color {
-  constructor(stringOrColr) {
-    this._colr = _.isString(stringOrColr) ?
-      Colr.fromHex(stringOrColr) :
-      stringOrColr;
+  constructor(stringOrColor) {
+    this._color = new tinytinycolor(stringOrColor);
   }
 
   toString(): string {
-    return this._colr.toHex();
+    return this._color.toHexString();
   }
 
   darken(val: number): Color {
-    return new Color(this._colr.clone().darken(val));
+    return new Color(tinytinycolor.darken(this._color, val));
   }
 
   lighten(val: number): Color {
-    return new Color(this._colr.clone().lighten(val));
+    return new Color(tinytinycolor.lighten(this._color, val));
   }
 }
 
