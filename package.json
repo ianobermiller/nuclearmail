@@ -10,10 +10,10 @@
     "google-caja": "0.0.2",
     "keyboardjs": "^0.4.2",
     "lodash": "^2.4.1",
-    "react": "^0.12.0",
+    "react": "^0.12.2",
     "react-intl": "^1.1.0",
     "react-router": "^0.11.6",
-    "rsvp": "^3.0.13",
+    "rsvp": "^3.0.17",
     "tinytinycolor": "0.0.3",
     "utf8": "^2.0.0"
   },
@@ -21,11 +21,10 @@
     "babel-core": "^4.7.16",
     "babel-loader": "^4.2.0",
     "mkdirp": "^0.5.0",
-    "nodemon": "^1.2.1",
-    "react-hot-loader": "^1.1.4",
-    "rimraf": "^2.2.8",
-    "watchify": "^1.0.2",
-    "webpack": "^1.5.3",
+    "nodemon": "^1.3.7",
+    "react-hot-loader": "^1.2.3",
+    "rimraf": "^2.3.2",
+    "webpack": "^1.7.3",
     "webpack-dev-server": "^1.7.0"
   },
   "scripts": {
