@@ -2,7 +2,6 @@
 /* global gapi */
 
 var ClientID = require('./ClientID');
-var Dispatcher = require('./Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var RSVP = require('rsvp');
 
@@ -49,7 +48,7 @@ function promiseGoogleApiAvailable() {
     return RSVP.Promise.resolve();
   }
 
-  return new RSVP.Promise((resolve, reject) => {
+  return new RSVP.Promise((resolve) => {
     pendingRequests.push(resolve);
   });
 }

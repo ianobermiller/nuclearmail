@@ -35,9 +35,10 @@ var ActionType = {
   }
 };
 
-Object.keys(ActionType).forEach(category => {
-  Object.keys(ActionType[category]).forEach(actionType => {
-    ActionType[category][actionType] = category + '.' + actionType;
+var ActionTypeHax: any = ActionType;
+Object.keys(ActionTypeHax).forEach(category => {
+  Object.keys(ActionTypeHax[category]).forEach(actionType => {
+    ActionTypeHax[category][actionType] = category + '.' + actionType;
   });
 });
 
