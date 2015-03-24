@@ -139,7 +139,7 @@ function acceptAllUriRewriter(uri, prop) {
 
 function tagPolicyNoImages(tagName, attribs) {
   if (tagName === 'img') {
-    return;
+    return null;
   }
 
   return defaultTagPolicy(tagName, attribs);

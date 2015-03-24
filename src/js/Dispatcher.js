@@ -11,7 +11,6 @@ var Dispatcher = {
   },
 
   subscribe(fn: (data: any) => void): {remove: () => void;} {
-    var handler
     emitter.on(EVENT, fn);
     return {
       remove() {

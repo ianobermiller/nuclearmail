@@ -19,7 +19,9 @@ window.handleGoogleClientLoad = function() {
 
 function tryAuthorize(immediate) {
   var config = {
+    /*eslint-disable camelcase*/
     client_id: '108971935462-ied7vg89qivj0bsso4imp6imhvpuso5u.apps.googleusercontent.com',
+    /*eslint-enable*/
     scope: 'email https://www.googleapis.com/auth/gmail.modify',
     immediate
   };

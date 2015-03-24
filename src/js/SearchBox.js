@@ -1,7 +1,6 @@
 /** @flow */
 
 var Button = require('./Button');
-var Colors = require('./Colors');
 var Textbox = require('./Textbox');
 var React = require('react');
 

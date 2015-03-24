@@ -88,10 +88,12 @@ function classToMixinFunction(constructor: any): Function {
 
       // For each function defined in the prototype, create a function
       // to proxy the call to the mixin instance.
-      mixin[prop] = (function(prop) { return function() {
-        var mixinInstance = getInstance(this);
-        return mixinInstance[prop].apply(mixinInstance, arguments);
-      }})(prop);
+      mixin[prop] = (function(p) {
+        return function() {
+          var mixinInstance = getInstance(this);
+          return mixinInstance[p].apply(mixinInstance, arguments);
+        };
+      })(prop);
     });
 
     return mixin;

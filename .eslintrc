@@ -6,12 +6,14 @@
   },
   "rules": {
     "quotes": [2, "single"],
-    "no-comma-dangle": 0,
+    "comma-dangle": 0,
     "no-unused-expressions": 0,
     "no-underscore-dangle": 0,
     "no-use-before-define": 0,
     "strict": 0,
     "no-loop-func": 0,
-    "new-cap": 0
+    "new-cap": 0,
+    "no-unused-vars": 0,
+    "curly": [2, "multi-line"]
   }
 }

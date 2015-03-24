@@ -10,7 +10,7 @@ function including(
   return function(props, propName, componentName) {
     var style = props[propName];
     if (!style) {
-      return;
+      return null;
     }
 
     var err = PropTypes.object(props, propName, componentName);

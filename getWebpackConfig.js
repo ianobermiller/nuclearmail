@@ -1,3 +1,4 @@
+var path = require('path');
 var webpack = require('webpack');
 var _ = require('lodash');
 
@@ -7,7 +8,7 @@ module.exports = function(options) {
       './src/js/main.js'
     ],
     output: {
-      path: __dirname + '/build/',
+      path: path.join(__dirname, 'build'),
       filename: 'app.js',
       publicPath: '/'
     },
@@ -29,7 +30,6 @@ module.exports = function(options) {
   };
 
   if (options.environment === 'dev') {
-    console.log('dev mode');
     _.assign(config, {
       devtool: 'eval-source-map',
       entry: [
