@@ -125,7 +125,7 @@ class ThreadStore extends BaseStore {
         items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
       };
 
-      if (maxResults <= 0) {
+      if (maxResults <= 0 || !result.hasMore) {
         return result;
       }
     }
