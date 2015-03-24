@@ -1,8 +1,10 @@
 /** @flow */
 
-var Message = require('./Message');
 var _ = require('lodash');
 var utf8 = require('utf8');
+
+import type {TMessage} from './Types';
+type Message = typeof TMessage;
 
 function translateMessage(rawMessage: Object): Message {
   var msg = rawMessage.payload;

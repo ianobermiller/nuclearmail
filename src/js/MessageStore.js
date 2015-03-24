@@ -3,9 +3,11 @@
 var API = require('./API');
 var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
-var Message = require('./Message');
 var MessageAPI = require('./MessageAPI');
 var _ = require('lodash');
+
+import type {TMessage} from './Types';
+type Message = typeof TMessage;
 
 class MessageStore extends BaseStore {
   _messagesByID: {[id: string]: Message};

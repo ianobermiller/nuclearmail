@@ -1,11 +1,14 @@
 /* @flow */
 
-type NameAndEmail = {
+'use strict';
+
+var NameAndEmailHax = ((null: any): {
   name: string;
   email: string;
-};
+});
+type NameAndEmail = typeof NameAndEmailHax;
 
-type Message = {
+var MessageHax = ((null: any): {
   body: {[mimeType: string]: string};
   date: Date;
   from: NameAndEmail;
@@ -21,7 +24,16 @@ type Message = {
   snippet: string;
   subject: ?string;
   threadID: string;
-};
+});
+type Message = typeof MessageHax;
 
-var fake: any = true;
-module.exports = fake || Message;
+var ThreadHax = ((null: any): {
+  id: string;
+  messageIDs: Array<string>;
+});
+type Thread = typeof ThreadHax;
+
+module.exports = {
+  TMessage: MessageHax,
+  TThread: ThreadHax,
+};

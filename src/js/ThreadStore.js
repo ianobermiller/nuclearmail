@@ -2,9 +2,11 @@
 
 var ActionType = require('./ActionType.js');
 var BaseStore = require('./BaseStore.js');
-var Thread = require('./Thread.js');
 var ThreadAPI = require('./ThreadAPI.js');
 var _ = require('lodash');
+
+import type {TThread} from './Types';
+type Thread = typeof TThread;
 
 type ListResult = {
   hasMore: bool;
