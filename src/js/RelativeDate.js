@@ -17,6 +17,8 @@ var LONG_DATE_TIME_FORMAT = {
 var RelativeDate = React.createClass({
   propTypes: {
     date: PropTypes.instanceOf(Date).isRequired,
+
+    style: PropTypes.object,
   },
 
   mixins: [IntlMixin],

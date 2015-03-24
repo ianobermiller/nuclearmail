@@ -1,6 +1,5 @@
 /** @flow */
 
-
 var App = require('./App');
 var ThreadView = require('./ThreadView');
 var React = require('react');

@@ -124,7 +124,6 @@ var HTMLSandbox = React.createClass({
     return (
       <iframe
         border="none"
-        className={this.props.className}
         height={this.props.setHeightToContent ? 0 : null}
         scrolling="no"
         width="100%"

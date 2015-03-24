@@ -13,8 +13,9 @@ var _ = require('lodash');
 
 var MessageView = React.createClass({
   propTypes: {
-    message: PropTypes.object,
     isExpandedInitially: PropTypes.bool,
+    message: PropTypes.object,
+    style: PropTypes.object,
   },
 
   mixins: [PureRenderMixin],

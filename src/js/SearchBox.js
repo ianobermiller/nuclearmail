@@ -11,6 +11,8 @@ var SearchBox = React.createClass({
     onQueryChange: PropTypes.func.isRequired,
     onQuerySubmit: PropTypes.func.isRequired,
     query: PropTypes.string.isRequired,
+
+    style: PropTypes.object,
   },
 
   _onQueryKeyDown(e: Object) {

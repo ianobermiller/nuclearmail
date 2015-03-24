@@ -14,11 +14,13 @@ var InfiniteScroll = React.createClass({
     // Whether or not to listen for scroll and resize events. Set this to `true`
     // when you have loaded all the data already.
     hasMore: PropTypes.bool.isRequired,
-
     // Called when page is within `threshold` of the bottom.
     onRequestMoreItems: PropTypes.func.isRequired,
     onScroll: PropTypes.func.isRequired,
     threshold: PropTypes.number.isRequired,
+
+    isScrollContainer: PropTypes.bool,
+    style: PropTypes.object,
   },
 
   getDefaultProps(): {

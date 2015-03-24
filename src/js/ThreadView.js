@@ -18,6 +18,8 @@ var ThreadView = React.createClass({
   propTypes: {
     onGoToNextMessage: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired,
+
+    style: PropTypes.object,
   },
 
   mixins: [

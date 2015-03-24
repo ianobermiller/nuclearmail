@@ -29,6 +29,8 @@ var Scroller = React.createClass({
   propTypes: {
     hasMore: PropTypes.bool.isRequired,
     onRequestMoreItems: PropTypes.func.isRequired,
+
+    style: PropTypes.object,
     threshold: PropTypes.number,
   },
 

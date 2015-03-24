@@ -19,7 +19,7 @@ var ThreadView = React.createClass({
 
   render(): any {
     return (
-      <div className={this.props.className} ref="content">
+      <div ref="content">
         {this.props.children}
       </div>
     );

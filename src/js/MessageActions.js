@@ -1,7 +1,5 @@
 /** @flow */
 
-'use strict';
-
 var router = require('./router');
 
 function select(message: ?Object) {

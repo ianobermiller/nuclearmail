@@ -1,7 +1,5 @@
 /* @flow */
 
-'use strict';
-
 var NameAndEmailHax = ((null: any): {
   name: string;
   email: string;
