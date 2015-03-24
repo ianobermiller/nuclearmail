@@ -21,7 +21,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, loaders: ['react-hot', '6to5?experimental'], exclude: /node_modules/ },
+      { test: /\.js$/, loaders: ['react-hot', 'babel?experimental'], exclude: /node_modules/ },
     ]
   },
   externals: {
