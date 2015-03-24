@@ -205,13 +205,27 @@ function _prefix(style: Object) {
 
 // More convenient syntax than using resolveStyles at every return, particularly
 // if you use early returns to short-circuit, since you only have to wrap once.
-function wrap(config: {render: () => any;}): any {
+function wrap(config: any): any {
   return {
     ...config,
+
     render() {
       var renderedElement = config.render.call(this);
       return resolveStyles(this, renderedElement);
-    }
+    },
+
+    getInitialState() {
+      var existingInitialState = config.getInitialState ?
+        config.getInitialState.call(this) :
+        {};
+      return {...existingInitialState, _styleState: {}};
+    },
+
+    componentWillUnmount() {
+      config.componentWillUnmount && config.componentWillUnmount.call(this);
+
+      components.splice(components.indexOf(this), 1);
+    },
   };
 }
 
@@ -256,15 +270,6 @@ function animation(keyframes: Object): string {
 // you mouse down, move away, and mouse up.
 document.body.addEventListener('mouseup', () => {
   components.forEach((component, index) => {
-
-    // Since we can't hook into React's lifecycle methods if you just use
-    // resolveStyles, we need some way to know when we should release the
-    // references to the components.
-    if (!component.isMounted()) {
-      components.splice(index, 1);
-      return;
-    }
-
     if (!component.state || !component.state._styleState) {
       return;
     }
@@ -279,6 +284,5 @@ document.body.addEventListener('mouseup', () => {
 
 module.exports = {
   animation,
-  resolveStyles,
   wrap
 };
