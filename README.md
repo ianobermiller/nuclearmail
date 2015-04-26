@@ -1,4 +1,7 @@
+[![dependency status](https://img.shields.io/david/ianobermiller/nuclearmail.svg)](https://david-dm.org/ianobermiller/nuclearmail)
+
 # NuclearMail
+
 NuclearMail is an experiment of writing a webmail client using React and the Flux architecture. It runs completely in the browser and uses the Gmail REST API.
 
 Try it out at: http://ianobermiller.github.io/nuclearmail/
@@ -10,18 +13,24 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 3. `flow` to run the typechecker
 
 ## Technologies used
-- React Intl
-- react-router
-- webpack
-- react-hot-loader
-- Google Caja
-- Inline Styles :o
+
+- [Radium](https://github.com/FormidableLabs/radium) - inline styles
+- [React Intl](https://github.com/yahoo/react-intl) - internationalization
+- [React Router](https://github.com/rackt/react-router)
+- [Google Caja](https://code.google.com/p/google-caja/) - sanitize HTML
+- [webpack](http://webpack.github.io/)
+- [react-hot-loader](https://github.com/gaearon/react-hot-loader)
 
 ## Keyboard shortcuts
+
 - `y` - archive
 
 ## TODO
 
+- Use sanitize.css - https://github.com/jonathantneal/sanitize.css
+- Babel experimental, stage 1 decorators
+- ES6 classes
+- Observe polyfill
 - Show search sign on hover over contact name, click to search by that
 - Scroll to top when navigating
 - Fetch more when archiving all of inbox
@@ -31,5 +40,3 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 - PGP encryption?
 - More keyboard shortcuts
 - Navigation for labels
-- Contribute RCSS changes upstream if applicable
-- https://github.com/gaearon/react-hot-loader

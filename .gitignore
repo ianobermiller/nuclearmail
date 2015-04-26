@@ -1,4 +1,5 @@
 .DS_Store
+.codemod.bookmark
 build
 node_modules
 npm-debug.log

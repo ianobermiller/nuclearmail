@@ -100,7 +100,12 @@ class MessageStore extends BaseStore {
       return existing;
     }
 
-    MessageAPI.getByIDs(options).then(messages => {
+    var idsToFetch = _.difference(
+      options.ids,
+      existing.map(message => message.id)
+    );
+
+    MessageAPI.getByIDs({ids: idsToFetch}).then(messages => {
       messages.forEach(message => this._messagesByID[message.id] = message);
       this.emitChange();
     });

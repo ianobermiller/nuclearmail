@@ -1,8 +1,8 @@
 /** @flow */
 
-var Cesium = require('./Cesium');
 var Colors = require('./Colors');
 var LineClamp = require('./LineClamp');
+var Radium = require('Radium');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
 var _ = require('lodash');
@@ -11,7 +11,7 @@ var sx = require('./styleSet');
 var PureRenderMixin = React.addons.PureRenderMixin;
 var PropTypes = React.PropTypes;
 
-var BlockMessageList = React.createClass(Cesium.wrap({
+var BlockMessageList = React.createClass(Radium.wrap({
   propTypes: {
     messages: PropTypes.array.isRequired,
 
@@ -43,7 +43,7 @@ var BlockMessageList = React.createClass(Cesium.wrap({
   }
 }));
 
-var BlockMessageListItem = React.createClass(Cesium.wrap({
+var BlockMessageListItem = React.createClass(Radium.wrap({
   propTypes: {
     index: PropTypes.number.isRequired,
     isSelected: PropTypes.bool.isRequired,

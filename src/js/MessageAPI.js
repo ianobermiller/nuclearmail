@@ -23,7 +23,9 @@ function getByIDs(
       );
     });
     return API.execute(batch).then(
-      response => options.ids.map(messageID => response[messageID].result)
+      response => options.ids.map(messageID => {
+        return MessageTranslator.translate(response[messageID].result);
+      })
     );
   });
 }

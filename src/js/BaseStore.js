@@ -8,12 +8,16 @@ var isOffline = require('./isOffline');
 var CHANGE_EVENT = 'change';
 
 class BaseStore {
-  handleDispatch: (action: Object) => void;
+  // Can't declare here, because Babel will treat it as a definition and make it
+  // null. So cast to any below for flow.
+  // handleDispatch: (action: Object) => void;
 
   constructor() {
     autobind(this);
     this._emitter = new EventEmitter();
-    this.handleDispatch && Dispatcher.subscribe(this.handleDispatch);
+    if ((this: any).handleDispatch) {
+      Dispatcher.subscribe((this: any).handleDispatch);
+    }
   }
 
   emitChange(data: Object = {}) {

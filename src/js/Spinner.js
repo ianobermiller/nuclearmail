@@ -1,12 +1,12 @@
 /** @flow */
 
-var Cesium = require('./Cesium');
 var Colors = require('./Colors');
+var Radium = require('Radium');
 var React = require('react/addons');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 
-var Spinner = React.createClass(Cesium.wrap({
+var Spinner = React.createClass(Radium.wrap({
   mixins: [PureRenderMixin],
 
   render(): any {
@@ -18,7 +18,7 @@ var Spinner = React.createClass(Cesium.wrap({
   }
 }));
 
-var pulseAnimation = Cesium.animation({
+var pulseKeyframes = Radium.keyframes({
   '0%': {width: '10%'},
   '50%': {width: '50%'},
   '100%': {width: '10%'},
@@ -34,7 +34,7 @@ var styles = {
   },
 
   inner: {
-    animation: pulseAnimation + ' 3s ease 0s infinite',
+    animation: pulseKeyframes + ' 3s ease 0s infinite',
     background: Colors.accent,
     height: '4px',
     margin: '0 auto',
