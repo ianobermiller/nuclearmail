@@ -85,7 +85,6 @@ var MessageView = React.createClass({
           </div>
           {this._isExpanded() ? (
             <HTMLSandbox
-              style={styles.sandbox}
               html={body}
               iframeBodyStyle={{
                 fontFamily: window.getComputedStyle(document.body).fontFamily,
