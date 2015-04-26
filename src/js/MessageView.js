@@ -155,12 +155,6 @@ var styles = {
     width: 35,
   },
 
-  sandbox: {
-    fontSize: 14,
-    marginTop: 12,
-    width: 'calc(100% - 24px)',
-  },
-
   snippet: {
     fontSize: 14,
     marginTop: 12,

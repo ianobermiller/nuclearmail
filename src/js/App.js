@@ -3,9 +3,9 @@
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
+var Radium = require('Radium');
 var Colors = require('./Colors');
 var DependentStateMixin = require('./DependentStateMixin');
-var InteractiveStyleMixin = require('./InteractiveStyleMixin');
 var KeybindingMixin = require('./KeybindingMixin');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');
@@ -31,7 +31,7 @@ var PAGE_SIZE = 20;
 
 var dummySubscription = {remove() {}};
 
-var App = React.createClass({
+var App = React.createClass(Radium.wrap({
   propTypes: {
     params: PropTypes.object.isRequired,
   },
@@ -60,9 +60,6 @@ var App = React.createClass({
         },
         shouldFetch: options => !!options.ids,
       },
-    }),
-    InteractiveStyleMixin({
-      logo: ['matchMedia'],
     }),
   ],
 
@@ -186,9 +183,7 @@ var App = React.createClass({
         <div style={styles.header}>
           <span style={styles.logo} onClick={this._onLogoClick}>
             ☢
-            {!this.interactions.logo.matchMedia('(max-width: 800px)') ? (
-              <span style={styles.logoName}>{' '}NUCLEARMAIL</span>
-            ) : null}
+            <span style={styles.logoName}>{' '}NUCLEARMAIL</span>
           </span>
           <SearchBox
             style={styles.search}
@@ -244,7 +239,7 @@ var App = React.createClass({
       </div>
     );
   }
-});
+}));
 
 var styles = {
   app: {
@@ -265,6 +260,9 @@ var styles = {
 
   logoName: {
     marginRight: '12px',
+    '@media (max-width: 800px)': {
+      display: 'none',
+    },
   },
 
   search: {

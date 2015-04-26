@@ -1,13 +1,13 @@
 /** @flow */
 
 var Colors = require('./Colors');
-var Cesium = require('./Cesium');
+var Radium = require('Radium');
 var React = require('react/addons');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
-var Nav = React.createClass(Cesium.wrap({
+var Nav = React.createClass(Radium.wrap({
   propTypes: {
     onQueryChanged: PropTypes.func.isRequired,
     query: PropTypes.string,
@@ -55,7 +55,7 @@ var Nav = React.createClass(Cesium.wrap({
   }
 }));
 
-var NavItem = React.createClass(Cesium.wrap({
+var NavItem = React.createClass(Radium.wrap({
   propTypes: {
     onQueryChanged: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,

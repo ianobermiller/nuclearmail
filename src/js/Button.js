@@ -1,14 +1,14 @@
 /** @flow */
 
-var Cesium = require('./Cesium');
 var Colors = require('./Colors');
+var Radium = require('Radium');
 var React = require('react/addons');
 var StylePropTypes = require('./StylePropTypes');
 
 var PropTypes = React.PropTypes;
 var PureRenderMixin = React.addons.PureRenderMixin;
 
-var Button = React.createClass(Cesium.wrap({
+var Button = React.createClass(Radium.wrap({
   propTypes: {
     onClick: PropTypes.func,
     use: PropTypes.oneOf(['default', 'special']),

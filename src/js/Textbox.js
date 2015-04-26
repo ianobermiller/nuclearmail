@@ -1,13 +1,13 @@
 /** @flow */
 
-var Cesium = require('./Cesium');
 var Colors = require('./Colors');
+var Radium = require('Radium');
 var React = require('react/addons');
 var StylePropTypes = require('./StylePropTypes');
 
 var PureRenderMixin = React.addons.PureRenderMixin;
 
-var Textbox = React.createClass(Cesium.wrap({
+var Textbox = React.createClass(Radium.wrap({
   propTypes: {
     style: StylePropTypes.layout,
   },
