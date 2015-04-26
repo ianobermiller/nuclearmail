@@ -22,8 +22,8 @@ module.exports = function(options) {
       loaders: [
         {
           test: /\.js$/,
-          loaders: ['babel?experimental'],
-          exclude: /node_modules/
+          loaders: ['babel?stage=0'],
+          include: path.join(__dirname, 'src/js')
         },
       ]
     },
@@ -31,7 +31,7 @@ module.exports = function(options) {
 
   if (options.environment === 'dev') {
     _.assign(config, {
-      devtool: 'eval-source-map',
+      devtool: 'source-map',
       entry: [
         'webpack-dev-server/client?http://0.0.0.0:8000',
         'webpack/hot/only-dev-server',
@@ -45,8 +45,8 @@ module.exports = function(options) {
         loaders: [
           {
             test: /\.js$/,
-            loaders: ['react-hot', 'babel?experimental'],
-            exclude: /node_modules/
+            loaders: ['react-hot', 'babel?stage=0'],
+            include: path.join(__dirname, 'src/js')
           },
         ]
       },
