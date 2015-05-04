@@ -4,6 +4,7 @@ var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
 var ThreadAPI = require('./ThreadAPI');
 var _ = require('lodash');
+var {Observable} = require('rx');
 
 import type {TThread} from './Types';
 type Thread = typeof TThread;
@@ -94,10 +95,13 @@ class ThreadStore extends BaseStore {
 
   getByID(
     options: {id: string}
-  ): ?Object {
-    if (this._threadsByID[options.id]) {
+  ): ?Thread {
+    if (this._threadsByID.hasOwnProperty(options.id)) {
       return this._threadsByID[options.id];
     }
+
+    // Prevent double fetching
+    this._threadsByID[options.id] = null;
 
     ThreadAPI.getByID(options).then(item => {
       this._threadsByID[item.id] = item;
@@ -105,6 +109,16 @@ class ThreadStore extends BaseStore {
     });
 
     return null;
+  }
+
+  observeGetByID(options: {id: string}): Observable<?Thread> {
+    return this.__wrapAsObservable(this.getByID, options);
+  }
+
+  observeList(
+    options: {query: string; maxResultCount: number}
+  ): Observable<?ListResult> {
+    return this.__wrapAsObservable(this.list, options);
   }
 
   list(options: {query: string; maxResultCount: number;}): ?ListResult {

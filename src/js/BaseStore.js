@@ -2,7 +2,9 @@
 
 var Dispatcher = require('./Dispatcher');
 var EventEmitter = require('events').EventEmitter;
+var {Observable} = require('rx');
 var asap = require('asap');
+var Rx = require('rx');
 var isOffline = require('./isOffline');
 
 var CHANGE_EVENT = 'change';
@@ -22,6 +24,17 @@ class BaseStore {
 
   emitChange(data: Object = {}) {
     this._emitter.emit(CHANGE_EVENT, {store: this, ...data});
+  }
+
+  __wrapAsObservable<TOptions, TResult>(
+    fn: (options: TOptions) => TResult,
+    options: TOptions
+  ): Observable<TResult> {
+    return Rx.Observable.create(observer => {
+      observer.onNext(fn(options));
+      var subscription = this.subscribe(() => observer.onNext(fn(options)));
+      return () => subscription.remove();
+    });
   }
 
   loadCachedData() {

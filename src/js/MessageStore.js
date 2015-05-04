@@ -5,6 +5,7 @@ var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
 var MessageAPI = require('./MessageAPI');
 var _ = require('lodash');
+var {Observable} = require('rx');
 
 import type {TMessage} from './Types';
 type Message = typeof TMessage;
@@ -111,6 +112,10 @@ class MessageStore extends BaseStore {
     });
 
     return null;
+  }
+
+  observeGetByIDs(options: {ids: Array<string>}): Observable<?Array<Message>> {
+    return this.__wrapAsObservable(this.getByIDs, options);
   }
 }
 
