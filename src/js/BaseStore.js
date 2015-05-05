@@ -34,7 +34,10 @@ class BaseStore {
       observer.onNext(fn(options));
       var subscription = this.subscribe(() => observer.onNext(fn(options)));
       return () => subscription.remove();
-    });
+    }).distinctUntilChanged(
+      /*keySelector*/ null,
+      (a, b) => a === b,
+    );
   }
 
   loadCachedData() {

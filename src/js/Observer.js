@@ -6,6 +6,7 @@ module.exports = function decorateWithObserve(ComposedComponent) {
       if (this.observe){
         this._subscriptions = {};
         this.data = {};
+        this._lastData = {};
         this._resubscribe(props, context);
       }
     }
@@ -39,7 +40,12 @@ module.exports = function decorateWithObserve(ComposedComponent) {
         newSubscriptions[key] = newObservables[key].subscribe(
           function onNext(value) {
             that.data[key] = value;
-            that.forceUpdate();
+
+            if (that.data[key] != that._lastData[key]) {
+              that.forceUpdate();
+            }
+
+            that._lastData[key] = value;
           },
           function onError() { },
           function onCompleted() { },

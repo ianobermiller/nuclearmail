@@ -45,7 +45,7 @@ class ThreadView extends Component {
     );
 
     const observeMessages = observeThread.flatMap(
-      thread => MessageStore.observeGetByIDs({ids: thread.messageIDs})
+      thread => thread && MessageStore.observeGetByIDs({ids: thread.messageIDs})
     );
 
     const observeUnsubscribeUrl = observeMessages.map(messages => {
