@@ -93,7 +93,6 @@ class ThreadView extends Component {
   }
 
   render(): ?ReactComponent {
-    console.log('rendering with data', this.data);
     var messages = this.data.messages;
     if (!messages) {
       return null;

@@ -104,7 +104,6 @@ class ThreadStore extends BaseStore {
     this._threadsByID[options.id] = null;
 
     ThreadAPI.getByID(options).then(item => {
-      console.log('threadstore caching item', item);
       this._threadsByID[item.id] = item;
       this.emitChange();
     });
@@ -160,10 +159,7 @@ class ThreadStore extends BaseStore {
 
     ThreadAPI.list(apiOptions).then(result => {
       // Add to byID cache
-      result.items.forEach(item => {
-        console.log('threadstore caching item', item);
-        this._threadsByID[item.id] = item;
-      });
+      result.items.forEach(item => this._threadsByID[item.id] = item);
 
       // Update cache with concatenated results
       var previousResults = pageToken ? pagingInfo.fetchedResults : [];

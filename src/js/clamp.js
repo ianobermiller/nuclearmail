@@ -166,9 +166,7 @@
             //If there are chunks left to remove, remove the last one and see if
             // the nodeValue fits.
             if (chunks.length > 1) {
-                // console.log('chunks', chunks);
                 lastChunk = chunks.pop();
-                // console.log('lastChunk', lastChunk);
                 applyEllipsis(target, chunks.join(splitChar));
             }
             //No more chunks can be removed using this character
