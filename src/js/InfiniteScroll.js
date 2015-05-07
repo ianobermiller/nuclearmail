@@ -16,10 +16,10 @@ class InfiniteScroll extends Component {
     // Called when page is within `threshold` of the bottom.
     onRequestMoreItems: PropTypes.func.isRequired,
     onScroll: PropTypes.func.isRequired,
+    threshold: PropTypes.number.isRequired,
 
     isScrollContainer: PropTypes.bool,
     style: PropTypes.object,
-    threshold: PropTypes.number,
   };
 
   static defaultProps = {
@@ -59,7 +59,7 @@ class InfiniteScroll extends Component {
 
   _lastHeight = 0;
 
-  _update() {
+  _update = () => {
     var el = findDOMNode(this);
     var height = el.scrollHeight;
     // ScrollTop + offsetHeight is within threshold of scrollHeight
@@ -74,7 +74,7 @@ class InfiniteScroll extends Component {
       this.props.onRequestMoreItems();
       this._lastHeight = height;
     }
-  }
+  };
 
   render(): any {
     var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;

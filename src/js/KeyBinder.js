@@ -23,6 +23,7 @@ module.exports = function decorateWithKeyBinding(ComposedComponent) {
     }
   }
 
+  KeybinderEnhancer.defaultProps = ComposedComponent.defaultProps;
   KeybinderEnhancer.propTypes = ComposedComponent.propTypes;
   KeybinderEnhancer.contextTypes = ComposedComponent.contextTypes;
 

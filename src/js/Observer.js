@@ -83,7 +83,9 @@ module.exports = function decorateWithObserve(ComposedComponent) {
     }
   }
 
+  ObserveEnhancer.defaultProps = ComposedComponent.defaultProps;
   ObserveEnhancer.propTypes = ComposedComponent.propTypes;
+  ObserveEnhancer.contextTypes = ComposedComponent.contextTypes;
 
   return ObserveEnhancer;
 };
