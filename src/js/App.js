@@ -4,7 +4,6 @@ var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
 var Colors = require('./Colors');
-var DependentStateMixin = require('./DependentStateMixin');
 var KeyBinder = require('./KeyBinder');
 var LabelStore = require('./LabelStore');
 var LoginModal = require('./LoginModal');

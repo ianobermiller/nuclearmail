@@ -1,7 +1,6 @@
 /** @flow */
 
 var Button = require('./Button');
-var DependentStateMixin = require('./DependentStateMixin');
 var KeyBinder = require('./KeyBinder');
 var MessageStore = require('./MessageStore');
 var MessageView = require('./MessageView');
