@@ -1,18 +1,17 @@
 /** @flow */
 
 var Colors = require('./Colors');
-var Radium = require('Radium');
-var React = require('react/addons');
+var PureRender = require('./PureRender');
+var Radium = require('radium');
 var StylePropTypes = require('./StylePropTypes');
+var {Component} = require('react/addons');
 
-var PureRenderMixin = React.addons.PureRenderMixin;
-
-var Textbox = React.createClass(Radium.wrap({
-  propTypes: {
+@PureRender
+@Radium.Enhancer
+class Textbox extends Component {
+  static propTypes = {
     style: StylePropTypes.layout,
-  },
-
-  mixins: [PureRenderMixin],
+  };
 
   render(): any {
     return (
@@ -25,7 +24,7 @@ var Textbox = React.createClass(Radium.wrap({
       />
     );
   }
-}));
+}
 
 var styles = {
   root: {

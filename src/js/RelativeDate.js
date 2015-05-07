@@ -1,10 +1,8 @@
 /** @flow */
 
-var React = require('react');
 var IntlMixin = require('react-intl').IntlMixin;
 var FormattedRelative = require('react-intl').FormattedRelative;
-
-var PropTypes = React.PropTypes;
+var {Component, PropTypes} = require('react');
 
 var LONG_DATE_TIME_FORMAT = {
   year: 'numeric',
@@ -14,14 +12,12 @@ var LONG_DATE_TIME_FORMAT = {
   minute: '2-digit',
 };
 
-var RelativeDate = React.createClass({
-  propTypes: {
+class RelativeDate extends Component {
+  static propTypes = {
     date: PropTypes.instanceOf(Date).isRequired,
 
     style: PropTypes.object,
-  },
-
-  mixins: [IntlMixin],
+  };
 
   render(): any {
     return (
@@ -32,6 +28,16 @@ var RelativeDate = React.createClass({
       </div>
     );
   }
+}
+
+RelativeDate.contextTypes = IntlMixin.contextTypes;
+RelativeDate.childContextTypes = IntlMixin.childContextTypes;
+
+Object.keys(IntlMixin).forEach(key => {
+  if (['propTypes', 'contextTypes'].indexOf(key) >= 0) {
+    return;
+  }
+  RelativeDate.prototype[key] = IntlMixin[key];
 });
 
 module.exports = RelativeDate;

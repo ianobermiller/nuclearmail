@@ -1,21 +1,18 @@
 /** @flow */
 
-var React = require('react/addons');
 var clamp = require('./clamp');
+var PureRender = require('./PureRender');
+var {Component, PropTypes, findDOMNode} = require('react/addons');
 
-var PropTypes = React.PropTypes;
-var PureRenderMixin = React.addons.PureRenderMixin;
-
-var ThreadView = React.createClass({
-  propTypes: {
+@PureRender
+class LineClamp extends Component {
+  static propTypes = {
     lines: PropTypes.number.isRequired
-  },
-
-  mixins: [PureRenderMixin],
+  };
 
   componentDidMount() {
-    clamp(this.refs.content.getDOMNode(), {clamp: this.props.lines});
-  },
+    clamp(findDOMNode(this.refs.content), {clamp: this.props.lines});
+  }
 
   render(): any {
     return (
@@ -24,6 +21,6 @@ var ThreadView = React.createClass({
       </div>
     );
   }
-});
+}
 
-module.exports = ThreadView;
+module.exports = LineClamp;

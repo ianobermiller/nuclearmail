@@ -1,31 +1,27 @@
 /** @flow */
 
 var Colors = require('./Colors');
+var PureRender = require('./PureRender');
 var Radium = require('Radium');
-var React = require('react/addons');
 var StylePropTypes = require('./StylePropTypes');
+var {Component, PropTypes} = require('react/addons');
 
-var PropTypes = React.PropTypes;
-var PureRenderMixin = React.addons.PureRenderMixin;
-
-var Button = React.createClass(Radium.wrap({
-  propTypes: {
+@PureRender
+@Radium.Enhancer
+class Button extends Component {
+  static propTypes = {
     onClick: PropTypes.func,
     use: PropTypes.oneOf(['default', 'special']),
     style: StylePropTypes.layout,
-  },
+  }
 
-  mixins: [PureRenderMixin],
+  static defaultProps = {
+    use: 'default'
+  };
 
-  getDefaultProps() {
-    return {
-      use: 'default'
-    };
-  },
-
-  _onClick() {
+  _onClick = () => {
     this.props.onClick && this.props.onClick();
-  },
+  };
 
   render(): any {
     return (
@@ -42,7 +38,7 @@ var Button = React.createClass(Radium.wrap({
       </button>
     );
   }
-}));
+}
 
 var styles = {
   root: {

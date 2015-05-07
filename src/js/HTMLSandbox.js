@@ -1,51 +1,37 @@
 /** @flow */
 
 var ClientID = require('./ClientID');
-var React = require('react');
 var sanitizer = require('google-caja');
+var {Component, PropTypes, findDOMNode} = require('react');
 
-var PropTypes = React.PropTypes;
-
-var HTMLSandbox = React.createClass({
-  _id: '',
-
-  propTypes: {
+class HTMLSandbox extends Component {
+  static propTypes = {
     html: PropTypes.string,
     iframeBodyStyle: PropTypes.object,
     setHeightToContent: PropTypes.bool,
     showImages: PropTypes.bool,
-  },
+  };
+
+  static defaultProps = {
+    setHeightToContent: true,
+  };
+
+  _id = '';
 
   componentWillMount() {
     this._id = ClientID.get();
-  },
+  }
 
-  getDefaultProps(): {
-    setHeightToContent: boolean;
-  } {
-    return {
-      setHeightToContent: true,
-    };
-  },
-
-  _onWindowMessageReceived(event: any) {
-    if (!this.isMounted()) {
-      return;
-    }
-
+  _onWindowMessageReceived = (event: any) => {
     if (event.data.id !== this._id || !event.data.height) {
       return;
     }
 
-    this.getDOMNode().height = event.data.height;
-  },
+    findDOMNode(this).height = event.data.height;
+  };
 
   _setIframeContents() {
-    if (!this.isMounted()) {
-      return;
-    }
-
-    var iframe = this.getDOMNode();
+    var iframe = findDOMNode(this);
 
     var iframeBodyStyle = iframe.contentDocument.body.style;
     iframeBodyStyle.margin = 0;
@@ -103,22 +89,22 @@ var HTMLSandbox = React.createClass({
       );
     `;
     iframe.contentDocument.body.appendChild(script);
-  },
+  }
 
   componentDidMount() {
     if (this.props.setHeightToContent) {
       window.addEventListener('message', this._onWindowMessageReceived, false);
     }
     this._setIframeContents();
-  },
+  }
 
   componentDidUpdate(previousProps: any, previousState: any) {
     this._setIframeContents();
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('message', this._onWindowMessageReceived);
-  },
+  }
 
   render(): any {
     return (
@@ -130,7 +116,7 @@ var HTMLSandbox = React.createClass({
       />
     );
   }
-});
+}
 
 function acceptAllUriRewriter(uri, prop) {
   return uri;

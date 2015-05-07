@@ -3,16 +3,14 @@
 var API = require('./API');
 var Button = require('./Button');
 var Colors = require('./Colors');
-var React = require('react/addons');
+var PureRender = require('./PureRender');
+var {Component} = require('react/addons');
 
-var PureRenderMixin = React.addons.PureRenderMixin;
-
-var LoginModal = React.createClass({
-  mixins: [PureRenderMixin],
-
-  _onLoginClick() {
+@PureRender
+class LoginModal extends Component {
+  _onLoginClick = () => {
     API.login();
-  },
+  };
 
   render(): any {
     return (
@@ -33,7 +31,7 @@ var LoginModal = React.createClass({
       </div>
     );
   }
-});
+}
 
 var styles = {
   overlay: {

@@ -2,49 +2,46 @@
 
 var Colors = require('./Colors');
 var HTMLSandbox = require('./HTMLSandbox');
-var React = require('react/addons');
+var PureRender = require('./PureRender');
+var Radium = require('radium');
 var RelativeDate = require('./RelativeDate');
-var asap = require('asap');
-var sx = require('./styleSet');
-
-var PropTypes = React.PropTypes;
-var PureRenderMixin = React.addons.PureRenderMixin;
 var _ = require('lodash');
+var asap = require('asap');
+var {Component, PropTypes, findDOMNode} = require('react/addons');
 
-var MessageView = React.createClass({
-  propTypes: {
+@PureRender
+@Radium.Enhancer
+class MessageView extends Component {
+  static propTypes = {
     isExpandedInitially: PropTypes.bool,
     message: PropTypes.object,
     style: PropTypes.object,
-  },
+  };
 
-  mixins: [PureRenderMixin],
-
-  getInitialState(): {isExpandedManually: ?bool;} {
-    return {
+  constructor() {
+    super();
+    this.state = {
       isExpandedManually: null,
     };
-  },
+  }
 
   componentDidMount() {
     if (this.props.isExpandedInitially) {
       asap(() => {
-        if (this.isMounted()) {
-          this.getDOMNode().scrollIntoView(true);
-        }
+        findDOMNode(this).scrollIntoView(true);
       });
     }
-  },
+  }
 
-  _onClick() {
+  _onClick = () => {
     this.setState({isExpandedManually: !this._isExpanded()});
-  },
+  };
 
   _isExpanded(): bool {
     return this.state.isExpandedManually !== null ?
       this.state.isExpandedManually :
       this.props.isExpandedInitially;
-  },
+  }
 
   render(): any {
     if (!this.props.message) {
@@ -60,11 +57,11 @@ var MessageView = React.createClass({
       '</div>';
 
     return (
-      <div style={sx(this.props.style, styles.root)} onClick={this._onClick}>
-        <div style={sx(
+      <div style={[this.props.style, styles.root]} onClick={this._onClick}>
+        <div style={[
           styles.inner,
           !this._isExpanded() && styles.innerCollapsed
-        )}>
+        ]}>
           <div style={styles.header}>
             <div style={styles.headerSender}>
               <div>
@@ -100,7 +97,7 @@ var MessageView = React.createClass({
       </div>
     );
   }
-});
+}
 
 var styles = {
   root: {

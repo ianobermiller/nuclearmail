@@ -2,32 +2,31 @@
 
 var Colors = require('./Colors');
 var LineClamp = require('./LineClamp');
+var PureRender = require('./PureRender');
+var Radium = require('Radium');
 var Radium = require('Radium');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
 var _ = require('lodash');
-var sx = require('./styleSet');
+var {Component, PropTypes, findDOMNode} = require('react/addons');
 
-var PureRenderMixin = React.addons.PureRenderMixin;
-var PropTypes = React.PropTypes;
-
-var BlockMessageList = React.createClass(Radium.wrap({
-  propTypes: {
+@PureRender
+@Radium.Enhancer
+class BlockMessageList extends Component {
+  static propTypes = {
     messages: PropTypes.array.isRequired,
 
     labels: PropTypes.array,
     selectedMessageID: PropTypes.string,
-  },
+  };
 
-  mixins: [PureRenderMixin],
-
-  _onMessageClick(index: number, message: string) {
+  _onMessageClick = (index: number, message: string) => {
     this.props.onMessageSelected(message);
-  },
+  };
 
   render(): any {
     return (
-      <ul style={sx(styles.list.root, this.style)}>
+      <ul style={[styles.list.root, this.style]}>
         {this.props.messages.map((msg, index) => (
           <BlockMessageListItem
             index={index}
@@ -41,39 +40,39 @@ var BlockMessageList = React.createClass(Radium.wrap({
       </ul>
     );
   }
-}));
+}
 
-var BlockMessageListItem = React.createClass(Radium.wrap({
-  propTypes: {
+@PureRender
+@Radium.Enhancer
+class BlockMessageListItem extends Component {
+  static propTypes = {
     index: PropTypes.number.isRequired,
     isSelected: PropTypes.bool.isRequired,
     message: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired,
 
     labels: PropTypes.object,
-  },
-
-  mixins: [PureRenderMixin],
+  };
 
   componentDidMount() {
     this._scrollIntoView();
-  },
+  }
 
   componentDidUpdate(previousProps: any, previousState: any) {
     this._scrollIntoView();
-  },
+  }
 
   _scrollIntoView() {
     if (this.props.isSelected) {
-      this.getDOMNode().scrollIntoViewIfNeeded ?
-        this.getDOMNode().scrollIntoViewIfNeeded(false) :
-        this.getDOMNode().scrollIntoView(false);
+      findDOMNode(this).scrollIntoViewIfNeeded ?
+        findDOMNode(this).scrollIntoViewIfNeeded(false) :
+        findDOMNode(this).scrollIntoView(false);
     }
-  },
+  };
 
-  _onClick() {
+  _onClick = () => {
     this.props.onClick(this.props.index, this.props.message);
-  },
+  };
 
   render(): any {
     var msg = this.props.message;
@@ -82,16 +81,16 @@ var BlockMessageListItem = React.createClass(Radium.wrap({
         style={styles.item.root}
         key={msg.id}
         onClick={this._onClick}>
-        <div style={sx(
+        <div style={[
           styles.item.inner,
           msg.isUnread && styles.item.innerIsUnread,
           this.props.isSelected && styles.item.innerIsSelected
-        )}>
+        ]}>
           <div style={styles.item.top}>
-            <div style={sx(
+            <div style={[
               styles.item.sender,
               this.props.isSelected && styles.item.senderIsSelected
-            )}>
+            ]}>
               {msg.isStarred ? (
                 <span style={styles.item.star}>{'\u2605'}</span>
               ) : null}
@@ -122,7 +121,7 @@ var BlockMessageListItem = React.createClass(Radium.wrap({
       </li>
     );
   }
-}));
+}
 
 var styles = {
   list: {

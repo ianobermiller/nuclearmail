@@ -13,49 +13,49 @@
 
 var Colors = require('./Colors');
 var InfiniteScroll = require('./InfiniteScroll');
-var React = require('react/addons');
-var sx = require('./styleSet');
-
-var PropTypes = React.PropTypes;
-var PureRenderMixin = React.addons.PureRenderMixin;
+var PureRender = require('./PureRender');
+var Radium = require('radium');
+var {Component, PropTypes, findDOMNode} = require('react/addons');
 
 var scrollBarWidth = '15px';
 
-var Scroller = React.createClass({
-  _previousUserSelect: '',
-  _isMouseDown: false,
-  _lastPageY: 0,
+@PureRender
+@Radium.Enhancer
+class Scroller extends Component {
+  _previousUserSelect = '';
+  _isMouseDown = false;
+  _lastPageY = 0;
 
-  propTypes: {
+  static propTypes = {
     hasMore: PropTypes.bool.isRequired,
     onRequestMoreItems: PropTypes.func.isRequired,
 
     style: PropTypes.object,
     threshold: PropTypes.number,
-  },
+  };
 
-  mixins: [PureRenderMixin],
+  constructor() {
+    super();
 
-  getInitialState() /*object*/ {
-    return {
+    this.state = {
       scrollTop: 0,
       scrollHeight: 1,
       offsetHeight: 1,
     };
-  },
+  }
 
   componentDidMount() {
     window.addEventListener('resize', this._onScroll);
     this._onScroll();
-  },
+  }
 
   componentDidUpdate(previousProps: Object, previousState: any) {
     this._onScroll();
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onScroll);
-  },
+  }
 
   _attachBodyListeners() {
     document.addEventListener('mouseup', this._onDocumentMouseUp);
@@ -64,7 +64,7 @@ var Scroller = React.createClass({
     document.addEventListener('selectstart', this._onDocumentSelectStart);
     this._previousUserSelect = (document.body.style: any).userSelect;
     (document.body.style: any).userSelect = 'none';
-  },
+  }
 
   _detachBodyListeners() {
     document.removeEventListener('mouseup', this._onDocumentMouseUp);
@@ -72,57 +72,57 @@ var Scroller = React.createClass({
     document.removeEventListener('mousemove', this._onDocumentMouseMove);
     document.removeEventListener('selectstart', this._onDocumentSelectStart);
     (document.body.style: any).userSelect = this._previousUserSelect;
-  },
+  }
 
-  _onScroll() {
-    var viewport = this.refs.viewport.getDOMNode();
+  _onScroll = () => {
+    var viewport = findDOMNode(this.refs.viewport);
     this.setState({
       scrollTop: viewport.scrollTop,
       scrollHeight: viewport.scrollHeight,
       offsetHeight: viewport.offsetHeight,
     });
-  },
+  };
 
-  _onDocumentSelectStart(event: Object) {
+  _onDocumentSelectStart = (event: Object) => {
     event.preventDefault();
-  },
+  };
 
-  _onScrollbarMouseDown(event: Object) {
+  _onScrollbarMouseDown = (event: Object) => {
     this._attachBodyListeners();
     this._isMouseDown = true;
     this._lastPageY = event.pageY;
     this.setState({isMouseDown: true});
-  },
+  }
 
-  _onDocumentMouseUp(event: Object) {
+  _onDocumentMouseUp = (event: Object) => {
     this._detachBodyListeners();
     this._isMouseDown = false;
     this.setState({isMouseDown: false});
-  },
+  };
 
-  _onDocumentMouseMove(event: Object) {
+  _onDocumentMouseMove = (event: Object) => {
     if (this._isMouseDown) {
       var scale = this._getScale();
       var diff = event.pageY - this._lastPageY;
-      var viewport = this.refs.viewport.getDOMNode();
+      var viewport = findDOMNode(this.refs.viewport);
       var newScrollTop = (viewport.scrollTop + diff / scale);
 
       viewport.scrollTop = Math.max(0, newScrollTop);
       this._lastPageY = event.pageY;
     }
-  },
+  };
 
-  _onScrollerMouseEnter() {
+  _onScrollerMouseEnter = () => {
     this.setState({isHover: true});
-  },
+  };
 
-  _onScrollerMouseLeave() {
+  _onScrollerMouseLeave = () => {
     this.setState({isHover: false});
-  },
+  };
 
   _getScale(): number {
     return this.state.offsetHeight / this.state.scrollHeight;
-  },
+  }
 
   render(): any {
     var scale = this._getScale();
@@ -131,17 +131,17 @@ var Scroller = React.createClass({
 
     return (
       <div
-        style={sx(this.props.style, styles.scroller)}
+        style={[this.props.style, styles.scroller]}
         onMouseEnter={this._onScrollerMouseEnter}
         onMouseLeave={this._onScrollerMouseLeave}>
         <div
-          style={sx(
+          style={[
             styles.scrollbar,
             (this.state.isHover || this.state.isMouseDown) && styles.scrollbarHover
-          )}
+          ]}
           onMouseDown={this._onScrollbarMouseDown}>
           <div
-            style={sx(styles.thumb, {height: thumbHeight, top: thumbTop})}
+            style={[styles.thumb, {height: thumbHeight, top: thumbTop}]}
           />
         </div>
         <InfiniteScroll
@@ -158,7 +158,7 @@ var Scroller = React.createClass({
       </div>
     );
   }
-});
+}
 
 var styles = {
   scroller: {
