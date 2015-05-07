@@ -10,7 +10,7 @@ class LabelStore extends BaseStore {
   constructor() {
     super();
 
-    this._labels = isOffline() ? [] : null;
+    this._labels = isOffline() ? [] : undefined;
   }
 
   observeGetLabels(): Observable<?Array<Object>> {
@@ -18,11 +18,15 @@ class LabelStore extends BaseStore {
   }
 
   getLabels(): ?Array<Object> {
-    if (this._labels) {
+    if (this._labels !== undefined) {
       return this._labels;
     }
 
+    // Prevent double fetcing
+    this._labels = null;
+
     LabelAPI.list().then(labels => {
+      console.log('labels', labels)
       this._labels = labels;
       this.emitChange();
     });
