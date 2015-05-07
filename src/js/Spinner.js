@@ -1,14 +1,13 @@
 /** @flow */
 
 var Colors = require('./Colors');
+var PureRender = require('./PureRender');
 var Radium = require('Radium');
-var React = require('react/addons');
+var {Component} = require('react/addons');
 
-var PureRenderMixin = React.addons.PureRenderMixin;
-
-var Spinner = React.createClass(Radium.wrap({
-  mixins: [PureRenderMixin],
-
+@Radium.Enhancer
+@PureRender
+class Spinner extends Component {
   render(): any {
     return (
       <div style={styles.root}>
@@ -16,7 +15,7 @@ var Spinner = React.createClass(Radium.wrap({
       </div>
     );
   }
-}));
+}
 
 var pulseKeyframes = Radium.keyframes({
   '0%': {width: '10%'},

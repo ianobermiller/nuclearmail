@@ -4,13 +4,12 @@
  * Based off https://github.com/guillaumervls/react-infinite-scroll
  */
 
-var React = require('react');
-var sx = require('./styleSet');
+var Radium = require('radium');
+var {Component, PropTypes, findDOMNode} = require('react');
 
-var PropTypes = React.PropTypes;
-
-var InfiniteScroll = React.createClass({
-  propTypes: {
+@Radium.Enhancer
+class InfiniteScroll extends Component {
+  static propTypes = {
     // Whether or not to listen for scroll and resize events. Set this to `true`
     // when you have loaded all the data already.
     hasMore: PropTypes.bool.isRequired,
@@ -21,54 +20,47 @@ var InfiniteScroll = React.createClass({
 
     isScrollContainer: PropTypes.bool,
     style: PropTypes.object,
-  },
+  };
 
-  getDefaultProps(): {
-    hasMore: boolean;
-    isScrollContainer: boolean;
-    onRequestMoreItems: () => void;
-    threshold: number;
-  } {
-    return {
-      hasMore: false,
-      isScrollContainer: false,
-      onRequestMoreItems: () => {},
-      threshold: 250,
-    };
-  },
+  static defaultProps = {
+    hasMore: false,
+    isScrollContainer: false,
+    onRequestMoreItems: () => {},
+    threshold: 250,
+  };
 
   componentDidMount() {
     this._attachListeners();
-  },
+  }
 
   componentWillReceiveProps(nextProps: Object) {
     if (!nextProps.hasMore) {
       this._detachListeners();
     }
-  },
+  }
 
   componentWillUnmount() {
     this._detachListeners();
-  },
+  }
 
   _attachListeners() {
     window.addEventListener('resize', this._update);
     this._update();
-  },
+  }
 
   _detachListeners() {
     window.removeEventListener('resize', this._update);
-  },
+  }
 
-  _onScroll(event: Event) {
+  _onScroll = (event: Event) => {
     this.props.onScroll(event);
     this._update();
-  },
+  };
 
-  _lastHeight: 0,
+  _lastHeight = 0;
 
-  _update() {
-    var el = this.getDOMNode();
+  _update = () => {
+    var el = findDOMNode(this);
     var height = el.scrollHeight;
     // ScrollTop + offsetHeight is within threshold of scrollHeight
     var isPastThreshold = (el.scrollHeight -
@@ -82,19 +74,19 @@ var InfiniteScroll = React.createClass({
       this.props.onRequestMoreItems();
       this._lastHeight = height;
     }
-  },
+  };
 
   render(): any {
     var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
     return (
       <div
-        style={sx(this.props.style, style)}
+        style={[this.props.style, style]}
         onScroll={this._onScroll}>
         {this.props.children}
       </div>
     );
-  },
-});
+  }
+}
 
 function getAbsoluteOffsetTop(element) {
   if (!element) {

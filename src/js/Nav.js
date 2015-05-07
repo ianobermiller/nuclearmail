@@ -1,19 +1,16 @@
 /** @flow */
 
 var Colors = require('./Colors');
-var Radium = require('Radium');
-var React = require('react/addons');
+var Radium = require('radium');
+var PureRender = require('./PureRender');
+var {Component, PropTypes} = require('react/addons');
 
-var PropTypes = React.PropTypes;
-var PureRenderMixin = React.addons.PureRenderMixin;
-
-var Nav = React.createClass(Radium.wrap({
-  propTypes: {
+@PureRender
+class Nav extends Component {
+  static propTypes = {
     onQueryChanged: PropTypes.func.isRequired,
     query: PropTypes.string,
-  },
-
-  mixins: [PureRenderMixin],
+  };
 
   render(): any {
     return (
@@ -53,24 +50,24 @@ var Nav = React.createClass(Radium.wrap({
       </nav>
     );
   }
-}));
+}
 
-var NavItem = React.createClass(Radium.wrap({
-  propTypes: {
+@PureRender
+@Radium.Enhancer
+class NavItem extends Component {
+  static propTypes = {
     onQueryChanged: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
     query: PropTypes.string.isRequired,
     isSelected: PropTypes.bool
-  },
+  };
 
-  mixins: [PureRenderMixin],
-
-  _onClick(event) {
+  _onClick = (event) => {
     this.props.onQueryChanged(this.props.query);
     event.preventDefault();
-  },
+  };
 
-  render() /*object*/ {
+  render() {
     return (
       <li>
         <a
@@ -85,7 +82,7 @@ var NavItem = React.createClass(Radium.wrap({
       </li>
     );
   }
-}));
+}
 
 var styles = {
   list: {

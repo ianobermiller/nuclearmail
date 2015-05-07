@@ -2,32 +2,30 @@
 
 var Button = require('./Button');
 var Textbox = require('./Textbox');
-var React = require('react');
+var {Component, PropTypes} = require('react');
 
-var PropTypes = React.PropTypes;
-
-var SearchBox = React.createClass({
-  propTypes: {
+class SearchBox extends Component {
+  static propTypes = {
     onQueryChange: PropTypes.func.isRequired,
     onQuerySubmit: PropTypes.func.isRequired,
     query: PropTypes.string.isRequired,
 
     style: PropTypes.object,
-  },
+  };
 
-  _onQueryKeyDown(e: Object) {
+  _onQueryKeyDown = (e: Object) => {
     if (e.key === 'Enter') {
       this.props.onQuerySubmit(this.props.query);
     }
-  },
+  };
 
-  _onQueryChange(e: Object) {
+  _onQueryChange = (e: Object) => {
     this.props.onQueryChange(e.target.value);
-  },
+  };
 
-  _onSearchClick() {
+  _onSearchClick = () => {
     this.props.onQuerySubmit(this.props.query);
-  },
+  };
 
   render(): any {
     return (
@@ -47,7 +45,7 @@ var SearchBox = React.createClass({
       </span>
     );
   }
-});
+}
 
 var styles = {
   input: {

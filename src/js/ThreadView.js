@@ -1,92 +1,97 @@
 /** @flow */
 
 var Button = require('./Button');
-var KeybindingMixin = require('./KeybindingMixin');
+var KeyBinder = require('./KeyBinder');
 var MessageStore = require('./MessageStore');
 var MessageView = require('./MessageView');
+var Observer = require('./Observer');
+var PureRender = require('./PureRender');
+var Radium = require('radium');
 var ThreadActions = require('./ThreadActions');
-var React = require('react/addons');
-var DependentStateMixin = require('./DependentStateMixin');
 var ThreadStore = require('./ThreadStore');
 var getUnsubscribeUrl = require('./getUnsubscribeUrl');
-var sx = require('./styleSet');
+var {Component, PropTypes} = require('react');
+var {Observable} = require('rx');
 
-var PropTypes = React.PropTypes;
-var PureRenderMixin = React.addons.PureRenderMixin;
-
-var ThreadView = React.createClass({
-  propTypes: {
+@KeyBinder
+@Observer
+@PureRender
+@Radium.Enhancer
+class ThreadView extends Component {
+  static propTypes = {
     onGoToNextMessage: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired,
 
     style: PropTypes.object,
-  },
+  };
 
-  mixins: [
-    PureRenderMixin,
-    KeybindingMixin,
-    DependentStateMixin({
-      thread: {
-        method: ThreadStore.getByID,
-        getOptions: (props) => ({
-          id: props.params.threadID,
-        }),
-        shouldFetch: options => !!options.id
-      },
-      messages: {
-        method: MessageStore.getByIDs,
-        getOptions: (props, state) => ({
-          ids: state.thread && state.thread.messageIDs
-        }),
-        shouldFetch: options => !!options.ids,
-      },
-      unsubscribeUrl: {
-        method: (options) => {
-          var message = options.messages.find(
-            m => m.id === options.selectedMessageID
-          );
-          return getUnsubscribeUrl(message);
-        },
-        getOptions: (props, state) => ({
-          messages: state.messages,
-          selectedMessageID: props.params.messageID,
-        }),
-        shouldFetch: options => options.messages && options.selectedMessageID
+  observe(props, context) {
+    if (!props.params.threadID) {
+      return {};
+    }
+
+    const observeThread = ThreadStore.getByID(
+      {id: props.params.threadID}
+    );
+
+    const observeMessages = observeThread.flatMap(thread => {
+      if (!thread) {
+        return Observable.return(null);
       }
-    }),
-  ],
+
+      return MessageStore.getByIDs({ids: thread.messageIDs});
+    });
+
+    const observeUnsubscribeUrl = observeMessages.map(messages => {
+      if (!messages) {
+        return null;
+      }
+
+      const selectedMessage = messages.find(
+        m => m.id === props.params.messageID
+      );
+
+      return getUnsubscribeUrl(selectedMessage);
+    });
+
+    return {
+      thread: observeThread,
+      messages: observeMessages,
+      unsubscribeUrl: observeUnsubscribeUrl,
+    };
+  }
 
   componentWillMount() {
     this.bindKey('y', this._archive);
-  },
+  }
 
-  _archive() {
+  _archive = () => {
     this.props.onGoToNextMessage();
     ThreadActions.archive(this.props.params.threadID);
-  },
+  };
 
-  _moveToInbox() {
+  _moveToInbox = () => {
     ThreadActions.moveToInbox(this.props.params.threadID);
-  },
+  };
 
-  _markAsUnread() {
+  _markAsUnread = () => {
     ThreadActions.markAsUnread(this.props.params.threadID);
-  },
+  };
 
-  _star() {
+  _star = () => {
     ThreadActions.star(this.props.params.threadID);
-  },
+  };
 
-  _unstar() {
+  _unstar = () => {
     ThreadActions.unstar(this.props.params.threadID);
-  },
+  };
 
-  _unsubscribe() {
-    window.open(this.state.unsubscribeUrl);
-  },
+  _unsubscribe = () => {
+    window.open(this.data.unsubscribeUrl);
+  };
 
-  render(): ?Object {
-    var messages = this.state.messages;
+  render(): ?ReactComponent {
+    var messages = this.data.messages;
     if (!messages) {
       return null;
     }
@@ -96,7 +101,7 @@ var ThreadView = React.createClass({
     var isInInbox = messages.some(m => m.isInInbox);
 
     return (
-      <div style={sx(styles.root, this.props.style)}>
+      <div style={[styles.root, this.props.style]}>
         <ul style={styles.actionBar}>
           {isInInbox ? (
             <li style={styles.actionBarItem}>
@@ -119,7 +124,7 @@ var ThreadView = React.createClass({
               <Button onClick={this._star}>Star</Button>
             </li>
           )}
-          {this.state.unsubscribeUrl ? (
+          {this.data.unsubscribeUrl ? (
             <li style={styles.actionBarItem}>
               <Button onClick={this._unsubscribe}>Unsubscribe</Button>
             </li>
@@ -138,9 +143,9 @@ var ThreadView = React.createClass({
           ))}
         </div>
       </div>
-    );
+    )
   }
-});
+}
 
 var styles = {
   root: {

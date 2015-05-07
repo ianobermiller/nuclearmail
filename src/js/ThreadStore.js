@@ -4,6 +4,7 @@ var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
 var ThreadAPI = require('./ThreadAPI');
 var _ = require('lodash');
+var {Observable} = require('rx');
 
 import type {TThread} from './Types';
 type Thread = typeof TThread;
@@ -92,12 +93,17 @@ class ThreadStore extends BaseStore {
     shouldEmitChange && this.emitChange();
   }
 
-  getByID(
-    options: {id: string}
-  ): ?Object {
-    if (this._threadsByID[options.id]) {
+  getByID(options: {id: string}): Observable<?Thread> {
+    return this.__wrapAsObservable(this._getByIDSync, options);
+  }
+
+  _getByIDSync = (options: {id: string}) => {
+    if (this._threadsByID.hasOwnProperty(options.id)) {
       return this._threadsByID[options.id];
     }
+
+    // Prevent double fetching
+    this._threadsByID[options.id] = null;
 
     ThreadAPI.getByID(options).then(item => {
       this._threadsByID[item.id] = item;
@@ -105,17 +111,27 @@ class ThreadStore extends BaseStore {
     });
 
     return null;
+  };
+
+  list(
+    options: {query: string; maxResultCount: number}
+  ): Observable<?ListResult> {
+    return this.__wrapAsObservable(this._listSync, options);
   }
 
-  list(options: {query: string; maxResultCount: number;}): ?ListResult {
+  _listSync = (options: {query: string; maxResultCount: number;}) => {
     var query = options.query || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pageToken = null;
     var maxResults = requestedResultCount;
     var result = null;
 
-    var pagingInfo = this._pagingInfoByQuery[query];
-    if (pagingInfo) {
+    if (this._pagingInfoByQuery.hasOwnProperty(query)) {
+      var pagingInfo = this._pagingInfoByQuery[query];
+      if (!pagingInfo) {
+        return null;
+      }
+
       maxResults = requestedResultCount - pagingInfo.fetchedResultCount;
       pageToken = pagingInfo.nextPageToken;
 
@@ -125,7 +141,7 @@ class ThreadStore extends BaseStore {
         items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
       };
 
-      if (maxResults <= 0 || !result.hasMore) {
+      if (maxResults <= 0 || !result.hasMore || pagingInfo.isFetching) {
         return result;
       }
     }
@@ -135,6 +151,13 @@ class ThreadStore extends BaseStore {
       maxResults,
       pageToken,
     };
+
+    // Prevent double fetching
+    if (!this._pagingInfoByQuery[query]) {
+      this._pagingInfoByQuery[query] = null;
+    } else {
+      this._pagingInfoByQuery[query].isFetching = true;
+    }
 
     ThreadAPI.list(apiOptions).then(result => {
       // Add to byID cache
@@ -154,7 +177,7 @@ class ThreadStore extends BaseStore {
     });
 
     return result;
-  }
+  };
 }
 
 module.exports = new ThreadStore();

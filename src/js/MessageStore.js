@@ -5,6 +5,7 @@ var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
 var MessageAPI = require('./MessageAPI');
 var _ = require('lodash');
+var {Observable} = require('rx');
 
 import type {TMessage} from './Types';
 type Message = typeof TMessage;
@@ -90,7 +91,7 @@ class MessageStore extends BaseStore {
     didChange && this.emitChange();
   }
 
-  getByIDs(options: {ids: Array<string>}): ?Array<Message> {
+  _getByIDsSync = (options: {ids: Array<string>}) => {
     var existing = _.chain(options.ids)
       .map(id => this._messagesByID[id])
       .compact()
@@ -111,6 +112,10 @@ class MessageStore extends BaseStore {
     });
 
     return null;
+  };
+
+  getByIDs(options: {ids: Array<string>}): Observable<?Array<Message>> {
+    return this.__wrapAsObservable(this._getByIDsSync, options);
   }
 }
 

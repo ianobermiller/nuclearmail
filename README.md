@@ -25,12 +25,13 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 - `y` - archive
 
+## Known Issues
+
+- Doesn't work in Safari, missing polyfill for Intl
+
 ## TODO
 
 - Use sanitize.css - https://github.com/jonathantneal/sanitize.css
-- Babel experimental, stage 1 decorators
-- ES6 classes
-- Observe polyfill
 - Show search sign on hover over contact name, click to search by that
 - Scroll to top when navigating
 - Fetch more when archiving all of inbox

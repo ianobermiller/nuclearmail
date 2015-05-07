@@ -1,34 +1,34 @@
 {
-  "name": "nuclear-mail",
+  "name": "nuclearmail",
   "version": "0.0.1",
   "description": "NuclearMail is an experiment of writing a webmail client using React and the Flux architecture. It runs completely in the browser and uses the GMail REST API.",
   "main": "App.js",
   "dependencies": {
     "asap": "^2.0.3",
     "css-vendor": "^0.2.3",
-    "es6-shim": "^0.28.1",
+    "es6-shim": "^0.31.0",
     "google-caja": "0.0.2",
     "keyboardjs": "^0.4.2",
-    "lodash": "^3.7.0",
-    "radium": "git://github.com/FormidableLabs/radium.git#animation",
+    "lodash": "^3.8.0",
+    "radium": "git://github.com/FormidableLabs/radium.git#es6-class-enhancer",
     "react": "^0.13.2",
     "react-intl": "^1.2.0",
-    "react-router": "^0.13.2",
+    "react-router": "^0.13.3",
     "rsvp": "^3.0.18",
+    "rx-lite": "^2.5.2",
     "tinytinycolor": "0.0.3",
     "utf8": "^2.1.0"
   },
   "devDependencies": {
-    "babel-core": "^5.1.13",
     "babel-eslint": "^3.0.1",
     "babel-loader": "^5.0.0",
     "eslint": "^0.20.0",
     "eslint-plugin-react": "^2.2.0",
     "mkdirp": "^0.5.0",
     "nodemon": "^1.3.7",
-    "react-hot-loader": "^1.2.5",
-    "rimraf": "^2.3.2",
-    "webpack": "^1.8.9",
+    "react-hot-loader": "^1.2.6",
+    "rimraf": "^2.3.3",
+    "webpack": "^1.8.11",
     "webpack-dev-server": "^1.8.2"
   },
   "scripts": {
@@ -40,5 +40,9 @@
     "start": "npm run watch-html & npm run watch-js & npm run serve"
   },
   "author": "Ian Obermiller",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ianobermiller/nuclearmail.git"
+  },
   "license": "MIT"
 }

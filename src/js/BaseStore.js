@@ -2,6 +2,7 @@
 
 var Dispatcher = require('./Dispatcher');
 var EventEmitter = require('events').EventEmitter;
+var {Observable} = require('rx');
 var asap = require('asap');
 var isOffline = require('./isOffline');
 
@@ -13,10 +14,9 @@ class BaseStore {
   // handleDispatch: (action: Object) => void;
 
   constructor() {
-    autobind(this);
     this._emitter = new EventEmitter();
     if ((this: any).handleDispatch) {
-      Dispatcher.subscribe((this: any).handleDispatch);
+      Dispatcher.subscribe((this: any).handleDispatch.bind(this));
     }
   }
 
@@ -39,6 +39,20 @@ class BaseStore {
       }
     };
   }
+
+  __wrapAsObservable<TOptions, TResult>(
+    fn: (options: TOptions) => TResult,
+    options: TOptions
+  ): Observable<TResult> {
+    return Observable.create(observer => {
+      observer.onNext(fn(options));
+      var subscription = this.subscribe(() => observer.onNext(fn(options)));
+      return () => subscription.remove();
+    }).distinctUntilChanged(
+      /*keySelector*/ null,
+      (a, b) => a === b,
+    );
+  }
 }
 
 function loadCachedData(instance: Object) {
@@ -51,19 +65,6 @@ function loadCachedData(instance: Object) {
     var value = localStorage.getItem(ctor.name + '.' + key);
     if (value) {
       instance[key] = JSON.parse(value);
-    }
-  });
-}
-
-function autobind(instance: Object) {
-  Object.getOwnPropertyNames(Object.getPrototypeOf(instance)).forEach(prop => {
-    if (
-      typeof instance[prop] === 'function' &&
-      /^[A-Za-z]/.test(prop) &&
-      prop !== 'constructor'
-    ) {
-      instance[prop] = instance[prop].bind(instance);
-      instance[prop].store = instance;
     }
   });
 }
