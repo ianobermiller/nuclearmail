@@ -13,7 +13,8 @@ module.exports = function(options) {
       publicPath: '/'
     },
     plugins: [
-      new webpack.optimize.UglifyJsPlugin()
+      new webpack.optimize.UglifyJsPlugin(),
+      new webpack.optimize.DedupePlugin()
     ],
     resolve: {
       extensions: ['', '.js']
