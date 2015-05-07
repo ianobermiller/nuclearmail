@@ -1,23 +1,74 @@
+function _resubscribe(component, props) {
+  var newObservables = component.observe(props);
+  var newSubscriptions = {};
+
+  Object.keys(newObservables).forEach(key => {
+    newSubscriptions[key] = newObservables[key].subscribe(
+      function onNext(value) {
+        component.data[key] = value;
+
+        if (component.data[key] != component._observerLastData[key]) {
+          component._observerCalledForceUpdate = true;
+          component.forceUpdate();
+        }
+
+        component._observerLastData[key] = value;
+      },
+      function onError() { debugger },
+      function onCompleted() { },
+    );
+  });
+
+  _unsubscribe(component);
+  component._observerSubscriptions = newSubscriptions;
+}
+
+function _unsubscribe(component) {
+  Object.keys(component._observerSubscriptions).forEach(
+    key => component._observerSubscriptions[key].dispose()
+  );
+
+  component._observerSubscriptions = {};
+}
+
 module.exports = function decorateWithObserve(ComposedComponent) {
   class ObserveEnhancer extends ComposedComponent {
-    constructor(props, context) {
-      super(props, context);
+    constructor(props) {
+      super(props);
 
       if (this.observe){
-        this._subscriptions = {};
         this.data = {};
-        this._lastData = {};
-        this._resubscribe(props, context);
+        this._observerSubscriptions = {};
+        this._observerLastData = {};
+        _resubscribe(this, props);
       }
     }
 
-    componentWillReceiveProps(newProps, newContext) {
+    componentWillUpdate(newProps) {
+      if (super.componentWillUpdate) {
+        super.componentWillUpdate(newProps);
+      }
+
+      if (!this._observerCalledForceUpdate && this.observe) {
+        _resubscribe(this, newProps);
+      }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+      if (super.componentDidUpdate) {
+        super.componentDidUpdate(prevProps, prevState);
+      }
+
+      this._observerCalledForceUpdate = false;
+    }
+
+    componentWillReceiveProps(newProps) {
       if (super.componentWillReceiveProps) {
-        super.componentWillReceiveProps(newProps, newContext);
+        super.componentWillReceiveProps(newProps);
       }
 
       if (this.observe){
-        this._resubscribe(newProps, newContext);
+        _resubscribe(this, newProps);
       }
     }
 
@@ -26,47 +77,13 @@ module.exports = function decorateWithObserve(ComposedComponent) {
         super.componentWillUnmount();
       }
 
-      if (this._subscriptions){
-        this._unsubscribe();
+      if (this._observerSubscriptions){
+        _unsubscribe(this);
       }
-    }
-
-    _resubscribe(props, context) {
-      var newObservables = this.observe(props, context);
-      var newSubscriptions = {};
-      var that = this;
-
-      Object.keys(newObservables).forEach(key => {
-        newSubscriptions[key] = newObservables[key].subscribe(
-          function onNext(value) {
-            that.data[key] = value;
-
-            if (that.data[key] != that._lastData[key]) {
-              that.forceUpdate();
-            }
-
-            that._lastData[key] = value;
-          },
-          function onError() { },
-          function onCompleted() { },
-        );
-      });
-
-      this._unsubscribe();
-      this._subscriptions = newSubscriptions;
-    }
-
-    _unsubscribe() {
-      Object.keys(this._subscriptions).forEach(
-        key => this._subscriptions[key].dispose()
-      );
-
-      this._subscriptions = {};
     }
   }
 
   ObserveEnhancer.propTypes = ComposedComponent.propTypes;
-  ObserveEnhancer.contextTypes = ComposedComponent.contextTypes;
 
   return ObserveEnhancer;
 };
