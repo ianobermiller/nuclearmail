@@ -53,12 +53,12 @@ class App extends Component {
   _subscriptions = [dummySubscription];
 
   observe() {
-    var threadObservable = ThreadStore.observeList({
+    var threadObservable = ThreadStore.list({
       query: this.state.query,
       maxResultCount: this.state.maxResultCount,
     });
     return {
-      labels: LabelStore.observeGetLabels(),
+      labels: LabelStore.getLabels(),
       threads: threadObservable,
       lastMessageInEachThread: threadObservable.flatMap(threads => {
         if (!threads) {
@@ -68,7 +68,7 @@ class App extends Component {
         var messageIDs = threads.items.map(
           thread => _.last(thread.messageIDs)
         );
-        return MessageStore.observeGetByIDs({ids: messageIDs});
+        return MessageStore.getByIDs({ids: messageIDs});
       }),
     };
   }

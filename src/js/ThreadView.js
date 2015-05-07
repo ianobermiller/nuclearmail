@@ -30,7 +30,7 @@ class ThreadView extends Component {
       return {};
     }
 
-    const observeThread = ThreadStore.observeGetByID(
+    const observeThread = ThreadStore.getByID(
       {id: props.params.threadID}
     );
 
@@ -39,7 +39,7 @@ class ThreadView extends Component {
         return Observable.return(null);
       }
 
-      return MessageStore.observeGetByIDs({ids: thread.messageIDs});
+      return MessageStore.getByIDs({ids: thread.messageIDs});
     });
 
     const observeUnsubscribeUrl = observeMessages.map(messages => {

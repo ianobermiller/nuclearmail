@@ -91,7 +91,7 @@ class MessageStore extends BaseStore {
     didChange && this.emitChange();
   }
 
-  getByIDs(options: {ids: Array<string>}): ?Array<Message> {
+  _getByIDsSync = (options: {ids: Array<string>}) => {
     var existing = _.chain(options.ids)
       .map(id => this._messagesByID[id])
       .compact()
@@ -112,10 +112,10 @@ class MessageStore extends BaseStore {
     });
 
     return null;
-  }
+  };
 
-  observeGetByIDs(options: {ids: Array<string>}): Observable<?Array<Message>> {
-    return this.__wrapAsObservable(this.getByIDs, options);
+  getByIDs(options: {ids: Array<string>}): Observable<?Array<Message>> {
+    return this.__wrapAsObservable(this._getByIDsSync, options);
   }
 }
 

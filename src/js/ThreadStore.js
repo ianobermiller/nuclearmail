@@ -93,9 +93,11 @@ class ThreadStore extends BaseStore {
     shouldEmitChange && this.emitChange();
   }
 
-  getByID(
-    options: {id: string}
-  ): ?Thread {
+  getByID(options: {id: string}): Observable<?Thread> {
+    return this.__wrapAsObservable(this._getByIDSync, options);
+  }
+
+  _getByIDSync = (options: {id: string}) => {
     if (this._threadsByID.hasOwnProperty(options.id)) {
       return this._threadsByID[options.id];
     }
@@ -109,19 +111,15 @@ class ThreadStore extends BaseStore {
     });
 
     return null;
-  }
+  };
 
-  observeGetByID(options: {id: string}): Observable<?Thread> {
-    return this.__wrapAsObservable(this.getByID, options);
-  }
-
-  observeList(
+  list(
     options: {query: string; maxResultCount: number}
   ): Observable<?ListResult> {
-    return this.__wrapAsObservable(this.list, options);
+    return this.__wrapAsObservable(this._listSync, options);
   }
 
-  list(options: {query: string; maxResultCount: number;}): ?ListResult {
+  _listSync = (options: {query: string; maxResultCount: number;}) => {
     var query = options.query || '';
     var requestedResultCount = options.maxResultCount || 10;
     var pageToken = null;
@@ -179,7 +177,7 @@ class ThreadStore extends BaseStore {
     });
 
     return result;
-  }
+  };
 }
 
 module.exports = new ThreadStore();
