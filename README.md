@@ -25,6 +25,10 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 - `y` - archive
 
+## Known Issues
+
+- Doesn't work in Safari, missing polyfill for Intl
+
 ## TODO
 
 - Use sanitize.css - https://github.com/jonathantneal/sanitize.css
