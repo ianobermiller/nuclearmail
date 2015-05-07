@@ -10,7 +10,7 @@
     "google-caja": "0.0.2",
     "keyboardjs": "^0.4.2",
     "lodash": "^3.8.0",
-    "radium": "git://github.com/FormidableLabs/radium.git#animation",
+    "radium": "git://github.com/FormidableLabs/radium.git#es6-class-enhancer",
     "react": "^0.13.2",
     "react-intl": "^1.2.0",
     "react-router": "^0.13.3",
