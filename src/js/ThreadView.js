@@ -12,6 +12,7 @@ var ThreadStore = require('./ThreadStore');
 var getUnsubscribeUrl = require('./getUnsubscribeUrl');
 var sx = require('./styleSet');
 var {Component, PropTypes} = require('react');
+var {Observable} = require('rx');
 
 @KeyBinder
 @Observer
@@ -24,17 +25,6 @@ class ThreadView extends Component {
     style: PropTypes.object,
   };
 
-  constructor() {
-    super();
-
-    this._archive = this._archive.bind(this);
-    this._markAsUnread = this._markAsUnread.bind(this);
-    this._moveToInbox = this._moveToInbox.bind(this);
-    this._star = this._star.bind(this);
-    this._unstar = this._unstar.bind(this);
-    this._unsubscribe = this._unsubscribe.bind(this);
-  }
-
   observe(props, context) {
     if (!props.params.threadID) {
       return {};
@@ -44,11 +34,19 @@ class ThreadView extends Component {
       {id: props.params.threadID}
     );
 
-    const observeMessages = observeThread.flatMap(
-      thread => thread && MessageStore.observeGetByIDs({ids: thread.messageIDs})
-    );
+    const observeMessages = observeThread.flatMap(thread => {
+      if (!thread) {
+        return Observable.return(null);
+      }
+
+      return MessageStore.observeGetByIDs({ids: thread.messageIDs});
+    });
 
     const observeUnsubscribeUrl = observeMessages.map(messages => {
+      if (!messages) {
+        return null;
+      }
+
       const selectedMessage = messages.find(
         m => m.id === props.params.messageID
       );
@@ -67,30 +65,30 @@ class ThreadView extends Component {
     this.bindKey('y', this._archive);
   }
 
-  _archive() {
+  _archive = () => {
     this.props.onGoToNextMessage();
     ThreadActions.archive(this.props.params.threadID);
-  }
+  };
 
-  _moveToInbox() {
+  _moveToInbox = () => {
     ThreadActions.moveToInbox(this.props.params.threadID);
-  }
+  };
 
-  _markAsUnread() {
+  _markAsUnread = () => {
     ThreadActions.markAsUnread(this.props.params.threadID);
-  }
+  };
 
-  _star() {
+  _star = () => {
     ThreadActions.star(this.props.params.threadID);
-  }
+  };
 
-  _unstar() {
+  _unstar = () => {
     ThreadActions.unstar(this.props.params.threadID);
-  }
+  };
 
-  _unsubscribe() {
+  _unsubscribe = () => {
     window.open(this.data.unsubscribeUrl);
-  }
+  };
 
   render(): ?ReactComponent {
     var messages = this.data.messages;
