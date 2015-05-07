@@ -143,7 +143,7 @@ class ThreadStore extends BaseStore {
         items: pagingInfo.fetchedResults.slice(0, requestedResultCount),
       };
 
-      if (maxResults <= 0 || !result.hasMore) {
+      if (maxResults <= 0 || !result.hasMore || pagingInfo.isFetching) {
         return result;
       }
     }
@@ -155,7 +155,11 @@ class ThreadStore extends BaseStore {
     };
 
     // Prevent double fetching
-    this._pagingInfoByQuery[query] = null;
+    if (!this._pagingInfoByQuery[query]) {
+      this._pagingInfoByQuery[query] = null;
+    } else {
+      this._pagingInfoByQuery[query].isFetching = true;
+    }
 
     ThreadAPI.list(apiOptions).then(result => {
       // Add to byID cache
