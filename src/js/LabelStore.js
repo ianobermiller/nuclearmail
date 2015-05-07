@@ -13,6 +13,10 @@ class LabelStore extends BaseStore {
     this._labels = isOffline() ? [] : null;
   }
 
+  observeGetLabels(): Observable<?Array<Object>> {
+    return this.__wrapAsObservable(this.getLabels, {});
+  }
+
   getLabels(): ?Array<Object> {
     if (this._labels) {
       return this._labels;
