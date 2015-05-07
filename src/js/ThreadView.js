@@ -7,16 +7,17 @@ var MessageStore = require('./MessageStore');
 var MessageView = require('./MessageView');
 var Observer = require('./Observer');
 var PureRender = require('./PureRender');
+var Radium = require('radium');
 var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var getUnsubscribeUrl = require('./getUnsubscribeUrl');
-var sx = require('./styleSet');
 var {Component, PropTypes} = require('react');
 var {Observable} = require('rx');
 
 @KeyBinder
 @Observer
 @PureRender
+@Radium.Enhancer
 class ThreadView extends Component {
   static propTypes = {
     onGoToNextMessage: PropTypes.func.isRequired,
@@ -101,7 +102,7 @@ class ThreadView extends Component {
     var isInInbox = messages.some(m => m.isInInbox);
 
     return (
-      <div style={sx(styles.root, this.props.style)}>
+      <div style={[styles.root, this.props.style]}>
         <ul style={styles.actionBar}>
           {isInInbox ? (
             <li style={styles.actionBarItem}>
