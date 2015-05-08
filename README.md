@@ -1,6 +1,4 @@
-[![dependency status](https://img.shields.io/david/ianobermiller/nuclearmail.svg)](https://david-dm.org/ianobermiller/nuclearmail)
-
-# NuclearMail
+# NuclearMail [![build status](https://img.shields.io/travis/ianobermiller/nuclearmail.svg)](https://travis-ci.org/ianobermiller/nuclearmail) [![dependency status](https://img.shields.io/david/ianobermiller/nuclearmail.svg)](https://david-dm.org/ianobermiller/nuclearmail)
 
 NuclearMail is an experiment of writing a webmail client using React and the Flux architecture. It runs completely in the browser and uses the Gmail REST API.
 
