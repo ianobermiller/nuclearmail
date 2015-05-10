@@ -2,12 +2,19 @@
 
 require('es6-shim');
 
-var React = require('react');
-var router = require('./router');
+function run() {
+  var React = require('react');
+  var router = require('./router');
+  router.run((Handler, state) => {
+    React.render(<Handler params={state.params} />, document.body);
+  });
+}
 
-// Expose React for the dev tools
-window.React = React;
-
-router.run((Handler, state) => {
-  React.render(<Handler params={state.params} />, document.body);
-});
+if (!window.Intl) {
+  require.ensure(['intl'], () => {
+    require('intl');
+    run();
+  });
+} else {
+  run();
+}
