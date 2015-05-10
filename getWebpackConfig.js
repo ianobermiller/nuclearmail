@@ -31,28 +31,23 @@ module.exports = function(options) {
   };
 
   if (options.environment === 'dev') {
-    _.assign(config, {
-      devtool: 'source-map',
-      entry: [
-        'webpack-dev-server/client?http://0.0.0.0:8000',
-        'webpack/hot/only-dev-server',
-        './src/js/main.js'
-      ],
-      plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
-      ],
-      module: {
-        loaders: [
-          {
-            test: /\.js$/,
-            loaders: ['react-hot', 'babel?stage=0'],
-            include: path.join(__dirname, 'src/js')
-          },
-        ]
-      },
-    });
+    config.devtool = 'source-map';
+    Array.prototype.unshift.call(
+      config.entry,
+      'webpack-dev-server/client?http://0.0.0.0:8000',
+      'webpack/hot/only-dev-server'
+    );
+    config.plugins = [
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoErrorsPlugin()
+    ];
+    config.module.loaders[0].loaders.unshift('react-hot');
   }
+
+  config.module.loaders.unshift({
+    test: require.resolve("react"),
+    loader: "expose?React"
+  });
 
   return config;
 };
