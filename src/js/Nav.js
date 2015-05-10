@@ -6,6 +6,7 @@ var PureRender = require('./PureRender');
 var {Component, PropTypes} = require('react/addons');
 
 @PureRender
+@Radium.Enhancer
 class Nav extends Component {
   static propTypes = {
     onQueryChanged: PropTypes.func.isRequired,
