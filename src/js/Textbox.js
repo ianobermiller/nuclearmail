@@ -28,9 +28,10 @@ class Textbox extends Component {
 
 var styles = {
   root: {
+    boxSizing: 'border-box',
     border: '1px solid ' + Colors.gray2,
     height: 32,
-    padding: '0 4px',
+    padding: '0 8px',
 
     ':focus': {
       outline: 'none',

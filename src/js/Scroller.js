@@ -189,6 +189,7 @@ var styles = {
   },
 
   viewport: {
+    boxSizing: 'content-box',
     height: '100%',
     marginRight: '-' + scrollBarWidth,
     overflowX: 'hidden',

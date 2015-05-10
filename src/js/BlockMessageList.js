@@ -133,6 +133,7 @@ var styles = {
 
   item: {
     root: {
+      display: 'block',
       lineHeight: 1.6,
       margin: '0 8px 8px 8px',
     },

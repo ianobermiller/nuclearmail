@@ -25,7 +25,6 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 ## TODO
 
-- Use sanitize.css - https://github.com/jonathantneal/sanitize.css
 - Show search sign on hover over contact name, click to search by that
 - Scroll to top when navigating
 - Fetch more when archiving all of inbox
