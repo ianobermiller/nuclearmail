@@ -24,7 +24,7 @@ var _ = require('lodash');
 var asap = require('asap');
 var isOffline = require('./isOffline');
 var {Component, PropTypes} = require('react');
-var {Observable} = require('rx');
+var {Observable} = require('rx-lite');
 
 var RouteHandler = Router.RouteHandler;
 

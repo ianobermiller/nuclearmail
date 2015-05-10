@@ -4,7 +4,7 @@ var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
 var ThreadAPI = require('./ThreadAPI');
 var _ = require('lodash');
-var {Observable} = require('rx');
+var {Observable} = require('rx-lite');
 
 import type {TThread} from './Types';
 type Thread = typeof TThread;

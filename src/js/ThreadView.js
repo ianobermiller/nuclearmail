@@ -11,7 +11,7 @@ var ThreadActions = require('./ThreadActions');
 var ThreadStore = require('./ThreadStore');
 var getUnsubscribeUrl = require('./getUnsubscribeUrl');
 var {Component, PropTypes} = require('react');
-var {Observable} = require('rx');
+var {Observable} = require('rx-lite');
 
 @KeyBinder
 @Observer

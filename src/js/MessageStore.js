@@ -5,7 +5,7 @@ var ActionType = require('./ActionType');
 var BaseStore = require('./BaseStore');
 var MessageAPI = require('./MessageAPI');
 var _ = require('lodash');
-var {Observable} = require('rx');
+var {Observable} = require('rx-lite');
 
 import type {TMessage} from './Types';
 type Message = typeof TMessage;

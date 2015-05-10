@@ -2,7 +2,7 @@
 
 var Dispatcher = require('./Dispatcher');
 var EventEmitter = require('events').EventEmitter;
-var {Observable} = require('rx');
+var {Observable} = require('rx-lite');
 var asap = require('asap');
 var isOffline = require('./isOffline');
 
