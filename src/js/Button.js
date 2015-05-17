@@ -2,7 +2,7 @@
 
 var Colors = require('./Colors');
 var PureRender = require('./PureRender');
-var Radium = require('Radium');
+var Radium = require('radium');
 var StylePropTypes = require('./StylePropTypes');
 var {Component, PropTypes} = require('react/addons');
 
