@@ -31,11 +31,11 @@ class SearchBox extends Component {
     return (
       <span style={this.props.style}>
         <Textbox
-          style={styles.input}
-          value={this.props.query}
           onChange={this._onQueryChange}
           onKeyDown={this._onQueryKeyDown}
+          style={styles.input}
           type="search"
+          value={this.props.query}
         />
         <Button
           onClick={this._onSearchClick}

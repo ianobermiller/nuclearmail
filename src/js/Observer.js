@@ -7,14 +7,14 @@ function _resubscribe(component, props) {
       function onNext(value) {
         component.data[key] = value;
 
-        if (component.data[key] != component._observerLastData[key]) {
+        if (component.data[key] != component._observerLastData[key]) { //eslint-disable-line eqeqeq
           component._observerCalledForceUpdate = true;
           component.forceUpdate();
         }
 
         component._observerLastData[key] = value;
       },
-      function onError() { debugger },
+      function onError() { },
       function onCompleted() { },
     );
   });

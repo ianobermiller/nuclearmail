@@ -178,17 +178,17 @@ class App extends Component {
       <div style={styles.app}>
         {this.state.isLoading ? <Spinner /> : null}
         <div style={styles.header}>
-          <span style={styles.logo} onClick={this._onLogoClick}>
+          <span onClick={this._onLogoClick} style={styles.logo}>
             ☢
             <span style={styles.logoName}>{' '}NUCLEARMAIL</span>
           </span>
           <SearchBox
-            style={styles.search}
-            query={this.state.queryProgress}
             onQueryChange={this._onQueryChange}
             onQuerySubmit={this._onQuerySubmit}
+            query={this.state.queryProgress}
+            style={styles.search}
           />
-          <Button style={styles.refresh} onClick={this._onRefresh}>
+          <Button onClick={this._onRefresh} style={styles.refresh}>
           ⟳
           </Button>
         </div>
@@ -200,10 +200,10 @@ class App extends Component {
           {this.data.threads &&
             this.data.lastMessageInEachThread ? (
             <Scroller
-              style={styles.messagesList}
               hasMore={this.data.threads.hasMore}
               isScrollContainer={true}
-              onRequestMoreItems={this._onRequestMoreItems}>
+              onRequestMoreItems={this._onRequestMoreItems}
+              style={styles.messagesList}>
               <BlockMessageList
                 labels={this.data.labels}
                 messages={this.data.lastMessageInEachThread}

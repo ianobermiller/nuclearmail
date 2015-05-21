@@ -25,6 +25,10 @@ class ThreadView extends Component {
     style: PropTypes.object,
   };
 
+  componentWillMount() {
+    this.bindKey('y', this._archive);
+  }
+
   observe(props, context) {
     if (!props.params.threadID) {
       return {};
@@ -59,10 +63,6 @@ class ThreadView extends Component {
       messages: observeMessages,
       unsubscribeUrl: observeUnsubscribeUrl,
     };
-  }
-
-  componentWillMount() {
-    this.bindKey('y', this._archive);
   }
 
   _archive = () => {
@@ -136,14 +136,14 @@ class ThreadView extends Component {
         <div style={styles.messages}>
           {messages.map(message => (
             <MessageView
-              key={message.id}
               isExpandedInitially={message.id === this.props.params.messageID}
+              key={message.id}
               message={message}
             />
           ))}
         </div>
       </div>
-    )
+    );
   }
 }
 

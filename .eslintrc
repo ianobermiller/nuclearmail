@@ -3,29 +3,41 @@
   "plugins": [
     "react"
   ],
-  "ecmaFeatures": {
-    "jsx": true
-  },
   "env": {
     "browser": true,
     "node": true
   },
   "rules": {
-    "react/display-name": 0,
-    "react/jsx-quotes": 1,
+    "react/jsx-boolean-value": 1,
     "react/jsx-no-undef": 1,
+    "react/jsx-quotes": 1,
+    "react/jsx-sort-props": 1,
     "react/jsx-uses-react": 1,
     "react/jsx-uses-vars": 1,
-    "react/no-did-mount-set-state": 0,
+    "react/no-did-mount-set-state": 1,
     "react/no-did-update-set-state": 1,
-    "react/no-multi-comp": 0,
+    "react/no-unknown-property": 1,
     "react/prop-types": 1,
-    "react/react-in-jsx-scope": 1,
     "react/self-closing-comp": 1,
+    "react/sort-comp": 0,
     "react/wrap-multilines": 1,
 
-    "quotes": [2, "single"],
+    // In declarations, required props should be separate
+    "react/jsx-sort-prop-types": 0,
+
+    // Useful for "inner" components
+    "react/no-multi-comp": 0,
+
+    // babel does this automatically
+    "react/display-name": 0,
+
+    // Not needed, and we usually do `var {Component} = require('react');`
+    "react/react-in-jsx-scope": 0,
+
+    // babel removes these
     "comma-dangle": 0,
+
+    "quotes": [2, "single"],
     "no-unused-expressions": 0,
     "no-underscore-dangle": 0,
     "no-use-before-define": 0,

@@ -18,19 +18,19 @@ class MessageView extends Component {
     style: PropTypes.object,
   };
 
-  constructor() {
-    super();
-    this.state = {
-      isExpandedManually: null,
-    };
-  }
-
   componentDidMount() {
     if (this.props.isExpandedInitially) {
       asap(() => {
         findDOMNode(this).scrollIntoView(true);
       });
     }
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      isExpandedManually: null,
+    };
   }
 
   _onClick = () => {
@@ -46,7 +46,7 @@ class MessageView extends Component {
   render(): any {
     if (!this.props.message) {
       return (
-        <div style={sx(this.props.style, 'MessageView')} />
+        <div style={this.props.style} />
       );
     }
 
@@ -57,7 +57,7 @@ class MessageView extends Component {
       '</div>';
 
     return (
-      <div style={[this.props.style, styles.root]} onClick={this._onClick}>
+      <div onClick={this._onClick} style={[this.props.style, styles.root]}>
         <div style={[
           styles.inner,
           !this._isExpanded() && styles.innerCollapsed
@@ -76,8 +76,8 @@ class MessageView extends Component {
               </div>
             </div>
             <RelativeDate
-              style={styles.headerDate}
               date={msg.date}
+              style={styles.headerDate}
             />
           </div>
           {this._isExpanded() ? (

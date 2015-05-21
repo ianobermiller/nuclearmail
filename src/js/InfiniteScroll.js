@@ -18,6 +18,7 @@ class InfiniteScroll extends Component {
     onScroll: PropTypes.func.isRequired,
     threshold: PropTypes.number.isRequired,
 
+    children: PropTypes.node,
     isScrollContainer: PropTypes.bool,
     style: PropTypes.object,
   };
@@ -80,8 +81,8 @@ class InfiniteScroll extends Component {
     var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
     return (
       <div
-        style={[this.props.style, style]}
-        onScroll={this._onScroll}>
+        onScroll={this._onScroll}
+        style={[this.props.style, style]}>
         {this.props.children}
       </div>
     );

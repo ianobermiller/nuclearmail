@@ -15,6 +15,7 @@ var {Component, PropTypes, findDOMNode} = require('react/addons');
 class BlockMessageList extends Component {
   static propTypes = {
     messages: PropTypes.array.isRequired,
+    onMessageSelected: PropTypes.func.isRequired,
 
     labels: PropTypes.array,
     selectedMessageID: PropTypes.string,
@@ -78,9 +79,9 @@ class BlockMessageListItem extends Component {
     var msg = this.props.message;
     return (
       <li
-        style={styles.item.root}
         key={msg.id}
-        onClick={this._onClick}>
+        onClick={this._onClick}
+        style={styles.item.root}>
         <div style={[
           styles.item.inner,
           msg.isUnread && styles.item.innerIsUnread,
@@ -97,16 +98,16 @@ class BlockMessageListItem extends Component {
               {msg.from.name || msg.from.email}
             </div>
             <RelativeDate
-              style={styles.item.date}
               date={msg.date}
+              style={styles.item.date}
             />
           </div>
-          <LineClamp style={styles.item.text} lines={2}>
+          <LineClamp lines={2} style={styles.item.text}>
             {this.props.labels && msg.labelIDs.filter(labelID =>
               this.props.labels[labelID] &&
                 this.props.labels[labelID].type === 'user'
             ).map(labelID =>
-              <span style={styles.item.label} key={labelID}>
+              <span key={labelID} style={styles.item.label}>
                 {this.props.labels ? this.props.labels[labelID].name : labelID}
               </span>
             )}

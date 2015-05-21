@@ -10,6 +10,7 @@ var {Component, PropTypes} = require('react/addons');
 @Radium.Enhancer
 class Button extends Component {
   static propTypes = {
+    children: PropTypes.node,
     onClick: PropTypes.func,
     use: PropTypes.oneOf(['default', 'special']),
     style: StylePropTypes.layout,
@@ -26,14 +27,14 @@ class Button extends Component {
   render(): any {
     return (
       <button
-        type="button"
+        onClick={this._onClick}
         style={[
           styles.root,
           (this.props.use === 'default') && styles.default,
           (this.props.use === 'special') && styles.special,
           this.props.style
         ]}
-        onClick={this._onClick}>
+        type="button">
         {this.props.children}
       </button>
     );

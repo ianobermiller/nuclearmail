@@ -15,7 +15,7 @@ class Nav extends Component {
 
   render(): any {
     return (
-      <nav style={this.props.style}>
+      <nav>
         <ul style={styles.list}>
           {[{
             label: 'INBOX',
@@ -40,11 +40,11 @@ class Nav extends Component {
             query: '',
           }].map(config =>
             <NavItem
-              label={config.label}
-              query={config.query}
-              key={config.label}
-              onQueryChanged={this.props.onQueryChanged}
               isSelected={this.props.query === config.query}
+              key={config.label}
+              label={config.label}
+              onQueryChanged={this.props.onQueryChanged}
+              query={config.query}
             />
           )}
         </ul>
@@ -57,10 +57,11 @@ class Nav extends Component {
 @Radium.Enhancer
 class NavItem extends Component {
   static propTypes = {
-    onQueryChanged: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
+    onQueryChanged: PropTypes.func.isRequired,
     query: PropTypes.string.isRequired,
-    isSelected: PropTypes.bool
+
+    isSelected: PropTypes.bool,
   };
 
   _onClick = (event) => {
@@ -72,12 +73,12 @@ class NavItem extends Component {
     return (
       <li>
         <a
+          href="#"
           onClick={this._onClick}
           style={[
             styles.item.link,
             this.props.isSelected && styles.item.linkSelected
-          ]}
-          href="#">
+          ]}>
           {this.props.label}
         </a>
       </li>

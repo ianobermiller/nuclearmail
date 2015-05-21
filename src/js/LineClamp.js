@@ -7,7 +7,8 @@ var {Component, PropTypes, findDOMNode} = require('react/addons');
 @PureRender
 class LineClamp extends Component {
   static propTypes = {
-    lines: PropTypes.number.isRequired
+    children: PropTypes.node.isRequired,
+    lines: PropTypes.number.isRequired,
   };
 
   componentDidMount() {

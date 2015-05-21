@@ -159,18 +159,18 @@ class ThreadStore extends BaseStore {
       this._pagingInfoByQuery[query].isFetching = true;
     }
 
-    ThreadAPI.list(apiOptions).then(result => {
+    ThreadAPI.list(apiOptions).then(listResult => {
       // Add to byID cache
-      result.items.forEach(item => this._threadsByID[item.id] = item);
+      listResult.items.forEach(item => this._threadsByID[item.id] = item);
 
       // Update cache with concatenated results
       var previousResults = pageToken ? pagingInfo.fetchedResults : [];
-      var allItems = previousResults.concat(result.items);
+      var allItems = previousResults.concat(listResult.items);
       this._pagingInfoByQuery[query] = {
         fetchedResults: allItems,
         fetchedResultCount: allItems.length,
-        nextPageToken: result.nextPageToken,
-        resultSizeEstimate: result.resultSizeEstimate,
+        nextPageToken: listResult.nextPageToken,
+        resultSizeEstimate: listResult.resultSizeEstimate,
       };
 
       this.emitChange();

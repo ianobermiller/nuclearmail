@@ -22,27 +22,14 @@ var scrollBarWidth = '15px';
 @PureRender
 @Radium.Enhancer
 class Scroller extends Component {
-  _previousUserSelect = '';
-  _isMouseDown = false;
-  _lastPageY = 0;
-
   static propTypes = {
+    children: PropTypes.node.isRequired,
     hasMore: PropTypes.bool.isRequired,
     onRequestMoreItems: PropTypes.func.isRequired,
 
     style: PropTypes.object,
     threshold: PropTypes.number,
   };
-
-  constructor() {
-    super();
-
-    this.state = {
-      scrollTop: 0,
-      scrollHeight: 1,
-      offsetHeight: 1,
-    };
-  }
 
   componentDidMount() {
     window.addEventListener('resize', this._onScroll);
@@ -56,6 +43,20 @@ class Scroller extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this._onScroll);
   }
+
+  constructor() {
+    super();
+
+    this.state = {
+      scrollTop: 0,
+      scrollHeight: 1,
+      offsetHeight: 1,
+    };
+  }
+
+  _previousUserSelect = '';
+  _isMouseDown = false;
+  _lastPageY = 0;
 
   _attachBodyListeners() {
     document.addEventListener('mouseup', this._onDocumentMouseUp);
@@ -131,15 +132,15 @@ class Scroller extends Component {
 
     return (
       <div
-        style={[this.props.style, styles.scroller]}
         onMouseEnter={this._onScrollerMouseEnter}
-        onMouseLeave={this._onScrollerMouseLeave}>
+        onMouseLeave={this._onScrollerMouseLeave}
+        style={[this.props.style, styles.scroller]}>
         <div
+          onMouseDown={this._onScrollbarMouseDown}
           style={[
             styles.scrollbar,
             (this.state.isHover || this.state.isMouseDown) && styles.scrollbarHover
-          ]}
-          onMouseDown={this._onScrollbarMouseDown}>
+          ]}>
           <div
             style={[styles.thumb, {height: thumbHeight, top: thumbTop}]}
           />
