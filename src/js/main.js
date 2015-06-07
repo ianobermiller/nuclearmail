@@ -11,7 +11,7 @@ function run() {
 }
 
 if (!window.Intl) {
-  require.ensure(['intl'], () => {
+  require.ensure([], () => {
     require('intl');
     run();
   });
