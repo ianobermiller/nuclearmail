@@ -4,7 +4,6 @@ var Colors = require('./Colors');
 var LineClamp = require('./LineClamp');
 var PureRender = require('./PureRender');
 var Radium = require('radium');
-var Radium = require('radium');
 var React = require('react/addons');
 var RelativeDate = require('./RelativeDate');
 var _ = require('lodash');
