@@ -16,7 +16,7 @@ var {Observable} = require('rx-lite');
 @KeyBinder
 @Observer
 @PureRender
-@Radium.Enhancer
+@Radium
 class ThreadView extends Component {
   static propTypes = {
     onGoToNextMessage: PropTypes.func.isRequired,

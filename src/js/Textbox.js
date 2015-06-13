@@ -7,7 +7,7 @@ var StylePropTypes = require('./StylePropTypes');
 var {Component} = require('react/addons');
 
 @PureRender
-@Radium.Enhancer
+@Radium
 class Textbox extends Component {
   static propTypes = {
     style: StylePropTypes.layout,

@@ -7,7 +7,7 @@ var StylePropTypes = require('./StylePropTypes');
 var {Component, PropTypes} = require('react/addons');
 
 @PureRender
-@Radium.Enhancer
+@Radium
 class Button extends Component {
   static propTypes = {
     children: PropTypes.node,

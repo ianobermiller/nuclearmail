@@ -35,7 +35,7 @@ var dummySubscription = {remove() {}};
 @KeyBinder
 @Observer
 @PureRender
-@Radium.Enhancer
+@Radium
 class App extends Component {
   static propTypes = {
     params: PropTypes.object.isRequired,

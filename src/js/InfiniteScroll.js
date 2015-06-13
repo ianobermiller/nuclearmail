@@ -7,7 +7,7 @@
 var Radium = require('radium');
 var {Component, PropTypes, findDOMNode} = require('react');
 
-@Radium.Enhancer
+@Radium
 class InfiniteScroll extends Component {
   static propTypes = {
     // Whether or not to listen for scroll and resize events. Set this to `true`
