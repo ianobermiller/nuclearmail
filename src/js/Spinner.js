@@ -5,7 +5,7 @@ var PureRender = require('./PureRender');
 var Radium = require('radium');
 var {Component} = require('react/addons');
 
-@Radium.Enhancer
+@Radium
 @PureRender
 class Spinner extends Component {
   render(): any {

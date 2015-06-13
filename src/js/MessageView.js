@@ -10,7 +10,7 @@ var asap = require('asap');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 
 @PureRender
-@Radium.Enhancer
+@Radium
 class MessageView extends Component {
   static propTypes = {
     isExpandedInitially: PropTypes.bool,

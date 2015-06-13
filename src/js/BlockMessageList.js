@@ -10,7 +10,7 @@ var _ = require('lodash');
 var {Component, PropTypes, findDOMNode} = require('react/addons');
 
 @PureRender
-@Radium.Enhancer
+@Radium
 class BlockMessageList extends Component {
   static propTypes = {
     messages: PropTypes.array.isRequired,
@@ -43,7 +43,7 @@ class BlockMessageList extends Component {
 }
 
 @PureRender
-@Radium.Enhancer
+@Radium
 class BlockMessageListItem extends Component {
   static propTypes = {
     index: PropTypes.number.isRequired,

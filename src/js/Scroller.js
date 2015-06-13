@@ -20,7 +20,7 @@ var {Component, PropTypes, findDOMNode} = require('react/addons');
 var scrollBarWidth = '15px';
 
 @PureRender
-@Radium.Enhancer
+@Radium
 class Scroller extends Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
