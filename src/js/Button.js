@@ -18,11 +18,11 @@ class Button extends Component {
 
   static defaultProps = {
     use: 'default'
-  };
+  }
 
   _onClick = () => {
     this.props.onClick && this.props.onClick();
-  };
+  }
 
   render(): any {
     return (
