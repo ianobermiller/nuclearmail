@@ -14,6 +14,7 @@
     "react": "^0.13.2",
     "react-intl": "^1.2.0",
     "react-router": "^0.13.3",
+    "redux": "^1.0.0-rc",
     "rsvp": "^3.0.18",
     "rx-lite": "^2.5.2",
     "tinytinycolor": "0.0.3",
