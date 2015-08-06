@@ -68,7 +68,7 @@ function list(
 
 function _getThreads(results) {
   var allMessages = [];
-  var threads = results.map(thread => {
+  var threads = results.filter(thread => thread).map(thread => {
     var messages = thread.messages.map(MessageTranslator.translate);
     allMessages.push.apply(allMessages, messages);
     return {
