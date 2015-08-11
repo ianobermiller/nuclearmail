@@ -1,13 +1,15 @@
 /** @flow */
 
-var EventEmitter = require('events').EventEmitter;
+import store from './store';
+import {EventEmitter} from 'events';
 
 var EVENT = 'dispatch';
 var emitter = new EventEmitter();
 
 var Dispatcher = {
-  dispatch(event: any) {
-    emitter.emit(EVENT, event);
+  dispatch(action: any) {
+    store.dispatch(action); // shim until redux migration complete
+    emitter.emit(EVENT, action);
   },
 
   subscribe(fn: (data: any) => void): {remove: () => void;} {

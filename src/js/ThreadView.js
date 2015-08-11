@@ -1,17 +1,20 @@
 /** @flow */
 
-var Button = require('./Button');
-var KeyBinder = require('./KeyBinder');
-var MessageStore = require('./MessageStore');
-var MessageView = require('./MessageView');
-var Observer = require('./Observer');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var ThreadActions = require('./ThreadActions');
-var ThreadStore = require('./ThreadStore');
-var getUnsubscribeUrl = require('./getUnsubscribeUrl');
-var {Component, PropTypes} = require('react');
-var {Observable} = require('rx-lite');
+
+import {connect} from 'react-redux';
+import Radium from 'radium';
+import {Component, PropTypes} from 'react';
+import {Observable} from 'rx-lite';
+
+import Button from './Button';
+import KeyBinder from './KeyBinder';
+import MessageStore from './MessageStore';
+import MessageView from './MessageView';
+import Observer from './Observer';
+import PureRender from './PureRender';
+import ThreadActions from './ThreadActions';
+import ThreadStore from './ThreadStore';
+import getUnsubscribeUrl from './getUnsubscribeUrl';
 
 @KeyBinder
 @Observer

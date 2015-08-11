@@ -1,41 +1,40 @@
 /** @flow */
 
+import Radium from 'radium';
 import {connect} from 'react-redux';
+import {RouteHandler} from 'react-router';
+import _ from 'lodash';
+import asap from 'asap';
+import {Component, PropTypes} from 'react';
+import {Observable} from 'rx-lite';
 
-var API = require('./API');
-var BlockMessageList = require('./BlockMessageList');
-var Button = require('./Button');
-var Colors = require('./Colors');
-var KeyBinder = require('./KeyBinder');
-var LabelActions = require('./LabelActions');
-var LoginModal = require('./LoginModal');
-var MessageActions = require('./MessageActions');
-var MessageStore = require('./MessageStore');
-var Nav = require('./Nav');
-var Observer = require('./Observer');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var React = require('react/addons');
-var Router = require('react-router');
-var Scroller = require('./Scroller');
-var SearchBox = require('./SearchBox');
-var Spinner = require('./Spinner');
-var ThreadActions = require('./ThreadActions');
-var ThreadStore = require('./ThreadStore');
-var _ = require('lodash');
-var asap = require('asap');
-var isOffline = require('./isOffline');
-var {Component, PropTypes} = require('react');
-var {Observable} = require('rx-lite');
-
-var RouteHandler = Router.RouteHandler;
+import API from './API';
+import BlockMessageList from './BlockMessageList';
+import Button from './Button';
+import Colors from './Colors';
+import KeyBinder from './KeyBinder';
+import * as LabelActions from './LabelActions';
+import LoginModal from './LoginModal';
+import MessageActions from './MessageActions';
+import Nav from './Nav';
+import Observer from './Observer';
+import PureRender from './PureRender';
+import Scroller from './Scroller';
+import SearchBox from './SearchBox';
+import Spinner from './Spinner';
+import ThreadActions from './ThreadActions';
+import ThreadStore from './ThreadStore';
+import isOffline from './isOffline';
 
 var PAGE_SIZE = 20;
 
 var dummySubscription = {remove() {}};
 
 @connect(
-  state => ({labels: state.labels}),
+  state => ({
+    labels: state.labels,
+    messagesByID: state.messagesByID,
+  }),
   dispatch => ({loadLabels: () => dispatch(LabelActions.loadAll())}),
 )
 @KeyBinder
@@ -65,7 +64,7 @@ class App extends Component {
     });
     return {
       threads: threadObservable,
-      lastMessageInEachThread: threadObservable.flatMap(threads => {
+      lastMessageIDInEachThread: threadObservable.flatMap(threads => {
         if (!threads) {
           return Observable.return(null);
         }
@@ -73,7 +72,7 @@ class App extends Component {
         var messageIDs = threads.items.map(
           thread => _.last(thread.messageIDs)
         );
-        return MessageStore.getByIDs({ids: messageIDs});
+        return Observable.return(messageIDs);
       }),
     };
   }
@@ -136,10 +135,14 @@ class App extends Component {
   };
 
   _getNextMessage(): ?Object {
-    var messages = this.data.lastMessageInEachThread;
-    if (!messages) {
+    var messageIDs = this.data.lastMessageIDInEachThread;
+    if (!messageIDs) {
       return null;
     }
+
+    var messages = this.data.lastMessageIDInEachThread.map(
+      messageID => this.props.messagesByID[messageID]
+    );
 
     var selectedMessageIndex = this.props.params.messageID &&
       messages.findIndex(
@@ -156,10 +159,14 @@ class App extends Component {
   }
 
   _selectPreviousMessage = () => {
-    var messages = this.data.lastMessageInEachThread;
-    if (!messages) {
-      return;
+    var messageIDs = this.data.lastMessageIDInEachThread;
+    if (!messageIDs) {
+      return null;
     }
+
+    var messages = this.data.lastMessageIDInEachThread.map(
+      messageID => this.props.messagesByID[messageID]
+    );
 
     var selectedMessageIndex = messages.findIndex(
       msg => msg.id === this.props.params.messageID
@@ -183,6 +190,10 @@ class App extends Component {
   };
 
   render(): any {
+    var messages = this.data.lastMessageIDInEachThread &&
+      this.data.lastMessageIDInEachThread.map(
+        messageID => this.props.messagesByID[messageID]
+      );
     return (
       <div style={styles.app}>
         {this.state.isLoading ? <Spinner /> : null}
@@ -206,8 +217,7 @@ class App extends Component {
           query={this.state.query}
         />
         <div style={styles.messages}>
-          {this.data.threads &&
-            this.data.lastMessageInEachThread ? (
+          {this.data.threads && messages ? (
             <Scroller
               hasMore={this.data.threads.hasMore}
               isScrollContainer={true}
@@ -215,7 +225,7 @@ class App extends Component {
               style={styles.messagesList}>
               <BlockMessageList
                 labels={this.props.labels}
-                messages={this.data.lastMessageInEachThread}
+                messages={messages}
                 onMessageSelected={this._onMessageSelected}
                 selectedMessageID={this.props.params.messageID}
               />
