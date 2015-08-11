@@ -1,11 +1,13 @@
 /** @flow */
 
+import {connect} from 'react-redux';
+
 var API = require('./API');
 var BlockMessageList = require('./BlockMessageList');
 var Button = require('./Button');
 var Colors = require('./Colors');
 var KeyBinder = require('./KeyBinder');
-var LabelStore = require('./LabelStore');
+var LabelActions = require('./LabelActions');
 var LoginModal = require('./LoginModal');
 var MessageActions = require('./MessageActions');
 var MessageStore = require('./MessageStore');
@@ -32,10 +34,14 @@ var PAGE_SIZE = 20;
 
 var dummySubscription = {remove() {}};
 
+@connect(
+  state => ({labels: state.labels}),
+  dispatch => ({loadLabels: () => dispatch(LabelActions.loadAll())}),
+)
 @KeyBinder
-@Observer
 @PureRender
 @Radium
+@Observer
 class App extends Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
@@ -58,7 +64,6 @@ class App extends Component {
       maxResultCount: this.state.maxResultCount,
     });
     return {
-      labels: LabelStore.getLabels(),
       threads: threadObservable,
       lastMessageInEachThread: threadObservable.flatMap(threads => {
         if (!threads) {
@@ -71,6 +76,10 @@ class App extends Component {
         return MessageStore.getByIDs({ids: messageIDs});
       }),
     };
+  }
+
+  componentWillMount() {
+    this.props.loadLabels();
   }
 
   componentDidMount() {
@@ -205,7 +214,7 @@ class App extends Component {
               onRequestMoreItems={this._onRequestMoreItems}
               style={styles.messagesList}>
               <BlockMessageList
-                labels={this.data.labels}
+                labels={this.props.labels}
                 messages={this.data.lastMessageInEachThread}
                 onMessageSelected={this._onMessageSelected}
                 selectedMessageID={this.props.params.messageID}

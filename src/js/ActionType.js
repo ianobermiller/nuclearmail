@@ -1,6 +1,11 @@
 /** @flow */
 
 var ActionType = {
+  Label: {
+    LOAD_ALL_COMPLETED: '',
+    LOAD_ALL_FAILED: '',
+  },
+
   Message: {
     ADD_MANY: '',
     SELECT: '',

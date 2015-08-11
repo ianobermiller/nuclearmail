@@ -2,11 +2,28 @@
 
 require('es6-shim');
 
+import {Provider} from 'react-redux';
+import {applyMiddleware, combineReducers, createStore} from 'redux';
+import thunk from 'redux-thunk'
+
 function run() {
-  var React = require('react');
-  var router = require('./router');
+  const React = require('react');
+  const router = require('./router');
+  const LabelReducer = require('./LabelReducer');
+
+  const reducer = combineReducers({
+    labels: LabelReducer,
+  });
+  const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+  const store = createStoreWithMiddleware(reducer);
+
   router.run((Handler, state) => {
-    React.render(<Handler params={state.params} />, document.body);
+    React.render(
+      <Provider store={store}>
+        {() => <Handler params={state.params} />}
+      </Provider>,
+      document.body
+    );
   });
 }
 
