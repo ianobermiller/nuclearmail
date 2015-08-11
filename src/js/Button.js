@@ -47,7 +47,10 @@ var styles = {
     borderRadius: '2px',
     cursor: 'pointer',
     lineHeight: '30px',
-    margin: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    marginTop: 0,
     padding: '1px 16px',
     verticalAlign: 'top',
 
