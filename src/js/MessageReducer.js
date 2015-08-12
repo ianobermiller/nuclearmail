@@ -2,7 +2,6 @@
 
 var ActionType = require('./ActionType');
 
-// State is messagesByID
 module.exports = (messagesByID = {}, action) => {
   switch (action.type) {
     case ActionType.Message.ADD_MANY:
