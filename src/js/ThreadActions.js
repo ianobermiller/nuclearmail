@@ -1,13 +1,14 @@
 /** @flow */
 
-var ActionType = require('./ActionType');
-var Dispatcher = require('./Dispatcher');
-var ThreadAPI = require('./ThreadAPI');
+import ActionType from './ActionType';
+import Dispatcher from './Dispatcher';
+import ThreadAPI from './ThreadAPI';
 
 export function load(threadID) {
   return (dispatch, getState) => {
-    const threadsByID = getState().threadsByID;
+    const {threadsByID} = getState();
     if (threadsByID.hasOwnProperty(threadID)) {
+      // Already loading
       return;
     }
 
@@ -29,12 +30,56 @@ export function load(threadID) {
         error
       });
     });
+  };
+}
 
+export function loadList(query = '', requestedResultCount = 10) {
+  return (dispatch, getState) => {
+    const {threadListByQuery} = getState();
+    const threadList = threadListByQuery[query];
+
+    let pageToken = null;
+    let resultsStillNeeded = requestedResultCount;
+    if (threadList) {
+      resultsStillNeeded = requestedResultCount - threadList.threadIDs.length;
+      pageToken = threadList.nextPageToken;
+
+      if (resultsStillNeeded <= 0 || !pageToken || threadList.isFetching) {
+        return;
+      }
+    }
+
+    dispatch({
+      type: ActionType.Thread.LOAD_LIST_REQUEST,
+      query,
+      requestedResultCount,
+    });
+
+    ThreadAPI.list({
+      query,
+      pageToken,
+      maxResults: resultsStillNeeded,
+    }).then(listResult => {
+      dispatch({
+        type: ActionType.Thread.LOAD_LIST_SUCCESS,
+        query,
+        requestedResultCount,
+        threads: listResult.items,
+        nextPageToken: listResult.nextPageToken,
+        resultSizeEstimate: listResult.resultSizeEstimate,
+      });
+    }).catch(error => {
+      dispatch({
+        type: ActionType.Thread.LOAD_LIST_FAILURE,
+        query,
+        requestedResultCount,
+      });
+    });
   };
 }
 
 export function refresh() {
-  Dispatcher.dispatch({type: ActionType.Thread.REFRESH});
+  return {type: ActionType.Thread.REFRESH};
 }
 
 export function markAsRead(threadID: string) {

@@ -22,8 +22,7 @@ import PureRender from './PureRender';
 import Scroller from './Scroller';
 import SearchBox from './SearchBox';
 import Spinner from './Spinner';
-import ThreadActions from './ThreadActions';
-import ThreadStore from './ThreadStore';
+import * as ThreadActions from './ThreadActions';
 import isOffline from './isOffline';
 
 var PAGE_SIZE = 20;
@@ -34,13 +33,21 @@ var dummySubscription = {remove() {}};
   state => ({
     labels: state.labels,
     messagesByID: state.messagesByID,
+    threadsByID: state.threadsByID,
+    threadListByQuery: state.threadListByQuery,
   }),
-  dispatch => ({loadLabels: () => dispatch(LabelActions.loadAll())}),
+  dispatch => ({
+    loadLabels() {
+      dispatch(LabelActions.loadAll());
+    },
+    loadThreadList(query, maxResultCount) {
+      dispatch(ThreadActions.loadList(query, maxResultCount));
+    },
+  }),
 )
 @KeyBinder
 @PureRender
 @Radium
-@Observer
 class App extends Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
@@ -57,28 +64,12 @@ class App extends Component {
 
   _subscriptions = [dummySubscription];
 
-  observe() {
-    var threadObservable = ThreadStore.list({
-      query: this.state.query,
-      maxResultCount: this.state.maxResultCount,
-    });
-    return {
-      threads: threadObservable,
-      lastMessageIDInEachThread: threadObservable.flatMap(threads => {
-        if (!threads) {
-          return Observable.return(null);
-        }
-
-        var messageIDs = threads.items.map(
-          thread => _.last(thread.messageIDs)
-        );
-        return Observable.return(messageIDs);
-      }),
-    };
+  componentWillMount() {
+    this._tryLoad(this.state);
   }
 
-  componentWillMount() {
-    this.props.loadLabels();
+  componentWillUpdate(nextProps, nextState) {
+    this._tryLoad(nextState);
   }
 
   componentDidMount() {
@@ -102,6 +93,10 @@ class App extends Component {
 
   componentWillUnmount() {
     this._subscriptions.forEach(s => s.remove());
+  }
+
+  _tryLoad(state) {
+    this.props.loadThreadList(state.query, state.maxResultCount);
   }
 
   _onRequestMoreItems = () => {
@@ -190,10 +185,17 @@ class App extends Component {
   };
 
   render(): any {
-    var messages = this.data.lastMessageIDInEachThread &&
-      this.data.lastMessageIDInEachThread.map(
-        messageID => this.props.messagesByID[messageID]
-      );
+    var {messagesByID, threadsByID, threadListByQuery} = this.props;
+    var threadList = threadListByQuery[this.state.query];
+    var hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
+    var loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
+    var threads = threadList ?
+      threadList.threadIDs.map(threadID => threadsByID[threadID]) :
+      [];
+    var messages = threads && threads.map(
+      thread => messagesByID[_.last(thread.messageIDs)]
+    );
+
     return (
       <div style={styles.app}>
         {this.state.isLoading ? <Spinner /> : null}
@@ -217,9 +219,9 @@ class App extends Component {
           query={this.state.query}
         />
         <div style={styles.messages}>
-          {this.data.threads && messages ? (
+          {messages ? (
             <Scroller
-              hasMore={this.data.threads.hasMore}
+              hasMore={hasMoreThreads}
               isScrollContainer={true}
               onRequestMoreItems={this._onRequestMoreItems}
               style={styles.messagesList}>
@@ -229,10 +231,10 @@ class App extends Component {
                 onMessageSelected={this._onMessageSelected}
                 selectedMessageID={this.props.params.messageID}
               />
-              {this.data.threads.hasMore ? (
+              {hasMoreThreads ? (
                 <div style={styles.messageLoading}>
-                  You{"'"}ve seen {this.data.threads.items.length}.
-                  {this.data.threads.items.length >= 100 ? (
+                  You{"'"}ve seen {loadedThreadCount}.
+                  {loadedThreadCount >= 100 ? (
                     ' ' + _.sample(pagingMessages)
                   ) : null}
                   {' '}Loading more...
