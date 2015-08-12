@@ -4,25 +4,45 @@
 import {connect} from 'react-redux';
 import Radium from 'radium';
 import {Component, PropTypes} from 'react';
-import {Observable} from 'rx-lite';
 
 import Button from './Button';
 import KeyBinder from './KeyBinder';
 import MessageView from './MessageView';
-import Observer from './Observer';
 import PureRender from './PureRender';
-import ThreadActions from './ThreadActions';
+import * as ThreadActions from './ThreadActions';
 import ThreadStore from './ThreadStore';
 import getUnsubscribeUrl from './getUnsubscribeUrl';
 
 @connect(
   state => ({
     messagesByID: state.messagesByID,
+    threadsByID: state.threadsByID,
   }),
-  dispatch => ({loadLabels: () => dispatch(LabelActions.loadAll())}),
+  dispatch => ({
+    loadThread: threadID => dispatch(ThreadActions.load(threadID))
+  }),
+  (stateProps, dispatchProps, ownProps) => {
+    const thread = stateProps.threadsByID[ownProps.params.threadID];
+
+    const messages = thread &&
+      thread.messageIDs.map(messageID => stateProps.messagesByID[messageID]);
+
+    const selectedMessage = messages && messages.find(
+      message => message.id === ownProps.params.messageID
+    );
+
+    const unsubscribeUrl = selectedMessage && getUnsubscribeUrl(selectedMessage);
+
+    return {
+      ...dispatchProps,
+      ...ownProps,
+      thread,
+      messages,
+      unsubscribeUrl,
+    };
+  }
 )
 @KeyBinder
-@Observer
 @PureRender
 @Radium
 class ThreadView extends Component {
@@ -34,45 +54,20 @@ class ThreadView extends Component {
   };
 
   componentWillMount() {
+    this._tryLoad(this.props);
     this.bindKey('y', this._archive);
   }
 
-  observe(props, context) {
-    if (!props.params.threadID) {
-      return {};
+  componentWillReceiveProps(newProps) {
+    this._tryLoad(newProps);
+  }
+
+  _tryLoad(props) {
+    if (!props.params || !props.params.threadID) {
+      return;
     }
 
-    const observeThread = ThreadStore.getByID(
-      {id: props.params.threadID}
-    );
-
-    const observeMessages = observeThread.flatMap(thread => {
-      if (!thread) {
-        return Observable.return(null);
-      }
-
-      return Observable.return(
-        thread.messageIDs.map(messageID => props.messagesByID[messageID])
-      );
-    });
-
-    const observeUnsubscribeUrl = observeMessages.map(messages => {
-      if (!messages) {
-        return null;
-      }
-
-      const selectedMessage = messages.find(
-        m => m.id === props.params.messageID
-      );
-
-      return getUnsubscribeUrl(selectedMessage);
-    });
-
-    return {
-      thread: observeThread,
-      messages: observeMessages,
-      unsubscribeUrl: observeUnsubscribeUrl,
-    };
+    props.loadThread(props.params.threadID);
   }
 
   _archive = () => {
@@ -97,11 +92,12 @@ class ThreadView extends Component {
   };
 
   _unsubscribe = () => {
-    window.open(this.data.unsubscribeUrl);
+    window.open(this.props.unsubscribeUrl);
   };
 
   render(): ?ReactComponent {
-    var messages = this.data.messages;
+    var messages = this.props.messages;
+
     if (!messages) {
       return null;
     }
@@ -134,7 +130,7 @@ class ThreadView extends Component {
               <Button onClick={this._star}>Star</Button>
             </li>
           )}
-          {this.data.unsubscribeUrl ? (
+          {this.props.unsubscribeUrl ? (
             <li style={styles.actionBarItem}>
               <Button onClick={this._unsubscribe}>Unsubscribe</Button>
             </li>

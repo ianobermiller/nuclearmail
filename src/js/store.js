@@ -3,10 +3,12 @@ import thunk from 'redux-thunk';
 
 import LabelReducer from './LabelReducer';
 import MessageReducer from './MessageReducer';
+import ThreadReducer from './ThreadReducer';
 
 const reducer = combineReducers({
   labels: LabelReducer,
   messagesByID: MessageReducer,
+  threadsByID: ThreadReducer,
 });
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const store = createStoreWithMiddleware(reducer);

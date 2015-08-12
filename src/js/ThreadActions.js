@@ -4,11 +4,40 @@ var ActionType = require('./ActionType');
 var Dispatcher = require('./Dispatcher');
 var ThreadAPI = require('./ThreadAPI');
 
-function refresh() {
+export function load(threadID) {
+  return (dispatch, getState) => {
+    const threadsByID = getState().threadsByID;
+    if (threadsByID.hasOwnProperty(threadID)) {
+      return;
+    }
+
+    dispatch({
+      type: ActionType.Thread.LOAD_REQUEST,
+      threadID,
+    });
+
+    ThreadAPI.getByID({id: threadID}).then(thread => {
+      dispatch({
+        type: ActionType.Thread.LOAD_SUCCESS,
+        threadID,
+        thread
+      });
+    }).catch(error => {
+      dispatch({
+        type: ActionType.Thread.LOAD_FAILURE,
+        threadID,
+        error
+      });
+    });
+
+  };
+}
+
+export function refresh() {
   Dispatcher.dispatch({type: ActionType.Thread.REFRESH});
 }
 
-function markAsRead(threadID: string) {
+export function markAsRead(threadID: string) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MARK_AS_READ_STARTED,
     threadID,
@@ -28,7 +57,7 @@ function markAsRead(threadID: string) {
   );
 }
 
-function markAsUnread(threadID: string) {
+export function markAsUnread(threadID: string) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MARK_AS_UNREAD_STARTED,
     threadID,
@@ -48,7 +77,7 @@ function markAsUnread(threadID: string) {
   );
 }
 
-function archive(threadID: string) {
+export function archive(threadID: string) {
   Dispatcher.dispatch({
     type: ActionType.Thread.ARCHIVE_STARTED,
     threadID,
@@ -68,7 +97,7 @@ function archive(threadID: string) {
   );
 }
 
-function moveToInbox(threadID: string) {
+export function moveToInbox(threadID: string) {
   Dispatcher.dispatch({
     type: ActionType.Thread.MOVE_TO_INBOX_STARTED,
     threadID,
@@ -88,7 +117,7 @@ function moveToInbox(threadID: string) {
   );
 }
 
-function star(threadID: string) {
+export function star(threadID: string) {
   Dispatcher.dispatch({
     type: ActionType.Thread.STAR_STARTED,
     threadID,
@@ -108,7 +137,7 @@ function star(threadID: string) {
   );
 }
 
-function unstar(threadID: string) {
+export function unstar(threadID: string) {
   Dispatcher.dispatch({
     type: ActionType.Thread.UNSTAR_STARTED,
     threadID,
@@ -127,13 +156,3 @@ function unstar(threadID: string) {
     })
   );
 }
-
-module.exports = {
-  archive,
-  markAsRead,
-  markAsUnread,
-  moveToInbox,
-  refresh,
-  star,
-  unstar,
-};

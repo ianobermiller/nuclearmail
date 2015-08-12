@@ -93,26 +93,6 @@ class ThreadStore extends BaseStore {
     shouldEmitChange && this.emitChange();
   }
 
-  getByID(options: {id: string}): Observable<?Thread> {
-    return this.__wrapAsObservable(this._getByIDSync, options);
-  }
-
-  _getByIDSync = (options: {id: string}) => {
-    if (this._threadsByID.hasOwnProperty(options.id)) {
-      return this._threadsByID[options.id];
-    }
-
-    // Prevent double fetching
-    this._threadsByID[options.id] = null;
-
-    ThreadAPI.getByID(options).then(item => {
-      this._threadsByID[item.id] = item;
-      this.emitChange();
-    });
-
-    return null;
-  };
-
   list(
     options: {query: string; maxResultCount: number}
   ): Observable<?ListResult> {
