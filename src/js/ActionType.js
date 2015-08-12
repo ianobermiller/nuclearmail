@@ -2,8 +2,9 @@
 
 var ActionType = {
   Label: {
-    LOAD_ALL_COMPLETED: '',
-    LOAD_ALL_FAILED: '',
+    LOAD_ALL_REQUEST: '',
+    LOAD_ALL_SUCCESS: '',
+    LOAD_ALL_FAILURE: '',
   },
 
   Message: {
@@ -12,6 +13,14 @@ var ActionType = {
   },
 
   Thread: {
+    LOAD_REQUEST: '',
+    LOAD_SUCCESS: '',
+    LOAD_FAILURE: '',
+
+    LOAD_LIST_REQUEST: '',
+    LOAD_LIST_SUCCESS: '',
+    LOAD_LIST_FAILURE: '',
+
     ARCHIVE_STARTED: '',
     ARCHIVE_COMPLETED: '',
     ARCHIVE_FAILED: '',

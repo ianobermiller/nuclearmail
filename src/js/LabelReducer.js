@@ -4,7 +4,7 @@ var ActionType = require('./ActionType');
 
 module.exports = (state = [], action) => {
   switch (action.type) {
-    case ActionType.Label.LOAD_ALL_COMPLETED:
+    case ActionType.Label.LOAD_ALL_SUCCESS:
       return action.labels;
   }
   return state;
