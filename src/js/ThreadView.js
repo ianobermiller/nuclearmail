@@ -8,7 +8,6 @@ import {Observable} from 'rx-lite';
 
 import Button from './Button';
 import KeyBinder from './KeyBinder';
-import MessageStore from './MessageStore';
 import MessageView from './MessageView';
 import Observer from './Observer';
 import PureRender from './PureRender';
@@ -16,6 +15,12 @@ import ThreadActions from './ThreadActions';
 import ThreadStore from './ThreadStore';
 import getUnsubscribeUrl from './getUnsubscribeUrl';
 
+@connect(
+  state => ({
+    messagesByID: state.messagesByID,
+  }),
+  dispatch => ({loadLabels: () => dispatch(LabelActions.loadAll())}),
+)
 @KeyBinder
 @Observer
 @PureRender
@@ -46,7 +51,9 @@ class ThreadView extends Component {
         return Observable.return(null);
       }
 
-      return MessageStore.getByIDs({ids: thread.messageIDs});
+      return Observable.return(
+        thread.messageIDs.map(messageID => props.messagesByID[messageID])
+      );
     });
 
     const observeUnsubscribeUrl = observeMessages.map(messages => {
