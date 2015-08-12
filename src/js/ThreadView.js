@@ -10,7 +10,6 @@ import KeyBinder from './KeyBinder';
 import MessageView from './MessageView';
 import PureRender from './PureRender';
 import * as ThreadActions from './ThreadActions';
-import ThreadStore from './ThreadStore';
 import getUnsubscribeUrl from './getUnsubscribeUrl';
 
 @connect(
