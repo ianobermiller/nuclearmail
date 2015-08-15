@@ -12,6 +12,7 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 
 ## Technologies used
 
+- [Redux](https://github.com/rackt/redux) - data flow
 - [Radium](https://github.com/FormidableLabs/radium) - inline styles
 - [React Intl](https://github.com/yahoo/react-intl) - internationalization
 - [React Router](https://github.com/rackt/react-router)
