@@ -3,7 +3,6 @@
 
 var ActionType = require('./ActionType');
 var API = require('./API');
-var Dispatcher = require('./Dispatcher');
 var MessageTranslator = require('./MessageTranslator');
 var RSVP = require('rsvp');
 var _ = require('lodash');
