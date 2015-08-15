@@ -8,7 +8,6 @@ var ActionType = {
   },
 
   Message: {
-    ADD_MANY: '',
     SELECT: '',
   },
 
@@ -21,31 +20,31 @@ var ActionType = {
     LOAD_LIST_SUCCESS: '',
     LOAD_LIST_FAILURE: '',
 
-    ARCHIVE_STARTED: '',
-    ARCHIVE_COMPLETED: '',
-    ARCHIVE_FAILED: '',
+    ARCHIVE_REQUEST: '',
+    ARCHIVE_SUCCESS: '',
+    ARCHIVE_FAILURE: '',
 
-    MOVE_TO_INBOX_STARTED: '',
-    MOVE_TO_INBOX_COMPLETED: '',
-    MOVE_TO_INBOX_FAILED: '',
+    MOVE_TO_INBOX_REQUEST: '',
+    MOVE_TO_INBOX_SUCCESS: '',
+    MOVE_TO_INBOX_FAILURE: '',
 
-    MARK_AS_READ_STARTED: '',
-    MARK_AS_READ_COMPLETED: '',
-    MARK_AS_READ_FAILED: '',
+    MARK_AS_READ_REQUEST: '',
+    MARK_AS_READ_SUCCESS: '',
+    MARK_AS_READ_FAILURE: '',
 
-    MARK_AS_UNREAD_STARTED: '',
-    MARK_AS_UNREAD_COMPLETED: '',
-    MARK_AS_UNREAD_FAILED: '',
+    MARK_AS_UNREAD_REQUEST: '',
+    MARK_AS_UNREAD_SUCCESS: '',
+    MARK_AS_UNREAD_FAILURE: '',
 
     REFRESH: '',
 
-    STAR_STARTED: '',
-    STAR_COMPLETED: '',
-    STAR_FAILED: '',
+    STAR_REQUEST: '',
+    STAR_SUCCESS: '',
+    STAR_FAILURE: '',
 
-    UNSTAR_STARTED: '',
-    UNSTAR_COMPLETED: '',
-    UNSTAR_FAILED: '',
+    UNSTAR_REQUEST: '',
+    UNSTAR_SUCCESS: '',
+    UNSTAR_FAILURE: '',
   }
 };
 

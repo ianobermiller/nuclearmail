@@ -2,11 +2,11 @@
 
 import Radium from 'radium';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import {RouteHandler} from 'react-router';
 import _ from 'lodash';
 import asap from 'asap';
 import {Component, PropTypes} from 'react';
-import {Observable} from 'rx-lite';
 
 import API from './API';
 import BlockMessageList from './BlockMessageList';
@@ -17,7 +17,6 @@ import * as LabelActions from './LabelActions';
 import LoginModal from './LoginModal';
 import MessageActions from './MessageActions';
 import Nav from './Nav';
-import Observer from './Observer';
 import PureRender from './PureRender';
 import Scroller from './Scroller';
 import SearchBox from './SearchBox';
@@ -36,14 +35,12 @@ var dummySubscription = {remove() {}};
     threadsByID: state.threadsByID,
     threadListByQuery: state.threadListByQuery,
   }),
-  dispatch => ({
-    loadLabels() {
-      dispatch(LabelActions.loadAll());
-    },
-    loadThreadList(query, maxResultCount) {
-      dispatch(ThreadActions.loadList(query, maxResultCount));
-    },
-  }),
+  dispatch => bindActionCreators({
+    loadLabels: LabelActions.loadAll,
+    loadThreadList: ThreadActions.loadList,
+    refresh: ThreadActions.refresh,
+    markAsRead: ThreadActions.markAsRead,
+  }, dispatch),
 )
 @KeyBinder
 @PureRender
@@ -70,6 +67,10 @@ class App extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     this._tryLoad(nextState);
+  }
+
+  componentWillRecieveProps(nextProps) {
+    this._tryLoad(this.state);
   }
 
   componentDidMount() {
@@ -105,7 +106,7 @@ class App extends Component {
 
   _onMessageSelected = (message: ?Object) => {
     if (message && message.isUnread) {
-      ThreadActions.markAsRead(message.threadID);
+      this.props.markAsRead(message.threadID);
     }
     MessageActions.select(message);
   };
@@ -130,14 +131,10 @@ class App extends Component {
   };
 
   _getNextMessage(): ?Object {
-    var messageIDs = this.data.lastMessageIDInEachThread;
-    if (!messageIDs) {
+    var messages = this._getMessages();
+    if (!messages) {
       return null;
     }
-
-    var messages = this.data.lastMessageIDInEachThread.map(
-      messageID => this.props.messagesByID[messageID]
-    );
 
     var selectedMessageIndex = this.props.params.messageID &&
       messages.findIndex(
@@ -154,14 +151,10 @@ class App extends Component {
   }
 
   _selectPreviousMessage = () => {
-    var messageIDs = this.data.lastMessageIDInEachThread;
-    if (!messageIDs) {
+    var messages = this._getMessages();
+    if (!messages) {
       return null;
     }
-
-    var messages = this.data.lastMessageIDInEachThread.map(
-      messageID => this.props.messagesByID[messageID]
-    );
 
     var selectedMessageIndex = messages.findIndex(
       msg => msg.id === this.props.params.messageID
@@ -174,27 +167,33 @@ class App extends Component {
     } else {
       this._onMessageSelected(messages[selectedMessageIndex - 1]);
     }
-  };
+  }
 
   _onRefresh = () => {
-    ThreadActions.refresh();
-  };
+    this.props.refresh();
+  }
 
   _onLogoClick = () => {
     window.location.reload();
-  };
+  }
 
-  render(): any {
+  _getMessages = () => {
     var {messagesByID, threadsByID, threadListByQuery} = this.props;
     var threadList = threadListByQuery[this.state.query];
-    var hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
-    var loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
     var threads = threadList ?
       threadList.threadIDs.map(threadID => threadsByID[threadID]) :
       [];
-    var messages = threads && threads.map(
+    return threads && threads.map(
       thread => messagesByID[_.last(thread.messageIDs)]
     );
+  }
+
+  render(): any {
+    var {threadListByQuery} = this.props;
+    var threadList = threadListByQuery[this.state.query];
+    var hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
+    var loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
+    var messages = this._getMessages();
 
     return (
       <div style={styles.app}>

@@ -3,9 +3,7 @@
 
 var ActionType = require('./ActionType');
 var API = require('./API');
-var Dispatcher = require('./Dispatcher');
 var MessageTranslator = require('./MessageTranslator');
-var RSVP = require('rsvp');
 var _ = require('lodash');
 
 function getByID(
@@ -14,7 +12,13 @@ function getByID(
   return API.wrap(() => {
     return API.execute(
       gapi.client.gmail.users.threads.get({userId: 'me', id: options.id})
-    ).then(response => _getThreads([response.result])[0]);
+    ).then(response => {
+      const {threads, messages} = processThreadResults([response.result]);
+      return {
+        messages,
+        thread: threads[0],
+      };
+    });
   });
 }
 
@@ -40,7 +44,8 @@ function list(
         return Promise.resolve({
           nextPageToken: null,
           resultSizeEstimate: 0,
-          items: [],
+          threads: [],
+          messages: [],
         });
       }
 
@@ -54,19 +59,20 @@ function list(
 
       return API.execute(batch).then(batchResponse => {
         var results = threadIDs.map(threadID => batchResponse[threadID].result);
-        var threads = _getThreads(results);
+        var {threads, messages} = processThreadResults(results);
 
         return {
           nextPageToken: listResponse.nextPageToken,
           resultSizeEstimate: listResponse.resultSizeEstimate,
-          items: threads,
+          threads,
+          messages,
         };
       });
     });
   });
 }
 
-function _getThreads(results) {
+function processThreadResults(results) {
   var allMessages = [];
   var threads = results.filter(thread => thread).map(thread => {
     var messages = thread.messages.map(MessageTranslator.translate);
@@ -77,12 +83,7 @@ function _getThreads(results) {
     };
   });
 
-  Dispatcher.dispatch({
-    type: ActionType.Message.ADD_MANY,
-    messages: allMessages,
-  });
-
-  return threads;
+  return {threads, messages: allMessages};
 }
 
 function markAsRead(options: {threadID: string}) {

@@ -17,17 +17,18 @@ export function load(threadID) {
       threadID,
     });
 
-    ThreadAPI.getByID({id: threadID}).then(thread => {
+    ThreadAPI.getByID({id: threadID}).then(({thread, messages}) => {
       dispatch({
         type: ActionType.Thread.LOAD_SUCCESS,
         threadID,
-        thread
+        thread,
+        messages,
       });
     }).catch(error => {
       dispatch({
         type: ActionType.Thread.LOAD_FAILURE,
         threadID,
-        error
+        error,
       });
     });
   };
@@ -64,7 +65,8 @@ export function loadList(query = '', requestedResultCount = 10) {
         type: ActionType.Thread.LOAD_LIST_SUCCESS,
         query,
         requestedResultCount,
-        threads: listResult.items,
+        threads: listResult.threads,
+        messages: listResult.messages,
         nextPageToken: listResult.nextPageToken,
         resultSizeEstimate: listResult.resultSizeEstimate,
       });
@@ -83,121 +85,133 @@ export function refresh() {
 }
 
 export function markAsRead(threadID: string) {
-  Dispatcher.dispatch({
-    type: ActionType.Thread.MARK_AS_READ_STARTED,
-    threadID,
-  });
+  return dispatch => {
+    dispatch({
+      type: ActionType.Thread.MARK_AS_READ_REQUEST,
+      threadID,
+    });
 
-  ThreadAPI.markAsRead({threadID}).then(() =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.MARK_AS_READ_COMPLETED,
-      threadID,
-    })
-  ).catch(error =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.MARK_AS_READ_FAILED,
-      threadID,
-      error,
-    })
-  );
+    ThreadAPI.markAsRead({threadID}).then(() =>
+      dispatch({
+        type: ActionType.Thread.MARK_AS_READ_SUCCESS,
+        threadID,
+      })
+    ).catch(error =>
+      dispatch({
+        type: ActionType.Thread.MARK_AS_READ_FAILURE,
+        threadID,
+        error,
+      })
+    );
+  };
 }
 
 export function markAsUnread(threadID: string) {
-  Dispatcher.dispatch({
-    type: ActionType.Thread.MARK_AS_UNREAD_STARTED,
-    threadID,
-  });
+  return dispatch => {
+    dispatch({
+      type: ActionType.Thread.MARK_AS_UNREAD_REQUEST,
+      threadID,
+    });
 
-  ThreadAPI.markAsUnread({threadID}).then(() =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.MARK_AS_UNREAD_COMPLETED,
-      threadID,
-    })
-  ).catch(error =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.MARK_AS_UNREAD_FAILED,
-      threadID,
-      error,
-    })
-  );
+    ThreadAPI.markAsUnread({threadID}).then(() =>
+      dispatch({
+        type: ActionType.Thread.MARK_AS_UNREAD_SUCCESS,
+        threadID,
+      })
+    ).catch(error =>
+      dispatch({
+        type: ActionType.Thread.MARK_AS_UNREAD_FAILURE,
+        threadID,
+        error,
+      })
+    );
+  };
 }
 
 export function archive(threadID: string) {
-  Dispatcher.dispatch({
-    type: ActionType.Thread.ARCHIVE_STARTED,
-    threadID,
-  });
+  return dispatch => {
+    dispatch({
+      type: ActionType.Thread.ARCHIVE_REQUEST,
+      threadID,
+    });
 
-  ThreadAPI.archive({threadID}).then(() =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.ARCHIVE_COMPLETED,
-      threadID,
-    })
-  ).catch(error =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.ARCHIVE_FAILED,
-      threadID,
-      error,
-    })
-  );
+    ThreadAPI.archive({threadID}).then(() =>
+      dispatch({
+        type: ActionType.Thread.ARCHIVE_SUCCESS,
+        threadID,
+      })
+    ).catch(error =>
+      dispatch({
+        type: ActionType.Thread.ARCHIVE_FAILURE,
+        threadID,
+        error,
+      })
+    );
+  };
 }
 
 export function moveToInbox(threadID: string) {
-  Dispatcher.dispatch({
-    type: ActionType.Thread.MOVE_TO_INBOX_STARTED,
-    threadID,
-  });
+  return dispatch => {
+    dispatch({
+      type: ActionType.Thread.MOVE_TO_INBOX_REQUEST,
+      threadID,
+    });
 
-  ThreadAPI.moveToInbox({threadID}).then(() =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.MOVE_TO_INBOX_COMPLETED,
-      threadID,
-    })
-  ).catch(error =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.MOVE_TO_INBOX_FAILED,
-      threadID,
-      error,
-    })
-  );
+    ThreadAPI.moveToInbox({threadID}).then(() =>
+      dispatch({
+        type: ActionType.Thread.MOVE_TO_INBOX_SUCCESS,
+        threadID,
+      })
+    ).catch(error =>
+      dispatch({
+        type: ActionType.Thread.MOVE_TO_INBOX_FAILURE,
+        threadID,
+        error,
+      })
+    );
+  };
 }
 
 export function star(threadID: string) {
-  Dispatcher.dispatch({
-    type: ActionType.Thread.STAR_STARTED,
-    threadID,
-  });
+  return dispatch => {
+    dispatch({
+      type: ActionType.Thread.STAR_REQUEST,
+      threadID,
+    });
 
-  ThreadAPI.star({threadID}).then(() =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.STAR_COMPLETED,
-      threadID,
-    })
-  ).catch(error =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.STAR_FAILED,
-      threadID,
-      error,
-    })
-  );
+    ThreadAPI.star({threadID}).then(() =>
+      dispatch({
+        type: ActionType.Thread.STAR_SUCCESS,
+        threadID,
+      })
+    ).catch(error =>
+      dispatch({
+        type: ActionType.Thread.STAR_FAILURE,
+        threadID,
+        error,
+      })
+    );
+  };
 }
 
 export function unstar(threadID: string) {
-  Dispatcher.dispatch({
-    type: ActionType.Thread.UNSTAR_STARTED,
-    threadID,
-  });
+  return dispatch => {
+    dispatch({
+      type: ActionType.Thread.UNSTAR_REQUEST,
+      threadID,
+    });
 
-  ThreadAPI.unstar({threadID}).then(() =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.UNSTAR_COMPLETED,
-      threadID,
-    })
-  ).catch(error =>
-    Dispatcher.dispatch({
-      type: ActionType.Thread.UNSTAR_FAILED,
-      threadID,
-      error,
-    })
-  );
+    ThreadAPI.unstar({threadID}).then(() =>
+      dispatch({
+        type: ActionType.Thread.UNSTAR_SUCCESS,
+        threadID,
+      })
+    ).catch(error =>
+      dispatch({
+        type: ActionType.Thread.UNSTAR_FAILURE,
+        threadID,
+        error,
+      })
+    );
+  };
 }

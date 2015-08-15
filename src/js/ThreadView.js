@@ -2,6 +2,7 @@
 
 
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import Radium from 'radium';
 import {Component, PropTypes} from 'react';
 
@@ -17,9 +18,10 @@ import getUnsubscribeUrl from './getUnsubscribeUrl';
     messagesByID: state.messagesByID,
     threadsByID: state.threadsByID,
   }),
-  dispatch => ({
-    loadThread: threadID => dispatch(ThreadActions.load(threadID))
-  }),
+  dispatch => bindActionCreators({
+    loadThread: ThreadActions.load,
+    ...ThreadActions,
+  }, dispatch),
   (stateProps, dispatchProps, ownProps) => {
     const thread = stateProps.threadsByID[ownProps.params.threadID];
 
@@ -71,23 +73,23 @@ class ThreadView extends Component {
 
   _archive = () => {
     this.props.onGoToNextMessage();
-    ThreadActions.archive(this.props.params.threadID);
+    this.props.archive(this.props.params.threadID);
   };
 
   _moveToInbox = () => {
-    ThreadActions.moveToInbox(this.props.params.threadID);
+    this.props.moveToInbox(this.props.params.threadID);
   };
 
   _markAsUnread = () => {
-    ThreadActions.markAsUnread(this.props.params.threadID);
+    this.props.markAsUnread(this.props.params.threadID);
   };
 
   _star = () => {
-    ThreadActions.star(this.props.params.threadID);
+    this.props.star(this.props.params.threadID);
   };
 
   _unstar = () => {
-    ThreadActions.unstar(this.props.params.threadID);
+    this.props.unstar(this.props.params.threadID);
   };
 
   _unsubscribe = () => {
