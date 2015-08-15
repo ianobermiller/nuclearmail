@@ -4,8 +4,8 @@
  * Based off https://github.com/guillaumervls/react-infinite-scroll
  */
 
-var Radium = require('radium');
-var {Component, PropTypes, findDOMNode} = require('react');
+const Radium = require('radium');
+const {Component, PropTypes, findDOMNode} = require('react');
 
 @Radium
 class InfiniteScroll extends Component {
@@ -61,10 +61,10 @@ class InfiniteScroll extends Component {
   _lastHeight = 0;
 
   _update = () => {
-    var el = findDOMNode(this);
-    var height = el.scrollHeight;
+    const el = findDOMNode(this);
+    const height = el.scrollHeight;
     // ScrollTop + offsetHeight is within threshold of scrollHeight
-    var isPastThreshold = (el.scrollHeight -
+    const isPastThreshold = (el.scrollHeight -
       el.offsetHeight -
       el.scrollTop
     ) < Number(this.props.threshold);
@@ -78,7 +78,7 @@ class InfiniteScroll extends Component {
   };
 
   render(): any {
-    var style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
+    const style = this.props.isScrollContainer ? {overflow: 'auto'} : null;
     return (
       <div
         onScroll={this._onScroll}
@@ -101,7 +101,7 @@ function getWindowScrollTop() {
     return window.pageYOffset;
   }
 
-  var element: any =
+  const element: any =
     document.documentElement ||
     document.body.parentNode ||
     document.body;

@@ -1,6 +1,6 @@
 /** @flow */
 
-var router = require('./router');
+const router = require('./router');
 
 function select(message: ?Object) {
   if (message) {

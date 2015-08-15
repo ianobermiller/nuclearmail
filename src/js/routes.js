@@ -1,13 +1,13 @@
 /** @flow */
 
-var App = require('./App');
-var ThreadView = require('./ThreadView');
-var React = require('react');
-var Router = require('react-router');
+const App = require('./App');
+const ThreadView = require('./ThreadView');
+const React = require('react');
+const Router = require('react-router');
 
-var Route = Router.Route;
+const Route = Router.Route;
 
-var routes = (
+const routes = (
   <Route handler={App} name="app" path="/">
     <Route
       handler={ThreadView}

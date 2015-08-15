@@ -1,6 +1,6 @@
 /** @flow */
 
-var ActionType = require('./ActionType');
+const ActionType = require('./ActionType');
 
 module.exports = (messagesByID = {}, action) => {
   switch (action.type) {
@@ -53,8 +53,8 @@ module.exports = (messagesByID = {}, action) => {
 };
 
 function _updateMessagesWhere(messagesByID, where, updates) {
-  var newMessagesByID = {...messagesByID};
-  var updatedMessages = _.filter(messagesByID, where)
+  const newMessagesByID = {...messagesByID};
+  const updatedMessages = _.filter(messagesByID, where)
     .map(message => ({...message, ...updates}))
     .forEach(message => newMessagesByID[message.id] = message);
 

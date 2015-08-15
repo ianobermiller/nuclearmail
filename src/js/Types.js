@@ -1,12 +1,12 @@
 /* @flow */
 
-var NameAndEmailHax = ((null: any): {
+const NameAndEmailHax = ((null: any): {
   name: string;
   email: string;
 });
 type NameAndEmail = typeof NameAndEmailHax;
 
-var MessageHax = ((null: any): {
+const MessageHax = ((null: any): {
   body: {[mimeType: string]: string};
   date: Date;
   from: NameAndEmail;
@@ -25,7 +25,7 @@ var MessageHax = ((null: any): {
 });
 type Message = typeof MessageHax;
 
-var ThreadHax = ((null: any): {
+const ThreadHax = ((null: any): {
   id: string;
   messageIDs: Array<string>;
 });

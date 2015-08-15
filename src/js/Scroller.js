@@ -11,13 +11,13 @@
 // Inspired by:
 // https://github.com/leoselig/jsFancyScroll/
 
-var Colors = require('./Colors');
-var InfiniteScroll = require('./InfiniteScroll');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var {Component, PropTypes, findDOMNode} = require('react/addons');
+const Colors = require('./Colors');
+const InfiniteScroll = require('./InfiniteScroll');
+const PureRender = require('./PureRender');
+const Radium = require('radium');
+const {Component, PropTypes, findDOMNode} = require('react/addons');
 
-var scrollBarWidth = '15px';
+const scrollBarWidth = '15px';
 
 @PureRender
 @Radium
@@ -76,7 +76,7 @@ class Scroller extends Component {
   }
 
   _onScroll = () => {
-    var viewport = findDOMNode(this.refs.viewport);
+    const viewport = findDOMNode(this.refs.viewport);
     this.setState({
       scrollTop: viewport.scrollTop,
       scrollHeight: viewport.scrollHeight,
@@ -103,10 +103,10 @@ class Scroller extends Component {
 
   _onDocumentMouseMove = (event: Object) => {
     if (this._isMouseDown) {
-      var scale = this._getScale();
-      var diff = event.pageY - this._lastPageY;
-      var viewport = findDOMNode(this.refs.viewport);
-      var newScrollTop = (viewport.scrollTop + diff / scale);
+      const scale = this._getScale();
+      const diff = event.pageY - this._lastPageY;
+      const viewport = findDOMNode(this.refs.viewport);
+      const newScrollTop = (viewport.scrollTop + diff / scale);
 
       viewport.scrollTop = Math.max(0, newScrollTop);
       this._lastPageY = event.pageY;
@@ -126,9 +126,9 @@ class Scroller extends Component {
   }
 
   render(): any {
-    var scale = this._getScale();
-    var thumbHeight = this.state.offsetHeight * scale;
-    var thumbTop = this.state.scrollTop * scale;
+    const scale = this._getScale();
+    const thumbHeight = this.state.offsetHeight * scale;
+    const thumbTop = this.state.scrollTop * scale;
 
     return (
       <div
@@ -161,7 +161,7 @@ class Scroller extends Component {
   }
 }
 
-var styles = {
+const styles = {
   scroller: {
     overflow: 'hidden',
     position: 'relative',

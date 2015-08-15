@@ -1,8 +1,8 @@
 /** @flow */
 
-var ClientID = require('./ClientID');
-var sanitizer = require('google-caja');
-var {Component, PropTypes, findDOMNode} = require('react');
+const ClientID = require('./ClientID');
+const sanitizer = require('google-caja');
+const {Component, PropTypes, findDOMNode} = require('react');
 
 class HTMLSandbox extends Component {
   static propTypes = {
@@ -31,9 +31,9 @@ class HTMLSandbox extends Component {
   };
 
   _setIframeContents() {
-    var iframe = findDOMNode(this);
+    const iframe = findDOMNode(this);
 
-    var iframeBodyStyle = iframe.contentDocument.body.style;
+    const iframeBodyStyle = iframe.contentDocument.body.style;
     iframeBodyStyle.margin = 0;
     iframeBodyStyle.overflowX = 'hidden';
     iframeBodyStyle.padding = 0;
@@ -41,7 +41,7 @@ class HTMLSandbox extends Component {
 
     Object.assign(iframeBodyStyle, this.props.iframeBodyStyle);
 
-    var style = document.createElement('style');
+    const style = document.createElement('style');
     style.appendChild(document.createTextNode(`
       .gmail_extra {
         display: none;
@@ -49,7 +49,7 @@ class HTMLSandbox extends Component {
     `));
     iframe.contentDocument.head.appendChild(style);
 
-    var sanitizedHtml = sanitizer.sanitizeWithPolicy(
+    const sanitizedHtml = sanitizer.sanitizeWithPolicy(
       this.props.html,
       this.props.showImages ? defaultTagPolicy : tagPolicyNoImages
     );
@@ -60,7 +60,7 @@ class HTMLSandbox extends Component {
       return;
     }
 
-    var script = document.createElement('script');
+    const script = document.createElement('script');
     script.innerHTML = `
       var lastHeight = null;
       function notifyHeightChanged() {
@@ -130,6 +130,6 @@ function tagPolicyNoImages(tagName, attribs) {
   return defaultTagPolicy(tagName, attribs);
 }
 
-var defaultTagPolicy = sanitizer.makeTagPolicy(acceptAllUriRewriter);
+const defaultTagPolicy = sanitizer.makeTagPolicy(acceptAllUriRewriter);
 
 module.exports = HTMLSandbox;

@@ -1,4 +1,4 @@
-var keyboardjs = require('keyboardjs');
+const keyboardjs = require('keyboardjs');
 
 module.exports = function decorateWithKeyBinding(ComposedComponent) {
   class KeybinderEnhancer extends ComposedComponent {

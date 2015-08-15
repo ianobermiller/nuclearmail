@@ -1,10 +1,10 @@
 /** @flow */
 
-var API = require('./API');
-var Button = require('./Button');
-var Colors = require('./Colors');
-var PureRender = require('./PureRender');
-var {Component} = require('react/addons');
+const API = require('./API');
+const Button = require('./Button');
+const Colors = require('./Colors');
+const PureRender = require('./PureRender');
+const {Component} = require('react/addons');
 
 @PureRender
 class LoginModal extends Component {
@@ -33,7 +33,7 @@ class LoginModal extends Component {
   }
 }
 
-var styles = {
+const styles = {
   overlay: {
     background: 'rgba(255, 255, 255, .9)',
     bottom: 0,

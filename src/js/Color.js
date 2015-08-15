@@ -1,7 +1,7 @@
 /** @flow */
 
-var tinytinycolor = require('tinytinycolor');
-var _ = require('lodash');
+const tinytinycolor = require('tinytinycolor');
+const _ = require('lodash');
 
 class Color {
   constructor(stringOrColor) {

@@ -1,5 +1,5 @@
-var ActionType = require('./ActionType');
-var LabelAPI = require('./LabelAPI');
+const ActionType = require('./ActionType');
+const LabelAPI = require('./LabelAPI');
 
 export function loadAll() {
   return dispatch => {

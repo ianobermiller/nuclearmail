@@ -1,9 +1,9 @@
 /** @flow */
 
-var Colors = require('./Colors');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var {Component} = require('react/addons');
+const Colors = require('./Colors');
+const PureRender = require('./PureRender');
+const Radium = require('radium');
+const {Component} = require('react/addons');
 
 @Radium
 @PureRender
@@ -17,13 +17,13 @@ class Spinner extends Component {
   }
 }
 
-var pulseKeyframes = Radium.keyframes({
+const pulseKeyframes = Radium.keyframes({
   '0%': {width: '10%'},
   '50%': {width: '50%'},
   '100%': {width: '10%'},
 });
 
-var styles = {
+const styles = {
   root: {
     left: 0,
     position: 'fixed',

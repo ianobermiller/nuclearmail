@@ -1,13 +1,13 @@
 /** @flow */
 /* global gapi */
 
-var ClientID = require('./ClientID');
-var EventEmitter = require('events').EventEmitter;
-var RSVP = require('rsvp');
+const ClientID = require('./ClientID');
+const EventEmitter = require('events').EventEmitter;
+const RSVP = require('rsvp');
 
-var emitter = new EventEmitter();
-var isAvailable = false;
-var pendingRequests = [];
+const emitter = new EventEmitter();
+let isAvailable = false;
+let pendingRequests = [];
 
 RSVP.on('error', function(error) {
   console.error(error, error.stack);
@@ -18,7 +18,7 @@ window.handleGoogleClientLoad = function() {
 };
 
 function tryAuthorize(immediate) {
-  var config = {
+  const config = {
     /*eslint-disable camelcase*/
     client_id: '108971935462-ied7vg89qivj0bsso4imp6imhvpuso5u.apps.googleusercontent.com',
     /*eslint-enable*/
@@ -55,7 +55,7 @@ function promiseGoogleApiAvailable() {
   });
 }
 
-var inProgressAPICalls = {};
+const inProgressAPICalls = {};
 
 /**
  * Wraps a function with API in-progress reporting and error logging.
@@ -63,11 +63,11 @@ var inProgressAPICalls = {};
 function wrap(
   getPromise: () => Promise
 ): Promise {
-  var id = ClientID.get();
+  const id = ClientID.get();
   inProgressAPICalls[id] = true;
   emitter.emit('start', id);
 
-  var promise = promiseGoogleApiAvailable().then(() => {
+  const promise = promiseGoogleApiAvailable().then(() => {
     return getPromise();
   });
 

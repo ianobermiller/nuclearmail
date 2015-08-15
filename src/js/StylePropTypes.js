@@ -1,24 +1,24 @@
 /** @flow */
 
-var React = require('react');
-var PropTypes = React.PropTypes;
-var _ = require('lodash');
+const React = require('react');
+const PropTypes = React.PropTypes;
+const _ = require('lodash');
 
 function including(
   ...names: Array<string>
 ): (props: Object, propName: string, componentName: string) => ?Error {
   return function(props, propName, componentName) {
-    var style = props[propName];
+    const style = props[propName];
     if (!style) {
       return null;
     }
 
-    var err = PropTypes.object(props, propName, componentName);
+    const err = PropTypes.object(props, propName, componentName);
     if (err) {
       return err;
     }
 
-    var invalidKeys = _.difference(Object.keys(style), names);
+    const invalidKeys = _.difference(Object.keys(style), names);
 
     if (invalidKeys.length) {
       return new Error(
@@ -28,7 +28,7 @@ function including(
   };
 }
 
-var StylePropTypes = {
+const StylePropTypes = {
   including,
   layout: including(
     'display',

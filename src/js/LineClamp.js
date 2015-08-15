@@ -1,8 +1,8 @@
 /** @flow */
 
-var clamp = require('./clamp');
-var PureRender = require('./PureRender');
-var {Component, PropTypes, findDOMNode} = require('react/addons');
+const clamp = require('./clamp');
+const PureRender = require('./PureRender');
+const {Component, PropTypes, findDOMNode} = require('react/addons');
 
 @PureRender
 class LineClamp extends Component {

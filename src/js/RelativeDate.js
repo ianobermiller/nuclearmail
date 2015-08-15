@@ -1,10 +1,10 @@
 /** @flow */
 
-var IntlMixin = require('react-intl').IntlMixin;
-var FormattedRelative = require('react-intl').FormattedRelative;
-var {Component, PropTypes} = require('react');
+const IntlMixin = require('react-intl').IntlMixin;
+const FormattedRelative = require('react-intl').FormattedRelative;
+const {Component, PropTypes} = require('react');
 
-var LONG_DATE_TIME_FORMAT = {
+const LONG_DATE_TIME_FORMAT = {
   year: 'numeric',
   month: 'long',
   day: 'numeric',

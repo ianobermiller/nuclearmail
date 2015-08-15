@@ -1,10 +1,10 @@
 /** @flow */
 
-var Colors = require('./Colors');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var StylePropTypes = require('./StylePropTypes');
-var {Component} = require('react/addons');
+const Colors = require('./Colors');
+const PureRender = require('./PureRender');
+const Radium = require('radium');
+const StylePropTypes = require('./StylePropTypes');
+const {Component} = require('react/addons');
 
 @PureRender
 @Radium
@@ -26,7 +26,7 @@ class Textbox extends Component {
   }
 }
 
-var styles = {
+const styles = {
   root: {
     boxSizing: 'border-box',
     border: '1px solid ' + Colors.gray2,

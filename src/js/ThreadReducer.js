@@ -1,4 +1,4 @@
-var ActionType = require('./ActionType');
+const ActionType = require('./ActionType');
 
 module.exports = (threadsByID = {}, action) => {
   switch (action.type) {

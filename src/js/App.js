@@ -24,9 +24,9 @@ import Spinner from './Spinner';
 import * as ThreadActions from './ThreadActions';
 import isOffline from './isOffline';
 
-var PAGE_SIZE = 20;
+const PAGE_SIZE = 20;
 
-var dummySubscription = {remove() {}};
+const dummySubscription = {remove() {}};
 
 @connect(
   state => ({
@@ -131,12 +131,12 @@ class App extends Component {
   };
 
   _getNextMessage(): ?Object {
-    var messages = this._getMessages();
+    const messages = this._getMessages();
     if (!messages) {
       return null;
     }
 
-    var selectedMessageIndex = this.props.params.messageID &&
+    const selectedMessageIndex = this.props.params.messageID &&
       messages.findIndex(
         msg => msg.id === this.props.params.messageID
       );
@@ -151,12 +151,12 @@ class App extends Component {
   }
 
   _selectPreviousMessage = () => {
-    var messages = this._getMessages();
+    const messages = this._getMessages();
     if (!messages) {
       return null;
     }
 
-    var selectedMessageIndex = messages.findIndex(
+    const selectedMessageIndex = messages.findIndex(
       msg => msg.id === this.props.params.messageID
     );
 
@@ -178,9 +178,9 @@ class App extends Component {
   }
 
   _getMessages = () => {
-    var {messagesByID, threadsByID, threadListByQuery} = this.props;
-    var threadList = threadListByQuery[this.state.query];
-    var threads = threadList ?
+    const {messagesByID, threadsByID, threadListByQuery} = this.props;
+    const threadList = threadListByQuery[this.state.query];
+    const threads = threadList ?
       threadList.threadIDs.map(threadID => threadsByID[threadID]) :
       [];
     return threads && threads.map(
@@ -189,11 +189,11 @@ class App extends Component {
   }
 
   render(): any {
-    var {threadListByQuery} = this.props;
-    var threadList = threadListByQuery[this.state.query];
-    var hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
-    var loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
-    var messages = this._getMessages();
+    const {threadListByQuery} = this.props;
+    const threadList = threadListByQuery[this.state.query];
+    const hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
+    const loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
+    const messages = this._getMessages();
 
     return (
       <div style={styles.app}>
@@ -258,7 +258,7 @@ class App extends Component {
   }
 }
 
-var styles = {
+const styles = {
   app: {
     paddingTop: '20px',
   },
@@ -317,7 +317,7 @@ var styles = {
   },
 };
 
-var pagingMessages = [
+const pagingMessages = [
   'Still going?',
   'Now you\'re just getting greedy.',
   '\u266b I still haven\'t found what I\'m lookin\' for. \u266b',

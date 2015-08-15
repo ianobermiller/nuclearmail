@@ -1,35 +1,35 @@
 /** @flow */
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 function getUnsubscribeUrl(message: ?Object): ?string {
   if (!message) {
     return null;
   }
 
-  var body = message.body['text/html'] || message.body['text/plain'];
-  var bodyLower = body.toLowerCase();
+  const body = message.body['text/html'] || message.body['text/plain'];
+  const bodyLower = body.toLowerCase();
 
-  var match = bodyLower.match(/unsubscribe/) || bodyLower.match(/preferences/);
+  let match = bodyLower.match(/unsubscribe/) || bodyLower.match(/preferences/);
   if (!match) {
     return null;
   }
-  var unsubscrieIndices = [
+  const unsubscrieIndices = [
     match.index,
     match.index + 11
   ];
 
-  var urlRegex = /href=['"]([^'"]+)['"]/g;
-  var urls = [];
+  const urlRegex = /href=['"]([^'"]+)['"]/g;
+  const urls = [];
   while ((match = urlRegex.exec(bodyLower))) {
-    var url = match[1];
-    var urlIndices = [
+    const url = match[1];
+    const urlIndices = [
       match.index,
       bodyLower.indexOf('</a>', match.index),
       bodyLower.lastIndexOf('<a ', match.index)
     ];
 
-    var score = _.min(_.flatten(
+    const score = _.min(_.flatten(
       urlIndices.map(urlIndex =>
         unsubscrieIndices.map(unsubIndex =>
           Math.abs(urlIndex - unsubIndex)
@@ -43,7 +43,7 @@ function getUnsubscribeUrl(message: ?Object): ?string {
     });
   }
 
-  var closestUrl = _.min(urls, u => u.score);
+  const closestUrl = _.min(urls, u => u.score);
 
   if (closestUrl.score > 100) {
     return null;

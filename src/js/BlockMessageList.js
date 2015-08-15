@@ -1,13 +1,13 @@
 /** @flow */
 
-var Colors = require('./Colors');
-var LineClamp = require('./LineClamp');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var React = require('react/addons');
-var RelativeDate = require('./RelativeDate');
-var _ = require('lodash');
-var {Component, PropTypes, findDOMNode} = require('react/addons');
+const Colors = require('./Colors');
+const LineClamp = require('./LineClamp');
+const PureRender = require('./PureRender');
+const Radium = require('radium');
+const React = require('react/addons');
+const RelativeDate = require('./RelativeDate');
+const _ = require('lodash');
+const {Component, PropTypes, findDOMNode} = require('react/addons');
 
 @PureRender
 @Radium
@@ -75,7 +75,7 @@ class BlockMessageListItem extends Component {
   };
 
   render(): any {
-    var msg = this.props.message;
+    const msg = this.props.message;
     return (
       <li
         key={msg.id}
@@ -123,7 +123,7 @@ class BlockMessageListItem extends Component {
   }
 }
 
-var styles = {
+const styles = {
   list: {
     root: {
       cursor: 'pointer',

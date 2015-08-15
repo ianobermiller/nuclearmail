@@ -1,6 +1,6 @@
 /** @flow */
 
-var ActionType = {
+const ActionType = {
   Label: {
     LOAD_ALL_REQUEST: '',
     LOAD_ALL_SUCCESS: '',
@@ -48,7 +48,7 @@ var ActionType = {
   }
 };
 
-var ActionTypeHax: any = ActionType;
+const ActionTypeHax: any = ActionType;
 Object.keys(ActionTypeHax).forEach(category => {
   Object.keys(ActionTypeHax[category]).forEach(actionType => {
     ActionTypeHax[category][actionType] = category + '.' + actionType;

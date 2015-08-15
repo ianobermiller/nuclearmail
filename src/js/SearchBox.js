@@ -1,8 +1,8 @@
 /** @flow */
 
-var Button = require('./Button');
-var Textbox = require('./Textbox');
-var {Component, PropTypes} = require('react');
+const Button = require('./Button');
+const Textbox = require('./Textbox');
+const {Component, PropTypes} = require('react');
 
 class SearchBox extends Component {
   static propTypes = {
@@ -47,7 +47,7 @@ class SearchBox extends Component {
   }
 }
 
-var styles = {
+const styles = {
   input: {
     marginRight: '8px',
     width: '400px',

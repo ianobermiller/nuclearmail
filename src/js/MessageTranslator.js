@@ -1,13 +1,13 @@
 /** @flow */
 
-var _ = require('lodash');
-var utf8 = require('utf8');
+const _ = require('lodash');
+const utf8 = require('utf8');
 
 import type {TMessage} from './Types';
 type Message = typeof TMessage;
 
 function translateMessage(rawMessage: Object): Message {
-  var msg = rawMessage.payload;
+  const msg = rawMessage.payload;
   return {
     body: decodeBody(rawMessage),
     date: new Date(pluckHeader(msg.headers, 'Date')),
@@ -35,7 +35,7 @@ function hasLabel(rawMessage: Object, label: string): boolean {
 }
 
 function parseNameAndEmail(input: string): {name: string; email: string;} {
-  var i = input.indexOf('<');
+  const i = input.indexOf('<');
   return {
     // remove surrounding quotes from name
     name: input.substring(0, i).trim().replace(/(^")|("$)/g, ''),
@@ -44,8 +44,8 @@ function parseNameAndEmail(input: string): {name: string; email: string;} {
 }
 
 function decodeBody(rawMessage: Object) {
-  var parts = (rawMessage.payload.parts || []).concat(rawMessage.payload);
-  var result = {};
+  const parts = (rawMessage.payload.parts || []).concat(rawMessage.payload);
+  const result = {};
 
   collectParts(parts, result);
 
@@ -59,8 +59,8 @@ function collectParts(parts, result) {
 
   parts.forEach(part => {
     if (part.body.data) {
-      var contentTypeHeader = pluckHeader(part.headers, 'Content-Type');
-      var contentType = contentTypeHeader ?
+      const contentTypeHeader = pluckHeader(part.headers, 'Content-Type');
+      const contentType = contentTypeHeader ?
         contentTypeHeader.split(';')[0] :
         'text/html';
       result[contentType] =
@@ -80,7 +80,7 @@ function decodeUrlSafeBase64(s) {
 function pluckHeader(
   headers: Array<{name: string; value: string}>, name: string
 ): ?string {
-  var header = headers ? headers.filter(h => h.name === name)[0] : null;
+  const header = headers ? headers.filter(h => h.name === name)[0] : null;
   return header ? header.value : null;
 }
 

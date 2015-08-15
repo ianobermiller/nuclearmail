@@ -1,6 +1,6 @@
 /** @flow */
 
-var ActionType = require('./ActionType');
+const ActionType = require('./ActionType');
 
 module.exports = (state = [], action) => {
   switch (action.type) {

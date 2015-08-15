@@ -1,13 +1,13 @@
 /** @flow */
 
-var Colors = require('./Colors');
-var HTMLSandbox = require('./HTMLSandbox');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var RelativeDate = require('./RelativeDate');
-var _ = require('lodash');
-var asap = require('asap');
-var {Component, PropTypes, findDOMNode} = require('react/addons');
+const Colors = require('./Colors');
+const HTMLSandbox = require('./HTMLSandbox');
+const PureRender = require('./PureRender');
+const Radium = require('radium');
+const RelativeDate = require('./RelativeDate');
+const _ = require('lodash');
+const asap = require('asap');
+const {Component, PropTypes, findDOMNode} = require('react/addons');
 
 @PureRender
 @Radium
@@ -50,8 +50,8 @@ class MessageView extends Component {
       );
     }
 
-    var msg = this.props.message;
-    var body = msg.body['text/html'] ||
+    const msg = this.props.message;
+    const body = msg.body['text/html'] ||
       '<div style="white-space:pre">' +
         _.escape(msg.body['text/plain']) +
       '</div>';
@@ -99,7 +99,7 @@ class MessageView extends Component {
   }
 }
 
-var styles = {
+const styles = {
   root: {
     margin: '4px 12px 12px 12px',
   },

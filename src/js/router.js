@@ -5,7 +5,7 @@ type Query = {[key: string]: string;};
 
 // Proxy calls to router to avoid circular dependencies
 // https://github.com/rackt/react-router/blob/master/docs/guides/flux.md#circular-dependencies-in-actions
-var router: any;
+let router;
 
 module.exports = {
   getCurrentPath(): string {
@@ -37,8 +37,8 @@ module.exports = {
   }
 };
 
-var Router = require('react-router');
-var routes = require('./routes');
+const Router = require('react-router');
+const routes = require('./routes');
 
 router = Router.create({
   routes: routes,

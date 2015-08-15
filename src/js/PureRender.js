@@ -1,4 +1,4 @@
-var shallowEqual = require('react/lib/shallowEqual');
+const shallowEqual = require('react/lib/shallowEqual');
 
 module.exports = function PureRender(Component) {
   Component.prototype.shouldComponentUpdate = function(nextProps, nextState) {

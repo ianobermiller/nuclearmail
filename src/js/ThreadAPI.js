@@ -1,10 +1,10 @@
 /** @flow */
 /* global gapi */
 
-var ActionType = require('./ActionType');
-var API = require('./API');
-var MessageTranslator = require('./MessageTranslator');
-var _ = require('lodash');
+const ActionType = require('./ActionType');
+const API = require('./API');
+const MessageTranslator = require('./MessageTranslator');
+const _ = require('lodash');
 
 function getByID(
   options: {id: string}
@@ -38,7 +38,7 @@ function list(
       q: options.query || null,
       pageToken: options.pageToken || null,
     })).then(listResponse => {
-      var threadIDs = (listResponse.threads || []).map(m => m.id);
+      const threadIDs = (listResponse.threads || []).map(m => m.id);
 
       if (!threadIDs.length) {
         return Promise.resolve({
@@ -49,7 +49,7 @@ function list(
         });
       }
 
-      var batch = gapi.client.newHttpBatch();
+      const batch = gapi.client.newHttpBatch();
       threadIDs.forEach(id => {
         batch.add(
           gapi.client.gmail.users.threads.get({userId: 'me', id}),
@@ -58,8 +58,8 @@ function list(
       });
 
       return API.execute(batch).then(batchResponse => {
-        var results = threadIDs.map(threadID => batchResponse[threadID].result);
-        var {threads, messages} = processThreadResults(results);
+        const results = threadIDs.map(threadID => batchResponse[threadID].result);
+        const {threads, messages} = processThreadResults(results);
 
         return {
           nextPageToken: listResponse.nextPageToken,
@@ -73,9 +73,9 @@ function list(
 }
 
 function processThreadResults(results) {
-  var allMessages = [];
-  var threads = results.filter(thread => thread).map(thread => {
-    var messages = thread.messages.map(MessageTranslator.translate);
+  const allMessages = [];
+  const threads = results.filter(thread => thread).map(thread => {
+    const messages = thread.messages.map(MessageTranslator.translate);
     allMessages.push.apply(allMessages, messages);
     return {
       id: thread.id,

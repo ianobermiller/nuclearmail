@@ -3,10 +3,10 @@
 import store from './store';
 import {EventEmitter} from 'events';
 
-var EVENT = 'dispatch';
-var emitter = new EventEmitter();
+const EVENT = 'dispatch';
+const emitter = new EventEmitter();
 
-var Dispatcher = {
+const Dispatcher = {
   dispatch(action: any) {
     store.dispatch(action); // shim until redux migration complete
     emitter.emit(EVENT, action);

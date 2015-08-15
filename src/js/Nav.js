@@ -1,9 +1,9 @@
 /** @flow */
 
-var Colors = require('./Colors');
-var Radium = require('radium');
-var PureRender = require('./PureRender');
-var {Component, PropTypes} = require('react/addons');
+const Colors = require('./Colors');
+const Radium = require('radium');
+const PureRender = require('./PureRender');
+const {Component, PropTypes} = require('react/addons');
 
 @PureRender
 @Radium
@@ -86,7 +86,7 @@ class NavItem extends Component {
   }
 }
 
-var styles = {
+const styles = {
   list: {
     display: 'flex',
   },

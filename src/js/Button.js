@@ -1,10 +1,10 @@
 /** @flow */
 
-var Colors = require('./Colors');
-var PureRender = require('./PureRender');
-var Radium = require('radium');
-var StylePropTypes = require('./StylePropTypes');
-var {Component, PropTypes} = require('react/addons');
+const Colors = require('./Colors');
+const PureRender = require('./PureRender');
+const Radium = require('radium');
+const StylePropTypes = require('./StylePropTypes');
+const {Component, PropTypes} = require('react/addons');
 
 @PureRender
 @Radium
@@ -41,7 +41,7 @@ class Button extends Component {
   }
 }
 
-var styles = {
+const styles = {
   root: {
     border: 'none',
     borderRadius: '2px',

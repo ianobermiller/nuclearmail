@@ -1,8 +1,8 @@
 /** @flow */
 
-var Color = require('./Color');
+const Color = require('./Color');
 
-var Colors = {
+const Colors = {
   accent: new Color('#ff6817'),
   black: new Color('#000'),
   gray1: new Color('#eee'),

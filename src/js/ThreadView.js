@@ -97,15 +97,15 @@ class ThreadView extends Component {
   };
 
   render(): ?ReactComponent {
-    var messages = this.props.messages;
+    const messages = this.props.messages;
 
     if (!messages) {
       return null;
     }
 
-    var subject = messages[0].subject;
-    var isStarred = messages.some(m => m.isStarred);
-    var isInInbox = messages.some(m => m.isInInbox);
+    const subject = messages[0].subject;
+    const isStarred = messages.some(m => m.isStarred);
+    const isInInbox = messages.some(m => m.isInInbox);
 
     return (
       <div style={[styles.root, this.props.style]}>
@@ -154,7 +154,7 @@ class ThreadView extends Component {
   }
 }
 
-var styles = {
+const styles = {
   root: {
     display: 'flex',
     flexDirection: 'column',
