@@ -1,7 +1,6 @@
 /** @flow */
 
 import ActionType from './ActionType';
-import Dispatcher from './Dispatcher';
 import ThreadAPI from './ThreadAPI';
 
 export function load(threadID) {
