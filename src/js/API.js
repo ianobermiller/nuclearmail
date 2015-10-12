@@ -1,11 +1,11 @@
 /** @flow */
 /* global gapi */
 
-const ClientID = require('./ClientID');
-const EventEmitter = require('events').EventEmitter;
-const RSVP = require('rsvp');
+import ActionType from './ActionType';
+import ClientID from './ClientID';
+import RSVP from 'rsvp';
+import store from './store';
 
-const emitter = new EventEmitter();
 let isAvailable = false;
 let pendingRequests = [];
 
@@ -18,22 +18,25 @@ window.handleGoogleClientLoad = function() {
 };
 
 function tryAuthorize(immediate) {
-  const config = {
-    /*eslint-disable camelcase*/
-    client_id: '108971935462-ied7vg89qivj0bsso4imp6imhvpuso5u.apps.googleusercontent.com',
-    /*eslint-enable*/
-    scope: 'email https://www.googleapis.com/auth/gmail.modify',
-    immediate
-  };
-  gapi.auth.authorize(config, whenAuthenticated);
+  store.dispatch({type: ActionType.Authorization.REQUEST});
+  gapi.auth.authorize(
+    {
+      /*eslint-disable camelcase*/
+      client_id: '108971935462-ied7vg89qivj0bsso4imp6imhvpuso5u.apps.googleusercontent.com',
+      /*eslint-enable*/
+      scope: 'email https://www.googleapis.com/auth/gmail.modify',
+      immediate
+    },
+    whenAuthenticated
+  );
 }
 
 function whenAuthenticated(authResult) {
   if (authResult && !authResult.error) {
-    emitter.emit('isAuthorized', true);
+    store.dispatch({type: ActionType.Authorization.SUCCESS});
     gapi.client.load('gmail', 'v1', whenLoaded);
   } else {
-    emitter.emit('isAuthorized', false);
+    store.dispatch({type: ActionType.Authorization.FAILURE});
   }
 }
 
@@ -65,7 +68,7 @@ function wrap(
 ): Promise {
   const id = ClientID.get();
   inProgressAPICalls[id] = true;
-  emitter.emit('start', id);
+  store.dispatch({type: ActionType.Request.START});
 
   const promise = promiseGoogleApiAvailable().then(() => {
     return getPromise();
@@ -75,27 +78,14 @@ function wrap(
 
   return promise.finally(() => {
     delete inProgressAPICalls[id];
-    emitter.emit('stop', id);
     if (!Object.keys(inProgressAPICalls).length) {
-      emitter.emit('allStopped');
+      store.dispatch({type: ActionType.Request.ALL_STOPPED});
     }
   });
 }
 
 function isInProgress(): boolean {
   return !!Object.keys(inProgressAPICalls).length;
-}
-
-function subscribe(
-  eventName: string,
-  callback: (value: ?boolean) => void
-): {remove: () => void;} {
-  emitter.on(eventName, callback);
-  return {
-    remove() {
-      emitter.removeListener(eventName, callback);
-    }
-  };
 }
 
 /**
@@ -121,6 +111,5 @@ module.exports = {
   execute,
   isInProgress,
   login: tryAuthorize.bind(null, /*immediate*/ false),
-  subscribe,
   wrap,
 };

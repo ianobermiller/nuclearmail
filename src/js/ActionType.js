@@ -1,6 +1,12 @@
 /** @flow */
 
 const ActionType = {
+  Authorization: {
+    REQUEST: '',
+    SUCCESS: '',
+    FAILURE: '',
+  },
+
   Label: {
     LOAD_ALL_REQUEST: '',
     LOAD_ALL_SUCCESS: '',
@@ -9,6 +15,11 @@ const ActionType = {
 
   Message: {
     SELECT: '',
+  },
+
+  Request: {
+    START: '',
+    ALL_STOPPED: '',
   },
 
   Thread: {

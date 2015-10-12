@@ -8,7 +8,6 @@ import _ from 'lodash';
 import asap from 'asap';
 import {Component, PropTypes} from 'react';
 
-import API from './API';
 import BlockMessageList from './BlockMessageList';
 import Button from './Button';
 import Colors from './Colors';
@@ -22,7 +21,6 @@ import Scroller from './Scroller';
 import SearchBox from './SearchBox';
 import Spinner from './Spinner';
 import * as ThreadActions from './ThreadActions';
-import isOffline from './isOffline';
 
 const PAGE_SIZE = 20;
 
@@ -30,10 +28,13 @@ const dummySubscription = {remove() {}};
 
 @connect(
   state => ({
+    isAuthorized: state.authorization.isAuthorized,
+    isAuthorizing: state.authorization.isAuthorizing,
+    isLoading: state.isLoading,
     labels: state.labels,
     messagesByID: state.messagesByID,
-    threadsByID: state.threadsByID,
     threadListByQuery: state.threadListByQuery,
+    threadsByID: state.threadsByID,
   }),
   dispatch => bindActionCreators({
     loadLabels: LabelActions.loadAll,
@@ -51,9 +52,6 @@ class App extends Component {
   };
 
   state = {
-    isAuthorizing: true,
-    isAuthorized: false,
-    isLoading: !isOffline(),
     maxResultCount: PAGE_SIZE,
     query: 'in:inbox',
     queryProgress: 'in:inbox',
@@ -74,26 +72,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this._subscriptions = [];
-    this._subscriptions.push(API.subscribe('start', () => {
-      if (!this.state.isLoading) {
-        asap(() => this.setState({isLoading: true}));
-      }
-    }));
-    this._subscriptions.push(API.subscribe('allStopped', () => {
-      // run outside of this context in case the api call was synchronous
-      asap(() => this.setState({isLoading: false}));
-    }));
-    this._subscriptions.push(API.subscribe('isAuthorized', isAuthorized => {
-      this.setState({isAuthorizing: false, isAuthorized});
-    }));
-
     this.bindKey('k', this._selectNextMessage);
     this.bindKey('j', this._selectPreviousMessage);
-  }
-
-  componentWillUnmount() {
-    this._subscriptions.forEach(s => s.remove());
   }
 
   _tryLoad(state) {
@@ -197,7 +177,7 @@ class App extends Component {
 
     return (
       <div style={styles.app}>
-        {this.state.isLoading ? <Spinner /> : null}
+        {this.props.isLoading ? <Spinner /> : null}
         <div style={styles.header}>
           <span onClick={this._onLogoClick} style={styles.logo}>
             ☢
@@ -250,7 +230,7 @@ class App extends Component {
             />
           </div>
         </div>
-        {(!this.state.isAuthorizing && !this.state.isAuthorized) ? (
+        {(!this.props.isAuthorizing && !this.props.isAuthorized) ? (
           <LoginModal />
         ) : null}
       </div>
