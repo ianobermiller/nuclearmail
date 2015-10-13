@@ -21,6 +21,10 @@ import Scroller from './Scroller';
 import SearchBox from './SearchBox';
 import Spinner from './Spinner';
 import * as ThreadActions from './ThreadActions';
+import {
+  lastMessageInThreadsForSearchSelector,
+  threadsForSearchSelector,
+} from './Selectors';
 
 const PAGE_SIZE = 20;
 
@@ -34,6 +38,8 @@ const PAGE_SIZE = 20;
     threadListByQuery: state.threadListByQuery,
     threadsByID: state.threadsByID,
     searchQuery: state.app.searchQuery,
+    threads: threadsForSearchSelector(state),
+    lastMessageInEachThread: lastMessageInThreadsForSearchSelector(state),
   }),
   dispatch => bindActionCreators({
     loadLabels: LabelActions.loadAll,
@@ -114,7 +120,7 @@ class App extends Component {
   };
 
   _getNextMessage(): ?Object {
-    const messages = this._getMessages();
+    const messages = this.props.lastMessageInEachThread;
     if (!messages) {
       return null;
     }
@@ -134,7 +140,7 @@ class App extends Component {
   }
 
   _selectPreviousMessage = () => {
-    const messages = this._getMessages();
+    const messages = this.props.lastMessageInEachThread;
     if (!messages) {
       return null;
     }
@@ -160,23 +166,12 @@ class App extends Component {
     window.location.reload();
   }
 
-  _getMessages = () => {
-    const {messagesByID, threadsByID, threadListByQuery} = this.props;
-    const threadList = threadListByQuery[this.props.searchQuery];
-    const threads = threadList ?
-      threadList.threadIDs.map(threadID => threadsByID[threadID]) :
-      [];
-    return threads && threads.map(
-      thread => messagesByID[_.last(thread.messageIDs)]
-    );
-  }
-
   render(): any {
     const {threadListByQuery} = this.props;
     const threadList = threadListByQuery[this.props.searchQuery];
     const hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
     const loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
-    const messages = this._getMessages();
+    const messages = this.props.lastMessageInEachThread;
 
     return (
       <div style={styles.app}>

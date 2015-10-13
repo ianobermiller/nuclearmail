@@ -21,6 +21,7 @@
     "redux": "^3.0.2",
     "redux-react-router": "^1.0.0-beta3",
     "redux-thunk": "^0.1.0",
+    "reselect": "^2.0.0",
     "rsvp": "^3.0.18",
     "rx-lite": "^2.5.2",
     "tinytinycolor": "0.0.3",
