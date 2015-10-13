@@ -8,6 +8,7 @@ import _ from 'lodash';
 import asap from 'asap';
 import {Component, PropTypes} from 'react';
 
+import * as AppActions from './AppActions';
 import BlockMessageList from './BlockMessageList';
 import Button from './Button';
 import Colors from './Colors';
@@ -32,12 +33,14 @@ const PAGE_SIZE = 20;
     messagesByID: state.messagesByID,
     threadListByQuery: state.threadListByQuery,
     threadsByID: state.threadsByID,
+    searchQuery: state.app.searchQuery,
   }),
   dispatch => bindActionCreators({
     loadLabels: LabelActions.loadAll,
     loadThreadList: ThreadActions.loadList,
     refresh: ThreadActions.refresh,
     markAsRead: ThreadActions.markAsRead,
+    search: AppActions.search,
     pushState,
   }, dispatch),
 )
@@ -51,20 +54,19 @@ class App extends Component {
 
   state = {
     maxResultCount: PAGE_SIZE,
-    query: 'in:inbox',
-    queryProgress: 'in:inbox',
+    queryProgress: null,
   };
 
   componentWillMount() {
-    this._tryLoad(this.state);
+    this._tryLoad(this.props, this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    this._tryLoad(nextState);
+    this._tryLoad(nextProps, nextState);
   }
 
   componentWillReceiveProps(nextProps) {
-    this._tryLoad(this.state);
+    this._tryLoad(nextProps, this.state);
   }
 
   componentDidMount() {
@@ -72,8 +74,8 @@ class App extends Component {
     this.bindKey('j', this._selectPreviousMessage);
   }
 
-  _tryLoad(state) {
-    this.props.loadThreadList(state.query, state.maxResultCount);
+  _tryLoad(props, state) {
+    this.props.loadThreadList(props.searchQuery, state.maxResultCount);
   }
 
   _onRequestMoreItems = () => {
@@ -100,8 +102,8 @@ class App extends Component {
   };
 
   _onQuerySubmit = (query: string) => {
+    this.props.search(query);
     this.setState({
-      query: query,
       queryProgress: query,
       maxResultCount: PAGE_SIZE,
     });
@@ -160,7 +162,7 @@ class App extends Component {
 
   _getMessages = () => {
     const {messagesByID, threadsByID, threadListByQuery} = this.props;
-    const threadList = threadListByQuery[this.state.query];
+    const threadList = threadListByQuery[this.props.searchQuery];
     const threads = threadList ?
       threadList.threadIDs.map(threadID => threadsByID[threadID]) :
       [];
@@ -171,7 +173,7 @@ class App extends Component {
 
   render(): any {
     const {threadListByQuery} = this.props;
-    const threadList = threadListByQuery[this.state.query];
+    const threadList = threadListByQuery[this.props.searchQuery];
     const hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
     const loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
     const messages = this._getMessages();
@@ -187,7 +189,9 @@ class App extends Component {
           <SearchBox
             onQueryChange={this._onQueryChange}
             onQuerySubmit={this._onQuerySubmit}
-            query={this.state.queryProgress}
+            query={this.state.queryProgress === null ?
+              this.props.searchQuery :
+              this.state.queryProgress}
             style={styles.search}
           />
           <Button onClick={this._onRefresh} style={styles.refresh}>
@@ -196,7 +200,7 @@ class App extends Component {
         </div>
         <Nav
           onQueryChanged={this._onQuerySubmit}
-          query={this.state.query}
+          query={this.props.searchQuery}
         />
         <div style={styles.messages}>
           {messages ? (

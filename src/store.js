@@ -4,6 +4,7 @@ import {devTools, persistState} from 'redux-devtools';
 import {createHashHistory} from 'history';
 import thunk from 'redux-thunk';
 
+import AppReducer from './AppReducer';
 import AuthorizationReducer from './AuthorizationReducer';
 import LabelReducer from './LabelReducer';
 import LoadingReducer from './LoadingReducer';
@@ -12,6 +13,7 @@ import ThreadReducer from './ThreadReducer';
 import ThreadListReducer from './ThreadListReducer';
 
 const reducer = combineReducers({
+  app: AppReducer,
   authorization: AuthorizationReducer,
   isLoading: LoadingReducer,
   labels: LabelReducer,

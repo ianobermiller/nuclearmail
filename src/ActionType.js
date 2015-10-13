@@ -1,6 +1,10 @@
 /** @flow */
 
 const ActionType = {
+  App: {
+    SEARCH: '',
+  },
+
   Authorization: {
     REQUEST: '',
     SUCCESS: '',
