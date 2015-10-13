@@ -3,11 +3,15 @@ import _ from 'lodash';
 
 import getUnsubscribeUrl from './getUnsubscribeUrl';
 
-const searchQuerySelector = state => state.app.searchQuery;
 const threadListByQuerySelector = state => state.threadListByQuery;
 const threadsByIDSelector = state => state.threadsByID;
 const messagesByIDSelector = state => state.messagesByID;
 
+export const isAuthorizedSelector = state => state.authorization.isAuthorized;
+export const isAuthorizingSelector = state => state.authorization.isAuthorizing;
+export const isLoadingSelector = state => state.isLoading;
+export const labelsSelector = state => state.labels;
+export const searchQuerySelector = state => state.app.searchQuery;
 export const selectedMessageIDSelector = state => state.router.params.messageID;
 export const selectedThreadIDSelector = state => state.router.params.threadID;
 

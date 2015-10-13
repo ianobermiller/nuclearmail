@@ -23,22 +23,27 @@ import Spinner from './Spinner';
 import * as ThreadActions from './ThreadActions';
 import {
   hasMoreThreadsSelector,
+  isAuthorizedSelector,
+  isAuthorizingSelector,
+  isLoadingSelector,
+  labelsSelector,
   lastMessageInEachThreadSelector,
   loadedThreadCountSelector,
-  threadsSelector,
   nextMessageSelector,
   prevMessageSelector,
+  searchQuerySelector,
+  threadsSelector,
 } from './Selectors';
 
 const PAGE_SIZE = 20;
 
 @connect(
   state => ({
-    isAuthorized: state.authorization.isAuthorized,
-    isAuthorizing: state.authorization.isAuthorizing,
-    isLoading: state.isLoading,
-    labels: state.labels,
-    searchQuery: state.app.searchQuery,
+    isAuthorized: isAuthorizedSelector(state),
+    isAuthorizing: isAuthorizingSelector(state),
+    isLoading: isLoadingSelector(state),
+    labels: labelsSelector(state),
+    searchQuery: searchQuerySelector(state),
     threads: threadsSelector(state),
     lastMessageInEachThread: lastMessageInEachThreadSelector(state),
     hasMoreThreads: hasMoreThreadsSelector(state),
