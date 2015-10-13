@@ -15,6 +15,7 @@ import getUnsubscribeUrl from './getUnsubscribeUrl';
 
 @connect(
   state => ({
+    params: state.router.params,
     messagesByID: state.messagesByID,
     threadsByID: state.threadsByID,
   }),

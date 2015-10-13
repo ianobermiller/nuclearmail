@@ -233,7 +233,6 @@ class App extends Component {
               this.props.children,
               {
                 onGoToNextMessage: this._selectNextMessage,
-                params: this.props.params,
               }
             )}
           </div>
