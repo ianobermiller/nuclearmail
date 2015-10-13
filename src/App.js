@@ -22,8 +22,10 @@ import SearchBox from './SearchBox';
 import Spinner from './Spinner';
 import * as ThreadActions from './ThreadActions';
 import {
-  lastMessageInThreadsForSearchSelector,
-  threadsForSearchSelector,
+  hasMoreThreadsSelector,
+  lastMessageInThreadsSelector,
+  loadedThreadCountSelector,
+  threadsSelector,
 } from './Selectors';
 
 const PAGE_SIZE = 20;
@@ -38,8 +40,10 @@ const PAGE_SIZE = 20;
     threadListByQuery: state.threadListByQuery,
     threadsByID: state.threadsByID,
     searchQuery: state.app.searchQuery,
-    threads: threadsForSearchSelector(state),
-    lastMessageInEachThread: lastMessageInThreadsForSearchSelector(state),
+    threads: threadsSelector(state),
+    lastMessageInEachThread: lastMessageInThreadsSelector(state),
+    hasMoreThreads: hasMoreThreadsSelector(state),
+    loadedThreadCount: loadedThreadCountSelector(state),
   }),
   dispatch => bindActionCreators({
     loadLabels: LabelActions.loadAll,
@@ -167,10 +171,7 @@ class App extends Component {
   }
 
   render(): any {
-    const {threadListByQuery} = this.props;
-    const threadList = threadListByQuery[this.props.searchQuery];
-    const hasMoreThreads = threadList ? !!threadList.nextPageToken : true;
-    const loadedThreadCount = threadList ? threadList.threadIDs.length : 0;
+    const {hasMoreThreads, loadedThreadCount} = this.props;
     const messages = this.props.lastMessageInEachThread;
 
     return (

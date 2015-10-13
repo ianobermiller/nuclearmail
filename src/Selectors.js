@@ -6,7 +6,7 @@ const threadListByQuerySelector = state => state.threadListByQuery;
 const threadsByIDSelector = state => state.threadsByID;
 const messagesByIDSelector = state => state.messagesByID;
 
-export const threadsForSearchSelector = createSelector([
+export const threadsSelector = createSelector([
   searchQuerySelector,
   threadListByQuerySelector,
   threadsByIDSelector,
@@ -21,9 +21,9 @@ export const threadsForSearchSelector = createSelector([
     [];
 });
 
-export const lastMessageInThreadsForSearchSelector = createSelector([
+export const lastMessageInThreadsSelector = createSelector([
   messagesByIDSelector,
-  threadsForSearchSelector
+  threadsSelector
 ], (
   messagesByID,
   threads
@@ -31,4 +31,26 @@ export const lastMessageInThreadsForSearchSelector = createSelector([
   return threads && threads.map(
     thread => messagesByID[_.last(thread.messageIDs)]
   );
+});
+
+export const hasMoreThreadsSelector = createSelector([
+  searchQuerySelector,
+  threadListByQuerySelector,
+], (
+  searchQuery,
+  threadListByQuery,
+) => {
+  const threadList = threadListByQuery[searchQuery];
+  return !threadList || !!threadList.nextPageToken;
+});
+
+export const loadedThreadCountSelector = createSelector([
+  searchQuerySelector,
+  threadListByQuerySelector,
+], (
+  searchQuery,
+  threadListByQuery,
+) => {
+  const threadList = threadListByQuery[searchQuery];
+  return threadList ? threadList.threadIDs.length : 0;
 });
