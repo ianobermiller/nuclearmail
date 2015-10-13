@@ -23,9 +23,11 @@ import Spinner from './Spinner';
 import * as ThreadActions from './ThreadActions';
 import {
   hasMoreThreadsSelector,
-  lastMessageInThreadsSelector,
+  lastMessageInEachThreadSelector,
   loadedThreadCountSelector,
   threadsSelector,
+  nextMessageSelector,
+  prevMessageSelector,
 } from './Selectors';
 
 const PAGE_SIZE = 20;
@@ -36,14 +38,13 @@ const PAGE_SIZE = 20;
     isAuthorizing: state.authorization.isAuthorizing,
     isLoading: state.isLoading,
     labels: state.labels,
-    messagesByID: state.messagesByID,
-    threadListByQuery: state.threadListByQuery,
-    threadsByID: state.threadsByID,
     searchQuery: state.app.searchQuery,
     threads: threadsSelector(state),
-    lastMessageInEachThread: lastMessageInThreadsSelector(state),
+    lastMessageInEachThread: lastMessageInEachThreadSelector(state),
     hasMoreThreads: hasMoreThreadsSelector(state),
     loadedThreadCount: loadedThreadCountSelector(state),
+    nextMessage: nextMessageSelector(state),
+    prevMessage: prevMessageSelector(state),
   }),
   dispatch => bindActionCreators({
     loadLabels: LabelActions.loadAll,
@@ -120,46 +121,11 @@ class App extends Component {
   }
 
   _selectNextMessage = () => {
-    this._onMessageSelected(this._getNextMessage());
+    this._onMessageSelected(this.props.nextMessage);
   };
 
-  _getNextMessage(): ?Object {
-    const messages = this.props.lastMessageInEachThread;
-    if (!messages) {
-      return null;
-    }
-
-    const selectedMessageIndex = this.props.params.messageID &&
-      messages.findIndex(
-        msg => msg.id === this.props.params.messageID
-      );
-
-    if (!this.props.params.messageID) {
-      return messages[0];
-    } else if (selectedMessageIndex < 0 || selectedMessageIndex === messages.length) {
-      return null;
-    } else {
-      return messages[selectedMessageIndex + 1];
-    }
-  }
-
   _selectPreviousMessage = () => {
-    const messages = this.props.lastMessageInEachThread;
-    if (!messages) {
-      return null;
-    }
-
-    const selectedMessageIndex = messages.findIndex(
-      msg => msg.id === this.props.params.messageID
-    );
-
-    if (!this.props.params.messageID) {
-      this._onMessageSelected(messages[0]);
-    } else if (selectedMessageIndex < 0 || selectedMessageIndex === 0) {
-      this._onMessageSelected(null);
-    } else {
-      this._onMessageSelected(messages[selectedMessageIndex - 1]);
-    }
+    this._onMessageSelected(this.props.prevMessage);
   }
 
   _onRefresh = () => {
