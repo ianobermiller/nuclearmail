@@ -23,8 +23,6 @@ import * as ThreadActions from './ThreadActions';
 
 const PAGE_SIZE = 20;
 
-const dummySubscription = {remove() {}};
-
 @connect(
   state => ({
     isAuthorized: state.authorization.isAuthorized,
@@ -56,8 +54,6 @@ class App extends Component {
     query: 'in:inbox',
     queryProgress: 'in:inbox',
   };
-
-  _subscriptions = [dummySubscription];
 
   componentWillMount() {
     this._tryLoad(this.state);
