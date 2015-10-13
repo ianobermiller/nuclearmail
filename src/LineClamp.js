@@ -2,7 +2,7 @@
 
 const clamp = require('./clamp');
 const PureRender = require('./PureRender');
-const {Component, PropTypes, findDOMNode} = require('react/addons');
+const {Component, PropTypes, findDOMNode} = require('react');
 
 @PureRender
 class LineClamp extends Component {

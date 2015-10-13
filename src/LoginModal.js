@@ -4,7 +4,7 @@ const API = require('./API');
 const Button = require('./Button');
 const Colors = require('./Colors');
 const PureRender = require('./PureRender');
-const {Component} = require('react/addons');
+const {Component} = require('react');
 
 @PureRender
 class LoginModal extends Component {

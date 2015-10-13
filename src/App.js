@@ -3,7 +3,7 @@
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {RouteHandler} from 'react-router';
+import {pushState} from 'redux-react-router';
 import _ from 'lodash';
 import asap from 'asap';
 import {Component, PropTypes} from 'react';
@@ -14,7 +14,6 @@ import Colors from './Colors';
 import KeyBinder from './KeyBinder';
 import * as LabelActions from './LabelActions';
 import LoginModal from './LoginModal';
-import MessageActions from './MessageActions';
 import Nav from './Nav';
 import PureRender from './PureRender';
 import Scroller from './Scroller';
@@ -41,6 +40,7 @@ const dummySubscription = {remove() {}};
     loadThreadList: ThreadActions.loadList,
     refresh: ThreadActions.refresh,
     markAsRead: ThreadActions.markAsRead,
+    pushState,
   }, dispatch),
 )
 @KeyBinder
@@ -67,7 +67,7 @@ class App extends Component {
     this._tryLoad(nextState);
   }
 
-  componentWillRecieveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this._tryLoad(this.state);
   }
 
@@ -88,7 +88,12 @@ class App extends Component {
     if (message && message.isUnread) {
       this.props.markAsRead(message.threadID);
     }
-    MessageActions.select(message);
+
+    if (!message) {
+      this.props.pushState(null, '/')
+    } else {
+      this.props.pushState(null, `/thread/${message.threadID}/message/${message.id}/`);
+    }
   };
 
   _onQueryChange = (query: string) => {
@@ -224,10 +229,13 @@ class App extends Component {
             <div style={styles.messagesList} />
           )}
           <div style={styles.threadView}>
-            <RouteHandler
-              onGoToNextMessage={this._selectNextMessage}
-              params={this.props.params}
-            />
+            {this.props.children && React.cloneElement(
+              this.props.children,
+              {
+                onGoToNextMessage: this._selectNextMessage,
+                params: this.props.params,
+              }
+            )}
           </div>
         </div>
         {(!this.props.isAuthorizing && !this.props.isAuthorized) ? (

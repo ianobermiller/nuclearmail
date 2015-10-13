@@ -15,7 +15,8 @@ const Colors = require('./Colors');
 const InfiniteScroll = require('./InfiniteScroll');
 const PureRender = require('./PureRender');
 const Radium = require('radium');
-const {Component, PropTypes, findDOMNode} = require('react/addons');
+const {Component, PropTypes} = require('react');
+const {findDOMNode} = require('react-dom');
 
 const scrollBarWidth = '15px';
 

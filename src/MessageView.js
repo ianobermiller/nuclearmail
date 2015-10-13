@@ -7,7 +7,7 @@ const Radium = require('radium');
 const RelativeDate = require('./RelativeDate');
 const _ = require('lodash');
 const asap = require('asap');
-const {Component, PropTypes, findDOMNode} = require('react/addons');
+const {Component, PropTypes, findDOMNode} = require('react');
 
 @PureRender
 @Radium

@@ -1,4 +1,7 @@
-import {applyMiddleware, combineReducers, createStore} from 'redux';
+import {applyMiddleware, combineReducers, createStore, compose} from 'redux';
+import {reduxReactRouter, routerStateReducer} from 'redux-react-router';
+import {devTools, persistState} from 'redux-devtools';
+import {createHashHistory} from 'history';
 import thunk from 'redux-thunk';
 
 import AuthorizationReducer from './AuthorizationReducer';
@@ -13,10 +16,15 @@ const reducer = combineReducers({
   isLoading: LoadingReducer,
   labels: LabelReducer,
   messagesByID: MessageReducer,
+  router: routerStateReducer,
   threadListByQuery: ThreadListReducer,
   threadsByID: ThreadReducer,
 });
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const store = createStoreWithMiddleware(reducer);
+const store = compose(
+  applyMiddleware(thunk),
+  reduxReactRouter({createHistory: createHashHistory}),
+  devTools(),
+  persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/)),
+)(createStore)(reducer);
 
 export default store;

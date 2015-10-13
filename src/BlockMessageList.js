@@ -4,10 +4,10 @@ const Colors = require('./Colors');
 const LineClamp = require('./LineClamp');
 const PureRender = require('./PureRender');
 const Radium = require('radium');
-const React = require('react/addons');
+const React = require('react');
 const RelativeDate = require('./RelativeDate');
 const _ = require('lodash');
-const {Component, PropTypes, findDOMNode} = require('react/addons');
+const {Component, PropTypes, findDOMNode} = require('react');
 
 @PureRender
 @Radium

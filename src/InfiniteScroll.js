@@ -5,7 +5,8 @@
  */
 
 const Radium = require('radium');
-const {Component, PropTypes, findDOMNode} = require('react');
+const {Component, PropTypes} = require('react');
+const {findDOMNode} = require('react-dom');
 
 @Radium
 class InfiniteScroll extends Component {

@@ -4,7 +4,7 @@ const Colors = require('./Colors');
 const PureRender = require('./PureRender');
 const Radium = require('radium');
 const StylePropTypes = require('./StylePropTypes');
-const {Component} = require('react/addons');
+const {Component} = require('react');
 
 @PureRender
 @Radium

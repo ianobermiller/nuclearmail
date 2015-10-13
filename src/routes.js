@@ -8,12 +8,8 @@ const Router = require('react-router');
 const Route = Router.Route;
 
 const routes = (
-  <Route handler={App} name="app" path="/">
-    <Route
-      handler={ThreadView}
-      name="thread"
-      path="/thread/:threadID/message/:messageID"
-    />
+  <Route path="/" component={App}>
+    <Route path="thread/:threadID/message/:messageID" component={ThreadView} />
   </Route>
 );
 

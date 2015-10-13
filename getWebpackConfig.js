@@ -5,7 +5,7 @@ var _ = require('lodash');
 module.exports = function(options) {
   var config = {
     entry: [
-      './src/js/main.js'
+      './src/main.js'
     ],
     output: {
       path: path.join(__dirname, 'build'),
@@ -23,8 +23,8 @@ module.exports = function(options) {
       loaders: [
         {
           test: /\.js$/,
-          loaders: ['babel?stage=0'],
-          include: path.join(__dirname, 'src/js')
+          loaders: ['babel'],
+          include: path.join(__dirname, 'src')
         },
       ]
     },
@@ -32,16 +32,11 @@ module.exports = function(options) {
 
   if (options.environment === 'dev') {
     config.devtool = 'source-map';
-    Array.prototype.unshift.call(
-      config.entry,
-      'webpack-dev-server/client?http://0.0.0.0:8000',
-      'webpack/hot/only-dev-server'
-    );
+    config.entry.unshift('webpack-hot-middleware/client');
     config.plugins = [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoErrorsPlugin()
     ];
-    config.module.loaders[0].loaders.unshift('react-hot');
   }
 
   config.module.loaders.unshift({

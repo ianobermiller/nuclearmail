@@ -1,9 +1,9 @@
 const ActionType = require('./ActionType');
 
 module.exports = (threadListByQuery = {}, action) => {
+  const threadList = threadListByQuery[action.query];
   switch (action.type) {
     case ActionType.Thread.LOAD_LIST_REQUEST:
-      const threadList = threadListByQuery[action.query];
       if (threadList) {
         return {
           ...threadListByQuery,
@@ -25,7 +25,6 @@ module.exports = (threadListByQuery = {}, action) => {
       };
 
     case ActionType.Thread.LOAD_LIST_SUCCESS:
-      const threadList = threadListByQuery[action.query];
       const newThreadIDs = action.threads.map(thread => thread.id);
       return {
         ...threadListByQuery,
