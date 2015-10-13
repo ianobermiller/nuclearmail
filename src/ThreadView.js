@@ -11,38 +11,24 @@ import KeyBinder from './KeyBinder';
 import MessageView from './MessageView';
 import PureRender from './PureRender';
 import * as ThreadActions from './ThreadActions';
-import getUnsubscribeUrl from './getUnsubscribeUrl';
+import {
+  selectedMessageIDSelector,
+  selectedThreadIDSelector,
+  selectedThreadMessagesSelector,
+  unsubscribeUrlSelector,
+} from './Selectors';
 
 @connect(
   state => ({
-    params: state.router.params,
-    messagesByID: state.messagesByID,
-    threadsByID: state.threadsByID,
+    threadID: selectedThreadIDSelector(state),
+    messageID: selectedMessageIDSelector(state),
+    messages: selectedThreadMessagesSelector(state),
+    unsubscribeUrl: unsubscribeUrlSelector(state),
   }),
   dispatch => bindActionCreators({
     loadThread: ThreadActions.load,
     ...ThreadActions,
   }, dispatch),
-  (stateProps, dispatchProps, ownProps) => {
-    const thread = stateProps.threadsByID[ownProps.params.threadID];
-
-    const messages = thread &&
-      thread.messageIDs.map(messageID => stateProps.messagesByID[messageID]);
-
-    const selectedMessage = messages && messages.find(
-      message => message.id === ownProps.params.messageID
-    );
-
-    const unsubscribeUrl = selectedMessage && getUnsubscribeUrl(selectedMessage);
-
-    return {
-      ...dispatchProps,
-      ...ownProps,
-      thread,
-      messages,
-      unsubscribeUrl,
-    };
-  }
 )
 @KeyBinder
 @PureRender
@@ -50,7 +36,6 @@ import getUnsubscribeUrl from './getUnsubscribeUrl';
 class ThreadView extends Component {
   static propTypes = {
     onGoToNextMessage: PropTypes.func.isRequired,
-    params: PropTypes.object.isRequired,
 
     style: PropTypes.object,
   };
@@ -65,32 +50,32 @@ class ThreadView extends Component {
   }
 
   _tryLoad(props) {
-    if (!props.params || !props.params.threadID) {
+    if (!props.threadID) {
       return;
     }
 
-    props.loadThread(props.params.threadID);
+    props.loadThread(props.threadID);
   }
 
   _archive = () => {
     this.props.onGoToNextMessage();
-    this.props.archive(this.props.params.threadID);
+    this.props.archive(this.props.threadID);
   };
 
   _moveToInbox = () => {
-    this.props.moveToInbox(this.props.params.threadID);
+    this.props.moveToInbox(this.props.threadID);
   };
 
   _markAsUnread = () => {
-    this.props.markAsUnread(this.props.params.threadID);
+    this.props.markAsUnread(this.props.threadID);
   };
 
   _star = () => {
-    this.props.star(this.props.params.threadID);
+    this.props.star(this.props.threadID);
   };
 
   _unstar = () => {
-    this.props.unstar(this.props.params.threadID);
+    this.props.unstar(this.props.threadID);
   };
 
   _unsubscribe = () => {
@@ -144,7 +129,7 @@ class ThreadView extends Component {
         <div style={styles.messages}>
           {messages.map(message => (
             <MessageView
-              isExpandedInitially={message.id === this.props.params.messageID}
+              isExpandedInitially={message.id === this.props.messageID}
               key={message.id}
               message={message}
             />

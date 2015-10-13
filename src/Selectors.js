@@ -1,11 +1,15 @@
 import {createSelector} from 'reselect';
 import _ from 'lodash';
 
+import getUnsubscribeUrl from './getUnsubscribeUrl';
+
 const searchQuerySelector = state => state.app.searchQuery;
 const threadListByQuerySelector = state => state.threadListByQuery;
 const threadsByIDSelector = state => state.threadsByID;
 const messagesByIDSelector = state => state.messagesByID;
-const selectedMessageIDSelector = state => state.router.params.messageID;
+
+export const selectedMessageIDSelector = state => state.router.params.messageID;
+export const selectedThreadIDSelector = state => state.router.params.threadID;
 
 export const threadsSelector = createSelector([
   searchQuerySelector,
@@ -20,6 +24,34 @@ export const threadsSelector = createSelector([
   return threadList ?
     threadList.threadIDs.map(threadID => threadsByID[threadID]) :
     [];
+});
+
+export const selectedThreadMessagesSelector = createSelector([
+  threadsByIDSelector,
+  selectedThreadIDSelector,
+  messagesByIDSelector,
+], (
+  threadsByID,
+  selectedThreadID,
+  messagesByID,
+) => {
+  const selectedThread = threadsByID[selectedThreadID];
+  return selectedThread &&
+    selectedThread.messageIDs.map(messageID => messagesByID[messageID]);
+});
+
+export const unsubscribeUrlSelector = createSelector([
+  selectedThreadMessagesSelector,
+  selectedMessageIDSelector,
+], (
+  messages,
+  selectedMesageID,
+) => {
+  const selectedMessage = messages && messages.find(
+    message => message.id === selectedMesageID
+  );
+
+  return selectedMessage && getUnsubscribeUrl(selectedMessage);
 });
 
 export const lastMessageInEachThreadSelector = createSelector([
