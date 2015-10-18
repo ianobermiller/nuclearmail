@@ -11,7 +11,7 @@
     "intl": "^0.1.4",
     "keyboardjs": "^0.4.2",
     "lodash": "^3.8.0",
-    "radium": "^0.13.7",
+    "radium": "^0.14.2",
     "react": "^0.14.0",
     "react-addons-shallow-compare": "^0.14.0",
     "react-dom": "^0.14.0",
