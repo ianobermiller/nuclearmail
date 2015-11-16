@@ -18,7 +18,7 @@ Try it out at: http://ianobermiller.github.io/nuclearmail/
 - [React Router](https://github.com/rackt/react-router)
 - [Google Caja](https://code.google.com/p/google-caja/) - sanitize HTML
 - [webpack](http://webpack.github.io/)
-- [react-hot-loader](https://github.com/gaearon/react-hot-loader)
+- [react-transform-hmr](https://github.com/gaearon/react-transform-hmr)
 
 ## Keyboard shortcuts
 
