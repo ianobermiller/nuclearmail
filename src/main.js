@@ -3,7 +3,7 @@
 import 'es6-shim';
 
 import {Provider} from 'react-redux';
-import {ReduxRouter} from 'redux-router';
+import {ReduxRouter} from 'redux-react-router';
 import {DevTools, DebugPanel, LogMonitor} from 'redux-devtools/lib/react';
 
 function run() {
